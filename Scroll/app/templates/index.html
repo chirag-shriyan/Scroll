@@ -2,7 +2,93 @@
 
 {% block title %}Scroll{% endblock title %}
 
+
 {% block body %}
-<h1 >Hello</h1>    
+
+<div class="w-[70%] h-screen bg-slate-400 "></div>
+
+<div class="w-[30%] h-screen py-5 px-10 space-y-10 bg-slate-500">
+  {% if user.is_authenticated %}
+
+  <div class="flex items-center space-x-3">
+    <p>{{user}}</p>
+    <a href="{% url 'logout' %}" class="py-2 px-3 bg-red-500 rounded-md"
+      >Logout</a
+    >
+  </div>
+
+  {% else %}
+  <div class="flex items-center space-x-3">
+    <p>Try Scroll</p>
+    <a href="{% url 'login' %}" class="py-2 px-3 bg-blue-500 rounded-md">Login</a>
+    <a href="{% url 'signup' %}" class="py-2 px-3 bg-blue-500 rounded-md">Signup</a>
+  </div>
+
+  {% endif %} 
+  {% comment %}
+  https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Cat_August_2010-4.jpg/1200px-Cat_August_2010-4.jpg
+  {% endcomment %}
+
+  <div class="space-y-5">
+    <h1 class="text-2xl">Suggestions</h1>
+   
+    <div class="w-full h-full space-y-5 bg-black">
+
+        <div class="p-2 space-x-5 flex items-center"> 
+            <img 
+                class="w-12 h-12 rounded-full"
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Cat_August_2010-4.jpg/1200px-Cat_August_2010-4.jpg" 
+                alt=""
+            >
+            <div class="text-sm">
+                <p>Username</p>
+                <p class="text-gray-500">Suggested for you</p>
+            </div>
+        </div>
+   
+
+        <div class="p-2 space-x-5 flex items-center"> 
+            <img 
+                class="w-12 h-12 rounded-full"
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Cat_August_2010-4.jpg/1200px-Cat_August_2010-4.jpg" 
+                alt=""
+            >
+            <div class="text-sm">
+                <p>Username</p>
+                <p class="text-gray-500">Suggested for you</p>
+            </div>
+        </div>
+   
+
+        <div class="p-2 space-x-5 flex items-center"> 
+            <img 
+                class="w-12 h-12 rounded-full"
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Cat_August_2010-4.jpg/1200px-Cat_August_2010-4.jpg" 
+                alt=""
+            >
+            <div class="text-sm">
+                <p>Username</p>
+                <p class="text-gray-500">Suggested for you</p>
+            </div>
+        </div>
+   
+
+        <div class="p-2 space-x-5 flex items-center"> 
+            <img 
+                class="w-12 h-12 rounded-full"
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Cat_August_2010-4.jpg/1200px-Cat_August_2010-4.jpg" 
+                alt=""
+            >
+            <div class="text-sm">
+                <p>Username</p>
+                <p class="text-gray-500">Suggested for you</p>
+            </div>
+        </div>
+   
+       
+    </div>
+
+  </div>
+</div>
 
 {% endblock body %}
