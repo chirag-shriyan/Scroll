@@ -11,10 +11,10 @@ def Signup(req):
         form = SignupForm(req.POST)
 
         if form.is_valid():
-            username = req.POST['username']
-            email = req.POST['email']
-            password = req.POST['password']
-            re_password = req.POST['re_password']
+            username = form.cleaned_data['username']
+            email = form.cleaned_data['email']
+            password = form.cleaned_data['password']
+            re_password = form.cleaned_data['re_password']
 
             db_username = User.objects.filter(username = username).values()
             db_email = User.objects.filter(email = email).values()
@@ -47,19 +47,19 @@ def Login(req):
         form = LoginForm(req.POST)
 
         if form.is_valid():
-            username = req.POST['username']
-            password = req.POST['password']
-            user = authenticate(req, username = username, password = password)
+            username_or_email = form.cleaned_data['username_or_email']
+            password = form.cleaned_data['password']
+            user = authenticate_user(username_or_email, password)
 
             if user is not None:
                 auth_login(req, user)
                 return redirect('/')
             else:
-                error = 'Username or password is invalid'
+                error = 'Username / Email or password is invalid'
                 return render(req,'Login.html',{"error":error})
         else:
             error = 'Something went wrong try again'
-            return render(req,'Login.html.html',{"error":error})
+            return render(req,'Login.html',{"error":error})
   
     else:
         return render(req,'Login.html')
@@ -68,3 +68,15 @@ def Login(req):
 def Logout(req):
     auth_logout(req)
     return redirect('/login')
+
+
+def authenticate_user (username_or_email, password):
+    user = User.objects.filter(email=username_or_email).first()
+
+    if not user:
+        user = User.objects.filter(username=username_or_email).first()
+    
+    if user and user.check_password(password) and user.is_active:
+        return user
+
+    return None

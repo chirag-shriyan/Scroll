@@ -7,24 +7,27 @@
 
 <div class="w-[70%] h-screen bg-slate-400 "></div>
 
-<div class="w-[30%] h-screen py-5 px-10 space-y-10 bg-slate-500">
-  {% if user.is_authenticated %}
 
-  <div class="flex items-center space-x-3">
-    <p>{{user}}</p>
-    <a href="{% url 'logout' %}" class="py-2 px-3 bg-red-500 rounded-md"
-      >Logout</a
-    >
-  </div>
+{% comment %}  {% endcomment %}
 
-  {% else %}
-  <div class="flex items-center space-x-3">
-    <p>Try Scroll</p>
-    <a href="{% url 'login' %}" class="py-2 px-3 bg-blue-500 rounded-md">Login</a>
-    <a href="{% url 'signup' %}" class="py-2 px-3 bg-blue-500 rounded-md">Signup</a>
-  </div>
+<div class="w-[30%] h-screen py-5 px-10 space-y-10 ">
+    <div class="w-full p-2 flex justify-between items-center"> 
+        <div class="flex items-center space-x-5">
+            <img 
+                class="w-12 h-12 rounded-full"
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Cat_August_2010-4.jpg/1200px-Cat_August_2010-4.jpg" 
+                alt=""
+            >
 
-  {% endif %} 
+            <div class="text-sm">
+                <b>{{username}}</b>
+                <p class="text-gray-500">Current logged in as</p>
+            </div>
+        </div>
+
+        <a href="{% url 'logout' %}" class="h-fit mr-10 py-2 px-3 bg-red-500 rounded-md">Logout</a>
+    </div>
+
 
   {% comment %}
   https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Cat_August_2010-4.jpg/1200px-Cat_August_2010-4.jpg
@@ -45,7 +48,7 @@
 
                 <div class="text-sm">
 
-                    <p>Username</p>
+                    <b>Username</b>
                     <p class="text-gray-500">Suggested for you</p>
                 </div>
             </div>
@@ -64,7 +67,7 @@
 
                 <div class="text-sm">
 
-                    <p>Username</p>
+                    <b>Username</b>
                     <p class="text-gray-500">Suggested for you</p>
                 </div>
             </div>
@@ -83,7 +86,7 @@
 
                 <div class="text-sm">
 
-                    <p>Username</p>
+                    <b>Username</b>
                     <p class="text-gray-500">Suggested for you</p>
                 </div>
             </div>
@@ -102,13 +105,35 @@
 
                 <div class="text-sm">
 
-                    <p>Username</p>
+                    <b>Username</b>
                     <p class="text-gray-500">Suggested for you</p>
                 </div>
             </div>
 
             <a href="" class="h-fit mx-3 py-1 px-2 text-sm bg-blue-500 rounded-md">Follow</a>
         </div>
+   
+
+        <div class="w-full p-2 flex justify-between items-center"> 
+            <div class="flex items-center space-x-5">
+                <img 
+                    class="w-12 h-12 rounded-full"
+                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Cat_August_2010-4.jpg/1200px-Cat_August_2010-4.jpg" 
+                    alt=""
+                >
+
+                <div class="text-sm">
+
+                    <b>Username</b>
+                    <p class="text-gray-500">Suggested for you</p>
+                </div>
+            </div>
+
+            <a href="" class="h-fit mx-3 py-1 px-2 text-sm bg-blue-500 rounded-md">Follow</a>
+        </div>
+   
+
+       
    
        
     </div>
