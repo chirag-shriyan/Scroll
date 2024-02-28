@@ -2,35 +2,54 @@
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scroll | Signup</title>
 
 </head>
+
 <body class="w-full h-screen bg-[#333] flex justify-center items-center">
 
-    <form action="{% url 'signup' %}" method="post" class="w-[40%] h-[85vh] bg-black  text-white rounded-2xl p-12 flex flex-col gap-12 shadow-xl mt-2" autocomplete="off">
+    <form action="{% url 'signup' %}" method="post" enctype="multipart/form-data"
+        class="w-[40%] h-[85vh] bg-black  text-white rounded-2xl p-12 flex flex-col gap-12 shadow-xl mt-2"
+        autocomplete="off">
         {% csrf_token %}
         <h1 class="text-left text-4xl font-bold">Create your account</h1>
 
         <div class="w-full flex flex-col gap-8">
-            <input type="text" name="username" placeholder="Username" class="p-4 bg-transparent border rounded-lg focus:outline-0" autofocus required>
-            <input type="email" name="email" placeholder="Email" class="p-4 bg-transparent border rounded-lg focus:outline-0" required>
+            <input type="text" name="username" placeholder="Username"
+                class="p-4 bg-transparent border rounded-lg focus:outline-0" autofocus required>
+
+            <input type="email" name="email" placeholder="Email"
+                class="p-4 bg-transparent border rounded-lg focus:outline-0" required>
+
             <div class="w-full flex gap-2">
-                <input type="password" name="password" placeholder="Create password" class="flex-auto p-4 bg-transparent border rounded-lg focus:outline-0" required>
-                <input type="password" name="re_password" placeholder="Confirm password" class="flex-auto p-4 bg-transparent border rounded-lg focus:outline-0" required>
+                <input type="password" name="password" placeholder="Create password"
+                    class="flex-auto p-4 bg-transparent border rounded-lg focus:outline-0" required>
+
+                <input type="password" name="re_password" placeholder="Confirm password"
+                    class="flex-auto p-4 bg-transparent border rounded-lg focus:outline-0" required>
             </div>
+
+            <div class="p-4 bg-transparent border rounded-lg focus:outline-0">
+                <label for="file" class="text-[#9ca3af] hover:cursor-pointer">Profile Pic:</label>
+                <input type="file" name="profile_pic" id="file" required>
+            </div>
+
             {% if error %}
-                <b class="text-red-500">{{error}}</b>
+            <b class="text-red-500">{{error}}</b>
             {% endif %}
             <a href="{% url 'login' %}" class="mx-2 underline self-end">Already have an account?</a>
         </div>
-        
-        <input type="submit" value="Create account" class="bg-white text-black text-2xl font-semibold py-3 rounded-xl cursor-pointer hover:opacity-90">
+
+        <input type="submit" value="Create account"
+            class="bg-white text-black text-2xl font-semibold py-3 rounded-xl cursor-pointer hover:opacity-90">
     </form>
 
     <script src="{% static 'js/tailwindcdn.js' %}"></script>
 
 </body>
+
 </html>

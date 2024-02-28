@@ -5,13 +5,47 @@
 
 {% block body %}
 
-<div class="w-[70%] h-fit py-16 space-y-10 flex flex-col items-center ">
+<div class="w-[70%] h-fit py-16 space-y-10 flex flex-col items-center">
+
+    {% for post in data %}
+    
+     <div class="space-y-2">
+        <div class="flex items-center space-x-5">
+            <img 
+                class="w-12 h-12 rounded-full"
+                src="uploads/{{post.added_by_profile}}" 
+                alt=""
+            >
+            <b>{{post.added_by}}</b>
+        </div>
+
+        <img 
+            class="w-[468px] h-[585px] !my-5 bg-slate-200 rounded-sm"
+            src="uploads/{{post.file}}"
+        />
+
+        <div class="space-x-5">
+            <a href="#"><i class="fa-regular fa-heart text-2xl" ></i></a>
+            <a href="#"><i class="fa-regular fa-comment text-2xl" ></i></a>
+            <a href="#"><i class="fa-solid fa-share-nodes text-2xl" ></i></a>
+        </div>
+  
+        <b class=" text-sm">{{100}} likes</b>
+        
+        <b class="w-[468px] text-sm block">{{post.bio}}... <a href="#" class="text-gray-500">more</a></b>
+     
+        <hr class="!my-4 !mx-1 border-[#262626]"/>
+
+    </div>
+    
+    {% endfor %}
+
 
     <div class="space-y-2">
         <div class="flex items-center space-x-5">
             <img 
                 class="w-12 h-12 rounded-full"
-                src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Cat_August_2010-4.jpg/1200px-Cat_August_2010-4.jpg" 
+                src="uploads/{{profile}}" 
                 alt=""
             >
             <b>{{username}}</b>
@@ -23,9 +57,9 @@
         />
 
         <div class="space-x-5">
-            <a href=""><i class="fa-regular fa-heart text-2xl" ></i></a>
-            <a href=""><i class="fa-regular fa-comment text-2xl" ></i></a>
-            <a href=""><i class="fa-solid fa-share-nodes text-2xl" ></i></a>
+            <a href="#"><i class="fa-regular fa-heart text-2xl" ></i></a>
+            <a href="#"><i class="fa-regular fa-comment text-2xl" ></i></a>
+            <a href="#"><i class="fa-solid fa-share-nodes text-2xl" ></i></a>
         </div>
   
         <b class=" text-sm">{{100}} likes</b>
@@ -41,7 +75,7 @@
         <div class="flex items-center space-x-5">
             <img 
                 class="w-12 h-12 rounded-full"
-                src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Cat_August_2010-4.jpg/1200px-Cat_August_2010-4.jpg" 
+                src="uploads/{{profile}}" 
                 alt=""
             >
             <b>{{username}}</b>
@@ -53,9 +87,9 @@
         />
 
         <div class="space-x-5">
-            <a href=""><i class="fa-regular fa-heart text-2xl" ></i></a>
-            <a href=""><i class="fa-regular fa-comment text-2xl" ></i></a>
-            <a href=""><i class="fa-solid fa-share-nodes text-2xl" ></i></a>
+            <a href="#"><i class="fa-regular fa-heart text-2xl" ></i></a>
+            <a href="#"><i class="fa-regular fa-comment text-2xl" ></i></a>
+            <a href="#"><i class="fa-solid fa-share-nodes text-2xl" ></i></a>
         </div>
   
         <b class=" text-sm">{{100}} likes</b>
@@ -71,7 +105,7 @@
         <div class="flex items-center space-x-5">
             <img 
                 class="w-12 h-12 rounded-full"
-                src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Cat_August_2010-4.jpg/1200px-Cat_August_2010-4.jpg" 
+                src="uploads/{{profile}}" 
                 alt=""
             >
             <b>{{username}}</b>
@@ -83,9 +117,9 @@
         />
 
         <div class="space-x-5">
-            <a href=""><i class="fa-regular fa-heart text-2xl" ></i></a>
-            <a href=""><i class="fa-regular fa-comment text-2xl" ></i></a>
-            <a href=""><i class="fa-solid fa-share-nodes text-2xl" ></i></a>
+            <a href="#"><i class="fa-regular fa-heart text-2xl" ></i></a>
+            <a href="#"><i class="fa-regular fa-comment text-2xl" ></i></a>
+            <a href="#"><i class="fa-solid fa-share-nodes text-2xl" ></i></a>
         </div>
   
         <b class=" text-sm">{{100}} likes</b>
@@ -101,7 +135,7 @@
         <div class="flex items-center space-x-5">
             <img 
                 class="w-12 h-12 rounded-full"
-                src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Cat_August_2010-4.jpg/1200px-Cat_August_2010-4.jpg" 
+                src="uploads/{{profile}}" 
                 alt=""
             >
             <b>{{username}}</b>
@@ -113,9 +147,9 @@
         />
 
         <div class="space-x-5">
-            <a href=""><i class="fa-regular fa-heart text-2xl" ></i></a>
-            <a href=""><i class="fa-regular fa-comment text-2xl" ></i></a>
-            <a href=""><i class="fa-solid fa-share-nodes text-2xl" ></i></a>
+            <a href="#"><i class="fa-regular fa-heart text-2xl" ></i></a>
+            <a href="#"><i class="fa-regular fa-comment text-2xl" ></i></a>
+            <a href="#"><i class="fa-solid fa-share-nodes text-2xl" ></i></a>
         </div>
   
         <b class=" text-sm">{{100}} likes</b>
@@ -127,19 +161,79 @@
     </div>
     
 
+    <div class="space-y-2">
+        <div class="flex items-center space-x-5">
+            <img 
+                class="w-12 h-12 rounded-full"
+                src="uploads/{{profile}}" 
+                alt=""
+            >
+            <b>{{username}}</b>
+        </div>
 
+        <img 
+            class="w-[468px] h-[585px] !my-5 bg-slate-200 rounded-sm"
+            src="https://th-thumbnailer.cdn-si-edu.com/3RQHyIdF6cCdAPoVL1NOZzyMCxY=/1000x750/filters:no_upscale():focal(594x274:595x275)/https://tf-cmsv2-smithsonianmag-media.s3.amazonaws.com/filer/95/db/95db799b-fddf-4fde-91f3-77024442b92d/egypt_kitty_social.jpg"
+        />
+
+        <div class="space-x-5">
+            <a href="#"><i class="fa-regular fa-heart text-2xl" ></i></a>
+            <a href="#"><i class="fa-regular fa-comment text-2xl" ></i></a>
+            <a href="#"><i class="fa-solid fa-share-nodes text-2xl" ></i></a>
+        </div>
+  
+        <b class=" text-sm">{{100}} likes</b>
+        
+        <b class="w-[468px] text-sm block">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ullam eos est inventore nemo vitae iusto repellendus optio corrupti itaque ducimus, ratione perspiciatis corporis. Suscipit perspiciatis fuga nobis ullam hic perferendis!... <a href="#" class="text-gray-500">more</a></b>
+     
+        <hr class="!my-4 !mx-1 border-[#262626]"/>
+
+    </div>
+    
+
+    <div class="space-y-2">
+        <div class="flex items-center space-x-5">
+            <img 
+                class="w-12 h-12 rounded-full"
+                src="uploads/{{profile}}" 
+                alt=""
+            >
+            <b>{{username}}</b>
+        </div>
+
+        <img 
+            class="w-[468px] h-[585px] !my-5 bg-slate-200 rounded-sm"
+            src="https://th-thumbnailer.cdn-si-edu.com/3RQHyIdF6cCdAPoVL1NOZzyMCxY=/1000x750/filters:no_upscale():focal(594x274:595x275)/https://tf-cmsv2-smithsonianmag-media.s3.amazonaws.com/filer/95/db/95db799b-fddf-4fde-91f3-77024442b92d/egypt_kitty_social.jpg"
+        />
+
+        <div class="space-x-5">
+            <a href="#"><i class="fa-regular fa-heart text-2xl" ></i></a>
+            <a href="#"><i class="fa-regular fa-comment text-2xl" ></i></a>
+            <a href="#"><i class="fa-solid fa-share-nodes text-2xl" ></i></a>
+        </div>
+  
+        <b class=" text-sm">{{100}} likes</b>
+        
+        <b class="w-[468px] text-sm block">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ullam eos est inventore nemo vitae iusto repellendus optio corrupti itaque ducimus, ratione perspiciatis corporis. Suscipit perspiciatis fuga nobis ullam hic perferendis!... <a href="#" class="text-gray-500">more</a></b>
+     
+        <hr class="!my-4 !mx-1 border-[#262626]"/>
+
+    </div>
+    
+
+   
 
 </div>
 
 
 {% comment %}  {% endcomment %}
 
-<div class="w-[30%] h-screen py-5 px-10 space-y-10 ">
+<div class="w-[30%] h-screen py-5 px-10 space-y-10">
     <div class="w-full p-2 flex justify-between items-center"> 
         <div class="flex items-center space-x-5">
             <img 
                 class="w-12 h-12 rounded-full"
-                src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Cat_August_2010-4.jpg/1200px-Cat_August_2010-4.jpg" 
+                src="uploads/{{profile}}" 
                 alt=""
             >
 
@@ -160,7 +254,7 @@
   <div class="space-y-5">
     <h1 class="text-2xl">Suggestions</h1>
    
-    <div class="w-full h-full space-y-5 bg-black">
+    <div class="w-full h-full space-y-5">
 
         <div class="w-full p-2 flex justify-between items-center"> 
             <div class="flex items-center space-x-5">
