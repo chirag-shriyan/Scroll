@@ -7,9 +7,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}{% endblock title %}</title>
-    <link href="{% static 'fontawesomefree/css/fontawesome.css' %}" rel="stylesheet" type="text/css">
-    <link href="{% static 'fontawesomefree/css/brands.css' %}" rel="stylesheet" type="text/css">
-    <link href="{% static 'fontawesomefree/css/solid.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'fontawesomefree/css/all.min.css' %}" rel="stylesheet" type="text/css">
+    
 
     {% block links %}
 
@@ -17,13 +16,13 @@
 
 </head>
 
-<body class="w-full h-screen flex bg-black">
+<body class="w-full h-full flex bg-black relative">
 
-    <div class="w-[18%] h-screen py-10 px-8 flex flex-col  border-r border-[#262626] text-[#f5f5f5]">
+    <div class="w-[18%] h-screen py-10 px-8 flex flex-col border-r border-[#262626] text-[#f5f5f5] fixed">
         {% include "components/SideBar.html" %}
     </div>
 
-    <div class="w-full h-screen flex text-white">
+    <div class="w-[82%] h-fit flex text-white absolute right-0">
         {% block body %}
         
         
@@ -32,7 +31,7 @@
 
 
     <script src="{% static 'js/tailwindcdn.js' %}"></script>
-    <script src="{% static 'fontawesome_free/js/all.min.js' %}"></script>
+    <script src="{% static 'fontawesomefree/js/all.min.js' %}"></script>
     {% block scripts %}
 
     {% endblock scripts %}
