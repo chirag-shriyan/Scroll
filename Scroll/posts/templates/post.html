@@ -1,0 +1,50 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scroll | {{data.post_id}}</title>
+    <link href="{% static 'fontawesomefree/css/all.min.css' %}" rel="stylesheet" type="text/css">
+
+</head>
+<body class="w-full h-fit py-16 space-y-10 flex flex-col items-center bg-black text-white">
+    
+    <div class="space-y-2">
+        <div class="flex items-center space-x-5">
+            <img 
+                class="w-12 h-12 rounded-full"
+                {% if data.added_by_profile.exist %}
+                   src="/uploads/{{data.added_by_profile}}" 
+                {% else %}
+                    src="/static/{{data.added_by_profile.file}}"
+                {% endif %}
+                
+                alt=""
+            >
+            <b>{{data.added_by}}</b>
+        </div>
+
+        <img 
+            class="w-[468px] h-[585px] !my-5 bg-slate-200 rounded-sm border border-[#262626]"
+            src="/uploads/{{data.file}}"
+        />
+
+        <div class="space-x-5">
+            <a href="#"><i class="fa-regular fa-heart text-2xl" ></i></a>
+            <a href="#"><i class="fa-regular fa-comment text-2xl" ></i></a>
+            <a href="#"><i class="fa-solid fa-share-nodes text-2xl" ></i></a>
+        </div>
+  
+        <b class=" text-sm">{{100}} likes</b>
+        
+        <b class="w-[468px] text-sm block">{{data.bio}}... <a href="#" class="text-gray-500">more</a></b>
+
+    </div>
+
+
+    <script src="{% static 'js/tailwindcdn.js' %}"></script>
+    <script src="{% static 'fontawesomefree/js/all.min.js' %}"></script>
+</body>
+</html>

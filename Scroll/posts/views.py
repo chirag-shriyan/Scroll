@@ -1,8 +1,36 @@
 from django.shortcuts import render
 from .forms import PostForm
 from .models import Post
+from myauth.models import ProfilePic
+from django.contrib.auth.models import User
 
 # Create your views here.
+
+def Post_view(req,post_id=None):
+
+    if post_id:
+        DATA = Post.objects.filter(post_id = post_id).values().first()
+        if DATA:
+            added_by = str(User.objects.get(id = DATA['user_id'])).capitalize()
+            added_by_profile = ProfilePic.objects.filter(user_id = DATA['user_id']).values().first()
+
+            DATA['added_by'] = added_by
+            if added_by_profile:
+                DATA['added_by_profile'] = {"file": added_by_profile['file'] , "exist": True}
+            else:
+                DATA['added_by_profile'] = {"file": 'images/profile.jpg' , "exist": False}
+
+            context = {
+                "data": DATA
+            }
+
+            return render(req,'post.html',context)
+        else:
+            return render(req,'not-found.html')
+    
+    else:
+        return render(req,'not-found.html')
+
 
 def Create_Posts(req):
 
