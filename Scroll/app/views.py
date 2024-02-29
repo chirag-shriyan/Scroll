@@ -15,7 +15,7 @@ def index(req):
     if profile:
         profile = profile['file']
 
-    DATA = Post.objects.filter(is_public = True).values()
+    DATA = Post.objects.filter(is_public = True).order_by('-updated_at').values()
 
     for user in DATA:
         added_by = str(User.objects.get(id = user['user_id'])).capitalize()

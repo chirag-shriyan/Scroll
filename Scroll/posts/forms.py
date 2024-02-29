@@ -1,6 +1,7 @@
 from django import forms
-from .models import Post
+# from .models import Post
 
 class PostForm(forms.Form):
-    class Meta:
-        model = Post
+    post_file = forms.FileField()
+    post_bio = forms.Textarea()
+    post_type = forms.BooleanField()

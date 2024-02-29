@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block title %}Scroll | Create Post{% endblock title %}
+
+
+{% block body %}
+
+
+
+<form class="w-[70%] h-fit py-16 space-y-10 flex flex-col items-center" action="{% url 'posts' %}" method="post"
+    enctype="multipart/form-data" autocomplete="off">
+
+    {% csrf_token %}
+
+    <div class="w-[400px] space-y-5">
+
+        <div id="message">
+            {% if message %}
+                <b class="w-full block mb-5 p-4 bg-transparent text-green-400 border border-green-400 rounded-lg">{{message}}</b>
+            {% endif %}
+            
+            {% if error %}
+                <b class="w-full block mb-5 p-4 bg-transparent text-red-500 border border-red-500 rounded-lg">{{error}}</b>
+            {% endif %}
+        </div>
+
+        <div class="w-[400px] h-[400px] relative">
+            <input class="w-full h-full absolute opacity-0 z-10" type="file" name="post_file" id="post_file" required />
+
+            <label
+                class="w-full h-full p-4 flex flex-col items-center justify-center text-gray-500 bg-transparent border rounded-lg focus:outline-0 z-0"
+                for="post_file" id="file_label">
+                <p id="file_name" class="w-full text-xl text-center break-words">Darg and dorp or click to upload</p>
+            </label>
+        </div>
+
+        <textarea class="w-full p-4 bg-transparent border rounded-lg focus:outline-0 z-0" name="post_bio" rows="5"
+            placeholder="Enter your bio" required></textarea>
+
+        <select name="post_type" class="w-full p-4 bg-black text-[#9ca3af] border rounded-lg focus:outline-0 z-0"
+            placeholder="Enter your bio" required style="-webkit-appearance: none;">
+            <option value="">-- Select --</option>
+            <option value="False">Private</option>
+            <option value="True">Public</option>
+        </select>
+
+        <input type="submit"
+            class="w-full bg-white text-black text-2xl font-semibold py-3 rounded-xl cursor-pointer hover:opacity-90">
+
+    </div>
+
+</form>
+
+
+
+<div class="w-[30%] bg-slate-500"></div>
+
+<script>
+
+    const post_file = document.querySelector('#post_file');
+    const file_label = document.querySelector('#file_label');
+    const file_name = document.querySelector('#file_name');
+
+    post_file.addEventListener('change', () => {
+        if (post_file.files[0].name) {
+            file_name.classList.replace('text-xl', 'text-2xl');
+            file_name.classList.add('text-white');
+            file_name.textContent = post_file.files[0].name;
+        }
+    });
+
+    post_file.addEventListener('dragenter', () => {
+        file_label.classList.add('border-green-400');
+        file_name.innerHTML = '<i class="fa-solid fa-file-import text-4xl"></i>';
+        file_name.classList.add('text-green-400');
+    });
+
+    post_file.addEventListener('dragleave', () => {
+        file_label.classList.remove('border-green-400');
+        file_name.innerHTML = 'Darg and dorp or click to upload';
+        file_name.classList.remove('text-green-400')
+    });
+
+    post_file.addEventListener('drop', () => {
+        file_label.classList.remove('border-green-400');
+        file_name.innerHTML = 'Darg and dorp or click to upload'; // just in case if the file can't be upload
+        file_name.classList.remove('text-green-400');
+    });
+
+    const message = document.querySelector('#message');
+    setTimeout(function() {
+        message.style.display = 'none';
+    }, 3000);
+
+
+</script>
+
+
+{% endblock body %}
