@@ -50,7 +50,7 @@
             <img 
                 class="w-12 h-12 rounded-full"
                 {% if profile.exist %}
-                    src="uploads/{{profile.file}}" 
+                    src="/uploads/{{profile.file}}" 
                 {% else %}
                     src="/static/{{profile.file}}"
                 {% endif %}
@@ -84,7 +84,7 @@
             <img 
                 class="w-12 h-12 rounded-full"
                 {% if profile.exist %}
-                    src="uploads/{{profile.file}}" 
+                    src="/uploads/{{profile.file}}" 
                 {% else %}
                     src="/static/{{profile.file}}"
                 {% endif %}
@@ -118,7 +118,7 @@
             <img 
                 class="w-12 h-12 rounded-full"
                 {% if profile.exist %}
-                    src="uploads/{{profile.file}}" 
+                    src="/uploads/{{profile.file}}" 
                 {% else %}
                     src="/static/{{profile.file}}"
                 {% endif %}
@@ -152,7 +152,7 @@
             <img 
                 class="w-12 h-12 rounded-full"
                 {% if profile.exist %}
-                    src="uploads/{{profile.file}}" 
+                    src="/uploads/{{profile.file}}" 
                 {% else %}
                     src="/static/{{profile.file}}"
                 {% endif %}
@@ -186,7 +186,7 @@
             <img 
                 class="w-12 h-12 rounded-full"
                 {% if profile.exist %}
-                    src="uploads/{{profile.file}}" 
+                    src="/uploads/{{profile.file}}" 
                 {% else %}
                     src="/static/{{profile.file}}"
                 {% endif %}
@@ -228,10 +228,10 @@
         <div class="flex items-center space-x-5">
             <img 
                 class="w-12 h-12 rounded-full"
-                {% if profile.exist %}
-                    src="uploads/{{profile.file}}" 
+                {% if profile_pic.exist %}
+                    src="/uploads/{{profile_pic.file}}" 
                 {% else %}
-                    src="/static/{{profile.file}}"
+                    src="/static/{{profile_pic.file}}"
                 {% endif %}
                 alt=""
             >
@@ -264,10 +264,10 @@
             <div class="flex items-center space-x-5">
                 <img 
                     class="w-12 h-12 rounded-full"
-                    {% if profile.exist %}
-                        src="uploads/{{profile.file}}" 
+                    {% if profile_pic.exist %}
+                        src="/uploads/{{profile_pic.file}}" 
                     {% else %}
-                        src="/static/{{profile.file}}"
+                        src="/static/{{profile_pic.file}}"
                     {% endif %}
                     alt=""
                 >
@@ -287,10 +287,10 @@
             <div class="flex items-center space-x-5">
                 <img 
                     class="w-12 h-12 rounded-full"
-                    {% if profile.exist %}
-                        src="uploads/{{profile.file}}" 
+                    {% if profile_pic.exist %}
+                        src="/uploads/{{profile_pic.file}}" 
                     {% else %}
-                        src="/static/{{profile.file}}"
+                        src="/static/{{profile_pic.file}}"
                     {% endif %}
                     alt=""
                 >
@@ -310,10 +310,10 @@
             <div class="flex items-center space-x-5">
                 <img 
                     class="w-12 h-12 rounded-full"
-                    {% if profile.exist %}
-                        src="uploads/{{profile.file}}" 
+                    {% if profile_pic.exist %}
+                        src="/uploads/{{profile_pic.file}}" 
                     {% else %}
-                        src="/static/{{profile.file}}"
+                        src="/static/{{profile_pic.file}}"
                     {% endif %}
                     alt=""
                 >
@@ -333,10 +333,10 @@
             <div class="flex items-center space-x-5">
                 <img 
                     class="w-12 h-12 rounded-full"
-                    {% if profile.exist %}
-                        src="uploads/{{profile.file}}" 
+                    {% if profile_pic.exist %}
+                        src="/uploads/{{profile_pic.file}}" 
                     {% else %}
-                        src="/static/{{profile.file}}"
+                        src="/static/{{profile_pic.file}}"
                     {% endif %}
                     alt=""
                 >
@@ -356,10 +356,10 @@
             <div class="flex items-center space-x-5">
                 <img 
                     class="w-12 h-12 rounded-full"
-                    {% if profile.exist %}
-                        src="uploads/{{profile.file}}" 
+                    {% if profile_pic.exist %}
+                        src="/uploads/{{profile_pic.file}}" 
                     {% else %}
-                        src="/static/{{profile.file}}"
+                        src="/static/{{profile_pic.file}}"
                     {% endif %}
                     alt=""
                 >
@@ -373,6 +373,9 @@
 
             <a href="" class="h-fit mx-3 py-1 px-2 text-sm text-blue-500 rounded-md">Follow</a>
         </div>
+   
+
+        
    
 
         

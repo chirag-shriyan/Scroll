@@ -47,6 +47,15 @@ def Signup(req):
 
 
 def Login(req):
+
+    global next_url
+    
+    if req.method == 'GET':
+        if req.GET.get('next'):
+            next_url = req.GET.get('next')
+        else:
+            next_url = None
+
     if req.method == 'POST':
         form = LoginForm(req.POST)
 
@@ -57,7 +66,11 @@ def Login(req):
 
             if user is not None:
                 auth_login(req, user)
-                return redirect('/')
+
+                if next_url:
+                    return redirect(next_url)
+                else:
+                    return redirect('/')
             else:
                 error = 'Username / Email or password is invalid'
                 return render(req,'Login.html',{"error":error})

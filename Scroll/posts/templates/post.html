@@ -16,7 +16,7 @@
             <img 
                 class="w-12 h-12 rounded-full"
                 {% if data.added_by_profile.exist %}
-                   src="/uploads/{{data.added_by_profile}}" 
+                   src="/uploads/{{data.added_by_profile.file}}" 
                 {% else %}
                     src="/static/{{data.added_by_profile.file}}"
                 {% endif %}

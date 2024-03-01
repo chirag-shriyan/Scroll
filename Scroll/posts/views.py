@@ -3,9 +3,11 @@ from .forms import PostForm
 from .models import Post
 from myauth.models import ProfilePic
 from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 
+@login_required(login_url='/login')
 def Post_view(req,post_id=None):
 
     if post_id:
@@ -31,7 +33,7 @@ def Post_view(req,post_id=None):
     else:
         return render(req,'not-found.html')
 
-
+@login_required(login_url='/login')
 def Create_Posts(req):
 
     if req.method == 'POST':

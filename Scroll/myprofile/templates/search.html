@@ -10,28 +10,43 @@
 
     <div class="w-[500px] space-y-8">
         
-        <form action="" class="flex space-x-2">
+        <form action="{% url 'search' %}" method="get" class="flex space-x-2">
             <input class="w-full h-full p-4 bg-transparent border rounded-lg focus:outline-0" type="text" placeholder="Search" name="q" id="search" required />
-            <input type="submit" value="Search" class="p-3 my-[2px] bg-white text-black text-xl font-semibold rounded-lg cursor-pointer hover:opacity-90">
+            <input type="submit" value="Search" class="p-3  bg-white text-black text-xl font-semibold rounded-lg cursor-pointer hover:opacity-90">
         </form>
 
-        {% for i in data %}
-        
-        <div class="w-full p-2 flex justify-between items-center hover:bg-[#1a1a1a] hover:cursor-pointer rounded-md">
-            <div class="flex items-center space-x-5">
-                <img class="w-12 h-12 rounded-full" {% if profile.exist %} src="uploads/{{profile.file}}" {% else %}
-                    src="{% static 'images/profile.jpg' %}" {% endif %} alt="">
-            
-                <div class="text-sm">
-                    <b>Username</b>
-                    <p class="text-gray-500">Suggested for you</p>
+        {% if not_found %}
+
+            <h1 class="text-center" >No user found</h1>
+
+        {% else %}
+
+            {% for user in data %}
+                    
+            <div class="w-full p-2 flex justify-between items-center hover:bg-[#1a1a1a] hover:cursor-pointer rounded-md">
+                <div class="flex items-center space-x-5">
+                    <img 
+                        class="w-12 h-12 rounded-full"
+                        {% if user.profile_pic.exist %}
+                            src="/uploads/{{user.profile_pic.file}}"
+                        {% else %}
+                            src="{% static 'images/profile.jpg' %}"
+                        {% endif %} 
+                        alt=""
+                    >
+                
+                    <div class="text-sm">
+                        <b>{{user.username}}</b>
+                        <!-- <p class="text-gray-500">Suggested for you</p> -->
+                    </div>
                 </div>
+                
+                <a href="" class="h-fit mx-3 py-1 px-2 text-sm text-blue-500 rounded-md">Follow</a>
             </div>
             
-            <a href="" class="h-fit mx-3 py-1 px-2 text-sm text-blue-500 rounded-md">Follow</a>
-        </div>
-        
-        {% endfor %}
+            {% endfor %}
+
+        {% endif %}
         
     </div>
     

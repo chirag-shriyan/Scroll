@@ -10,12 +10,12 @@ from myauth.models import ProfilePic
 def index(req):
    
     username = str(req.user).capitalize()
-    profile = ProfilePic.objects.filter(user_id = req.user.id).values().first()
+    profile_pic = ProfilePic.objects.filter(user_id = req.user.id).values().first()
 
-    if profile:
-        profile = {"file": profile['file'] , "exist": False}
+    if profile_pic:
+        profile_pic = {"file": profile_pic['file'] , "exist": True}
     else:
-        profile = {"file": 'images/profile.jpg', "exist": False}
+        profile_pic = {"file": 'images/profile.jpg', "exist": False}
 
     DATA = Post.objects.filter(is_public = True).order_by('-updated_at').values()
 
@@ -32,7 +32,7 @@ def index(req):
 
     context = {
         "username" : username,
-        "profile" : profile,
+        "profile_pic" : profile_pic,
         "data" : DATA
     }
     return render(req,'index.html',context)

@@ -4,4 +4,4 @@ from django import forms
 class PostForm(forms.Form):
     post_file = forms.FileField()
     post_bio = forms.Textarea()
-    post_type = forms.BooleanField()
+    post_type = forms.CharField()
