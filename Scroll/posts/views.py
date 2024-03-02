@@ -1,9 +1,10 @@
 from django.shortcuts import render
 from .forms import PostForm
-from .models import Post
+from .models import Post,Post_Like
 from myauth.models import ProfilePic
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 
 # Create your views here.
 
@@ -33,7 +34,7 @@ def Post_View(req,post_id=None):
     else:
         return render(req,'not_found.html')
 
-@login_required(login_url='/login')
+# @login_required(login_url='/login')
 def Create_Posts(req):
 
     if req.method == 'POST':
@@ -54,3 +55,46 @@ def Create_Posts(req):
 
     else:
         return render(req, 'create_posts.html')
+    
+import json
+from django.http import JsonResponse
+
+@login_required(login_url='/login')
+def Like_Posts(req):
+    
+    if req.method == "POST":
+        body = json.loads(req.body)
+        is_liked = Post_Like.objects.filter(Q(user_id = req.user.id) & Q(post_id = body['post_id'])).first()
+
+        if is_liked == None:
+            current_likes = Post.objects.filter(post_id = body['post_id']).values().first()['num_of_likes']
+            post_id = Post.objects.filter(post_id = body['post_id']).first()
+
+            Post_Like.objects.create(user_id = req.user.id,post_id = post_id)
+
+            current_post = Post.objects.filter(post_id = body['post_id']).first()
+            current_post.num_of_likes = current_likes + 1
+            current_post.save()
+
+            return JsonResponse({
+                "status":200,
+                "is_liked":True,
+                "current_likes": current_post.num_of_likes,
+            })
+        else:
+            current_likes = Post.objects.filter(post_id = body['post_id']).values().first()['num_of_likes']
+            is_liked.delete()
+
+            current_post = Post.objects.filter(post_id = body['post_id']).first()
+            current_post.num_of_likes = current_likes - 1
+            current_post.save()
+
+            return JsonResponse({
+                "status":200,
+                "is_liked":False,
+                "current_likes":current_post.num_of_likes,
+            })
+
+
+
+    return render(req,'not_found.html')

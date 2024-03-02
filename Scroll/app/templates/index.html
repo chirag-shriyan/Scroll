@@ -8,16 +8,15 @@
 
 <div class="w-[70%] h-fit py-10 space-y-10 flex flex-col items-center text-white">
 
-    {% for post in post_data %}
+{% for post in post_data %}
+    <div class="space-y-2">
         <a href="{{post.added_by_url}}">
-            <div class="space-y-2">
             <div class="flex items-center space-x-5">
-                <img 
-                    class="w-12 h-12 rounded-full object-cover"
+                <img class="w-12 h-12 rounded-full object-cover" 
                     {% if post.added_by_profile.exist %}
                         src="/uploads/{{post.added_by_profile.file}}" 
                     {% else %}
-                        src="/static/{{post.added_by_profile.file}}"
+                        src="/static/{{post.added_by_profile.file}}" 
                     {% endif %}
                     alt=""
                 >
@@ -25,218 +24,233 @@
             </div>
         </a>
 
-            <a href="/posts/{{post.post_id}}">
-                <img 
-                    class="w-[468px] h-[585px] !my-5 bg-slate-200 rounded-sm border border-[#262626] object-center"
-                    src="/uploads/{{post.file}}"
-                />
-            </a>
+        <a href="/posts/{{post.post_id}}">
+            <img class="w-[468px] h-[585px] !my-5 bg-slate-200 rounded-sm border border-[#262626] object-center"
+                src="/uploads/{{post.file}}" />
+        </a>
 
-            <div class="space-x-5 flex">
-                <a href="#"><i class="fa-regular fa-heart text-2xl pointer-events-none"></i></a>
-                <a href="#"><i class="fa-regular fa-comment text-2xl pointer-events-none"></i></a>
-                <i class="fa-solid fa-share-nodes text-2xl cursor-pointer" id="/posts/{{post.post_id}}" onclick="copyLink(this)"></i>
-                <p class="hidden text-green-400" id="message/posts/{{post.post_id}}">Link copied to clipboard</p>
+        <div class="space-x-5 flex select-none">
+            {% if post.is_liked %}
+            <div class="cursor-pointer" id="{{post.post_id}}" onclick="handelLikes(this)">
+                <i class="fa-solid fa-heart text-2xl text-red-500 pointer-events-none"></i>
             </div>
+            {% else %}
+            <div class="cursor-pointer" id="{{post.post_id}}" onclick="handelLikes(this)">
+                <i class="fa-regular fa-heart text-2xl pointer-events-none"></i>
+            </div>
+            {% endif %}
 
-            <b class=" text-sm">{{100}} likes</b>
-            
-            <b class="w-[468px] text-sm block">{{post.bio}}... <a href="#" class="text-gray-500">more</a></b>
-        
-            <hr class="!my-4 !mx-1 border-[#262626]"/>
+            <a href="#"><i class="fa-regular fa-comment text-2xl pointer-events-none"></i></a>
+            <i class="fa-solid fa-share-nodes text-2xl cursor-pointer" id="/posts/{{post.post_id}}"
+                onclick="copyLink(this)"></i>
+            <p class="hidden text-green-400" id="message/posts/{{post.post_id}}">Link copied to clipboard</p>
         </div>
-    {% endfor %}
+
+        <b class="text-sm select-none" id="post_likes_{{post.post_id}}">{{post.num_of_likes}} likes</b>
+
+        <b class="w-[468px] text-sm block">{{post.bio}}... <a href="#" class="text-gray-500">more</a></b>
+
+        <hr class="!my-4 !mx-1 border-[#262626]" />
+    </div>
+{% endfor %}
 
 
     <div class="space-y-2">
         <div class="flex items-center space-x-5">
-            <img 
-                class="w-12 h-12 rounded-full"
-                {% if profile_pic.exist %}
+            <img class="w-12 h-12 rounded-full" 
+                {% if profile_pic.exist %} 
                     src="/uploads/{{profile_pic.file}}" 
-                {% else %}
-                    src="/static/{{profile_pic.file}}"
-                {% endif %}
+                {% else%}
+                    src="/static/{{profile_pic.file}}" 
+                {% endif %} 
                 alt=""
             >
             <b>{{username}}</b>
         </div>
 
-        <img 
-            class="w-[468px] h-[585px] !my-5 bg-slate-200 rounded-sm border border-[#262626]"
-            src="https://th-thumbnailer.cdn-si-edu.com/3RQHyIdF6cCdAPoVL1NOZzyMCxY=/1000x750/filters:no_upscale():focal(594x274:595x275)/https://tf-cmsv2-smithsonianmag-media.s3.amazonaws.com/filer/95/db/95db799b-fddf-4fde-91f3-77024442b92d/egypt_kitty_social.jpg"
-        />
+        <img class="w-[468px] h-[585px] !my-5 bg-slate-200 rounded-sm border border-[#262626]"
+            src="https://th-thumbnailer.cdn-si-edu.com/3RQHyIdF6cCdAPoVL1NOZzyMCxY=/1000x750/filters:no_upscale():focal(594x274:595x275)/https://tf-cmsv2-smithsonianmag-media.s3.amazonaws.com/filer/95/db/95db799b-fddf-4fde-91f3-77024442b92d/egypt_kitty_social.jpg" />
 
         <div class="space-x-5">
-            <a href="#"><i class="fa-regular fa-heart text-2xl" ></i></a>
-            <a href="#"><i class="fa-regular fa-comment text-2xl" ></i></a>
-            <a href="#"><i class="fa-solid fa-share-nodes text-2xl" ></i></a>
+            <a href="#"><i class="fa-regular fa-heart text-2xl"></i></a>
+            <a href="#"><i class="fa-regular fa-comment text-2xl"></i></a>
+            <a href="#"><i class="fa-solid fa-share-nodes text-2xl"></i></a>
         </div>
-  
+
         <b class=" text-sm">{{100}} likes</b>
-        
-        <b class="w-[468px] text-sm block">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ullam eos est inventore nemo vitae iusto repellendus optio corrupti itaque ducimus, ratione perspiciatis corporis. Suscipit perspiciatis fuga nobis ullam hic perferendis!... <a href="#" class="text-gray-500">more</a></b>
-     
-        <hr class="!my-4 !mx-1 border-[#262626]"/>
+
+        <b class="w-[468px] text-sm block">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ullam eos est
+            inventore
+            nemo vitae iusto repellendus optio corrupti itaque ducimus, ratione perspiciatis corporis. Suscipit
+            perspiciatis
+            fuga nobis ullam hic perferendis!... <a href="#" class="text-gray-500">more</a></b>
+
+        <hr class="!my-4 !mx-1 border-[#262626]" />
 
     </div>
-    
+
+
 
     <div class="space-y-2">
         <div class="flex items-center space-x-5">
-            <img 
-                class="w-12 h-12 rounded-full"
-                {% if profile_pic.exist %}
+            <img class="w-12 h-12 rounded-full" 
+                {% if profile_pic.exist %} 
                     src="/uploads/{{profile_pic.file}}" 
-                {% else %}
-                    src="/static/{{profile_pic.file}}"
-                {% endif %}
+                {% else%}
+                    src="/static/{{profile_pic.file}}" 
+                {% endif %} 
                 alt=""
             >
             <b>{{username}}</b>
         </div>
 
-        <img 
-            class="w-[468px] h-[585px] !my-5 bg-slate-200 rounded-sm border border-[#262626]"
-            src="https://th-thumbnailer.cdn-si-edu.com/3RQHyIdF6cCdAPoVL1NOZzyMCxY=/1000x750/filters:no_upscale():focal(594x274:595x275)/https://tf-cmsv2-smithsonianmag-media.s3.amazonaws.com/filer/95/db/95db799b-fddf-4fde-91f3-77024442b92d/egypt_kitty_social.jpg"
-        />
+        <img class="w-[468px] h-[585px] !my-5 bg-slate-200 rounded-sm border border-[#262626]"
+            src="https://th-thumbnailer.cdn-si-edu.com/3RQHyIdF6cCdAPoVL1NOZzyMCxY=/1000x750/filters:no_upscale():focal(594x274:595x275)/https://tf-cmsv2-smithsonianmag-media.s3.amazonaws.com/filer/95/db/95db799b-fddf-4fde-91f3-77024442b92d/egypt_kitty_social.jpg" />
 
         <div class="space-x-5">
-            <a href="#"><i class="fa-regular fa-heart text-2xl" ></i></a>
-            <a href="#"><i class="fa-regular fa-comment text-2xl" ></i></a>
-            <a href="#"><i class="fa-solid fa-share-nodes text-2xl" ></i></a>
+            <a href="#"><i class="fa-regular fa-heart text-2xl"></i></a>
+            <a href="#"><i class="fa-regular fa-comment text-2xl"></i></a>
+            <a href="#"><i class="fa-solid fa-share-nodes text-2xl"></i></a>
         </div>
-  
+
         <b class=" text-sm">{{100}} likes</b>
-        
-        <b class="w-[468px] text-sm block">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ullam eos est inventore nemo vitae iusto repellendus optio corrupti itaque ducimus, ratione perspiciatis corporis. Suscipit perspiciatis fuga nobis ullam hic perferendis!... <a href="#" class="text-gray-500">more</a></b>
-     
-        <hr class="!my-4 !mx-1 border-[#262626]"/>
+
+        <b class="w-[468px] text-sm block">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ullam eos est
+            inventore
+            nemo vitae iusto repellendus optio corrupti itaque ducimus, ratione perspiciatis corporis. Suscipit
+            perspiciatis
+            fuga nobis ullam hic perferendis!... <a href="#" class="text-gray-500">more</a></b>
+
+        <hr class="!my-4 !mx-1 border-[#262626]" />
 
     </div>
-    
+
+
 
     <div class="space-y-2">
         <div class="flex items-center space-x-5">
-            <img 
-                class="w-12 h-12 rounded-full"
-                {% if profile_pic.exist %}
+            <img class="w-12 h-12 rounded-full" 
+                {% if profile_pic.exist %} 
                     src="/uploads/{{profile_pic.file}}" 
-                {% else %}
-                    src="/static/{{profile_pic.file}}"
-                {% endif %}
+                {% else%}
+                    src="/static/{{profile_pic.file}}" 
+                {% endif %} 
                 alt=""
             >
             <b>{{username}}</b>
         </div>
 
-        <img 
-            class="w-[468px] h-[585px] !my-5 bg-slate-200 rounded-sm border border-[#262626]"
-            src="https://th-thumbnailer.cdn-si-edu.com/3RQHyIdF6cCdAPoVL1NOZzyMCxY=/1000x750/filters:no_upscale():focal(594x274:595x275)/https://tf-cmsv2-smithsonianmag-media.s3.amazonaws.com/filer/95/db/95db799b-fddf-4fde-91f3-77024442b92d/egypt_kitty_social.jpg"
-        />
+        <img class="w-[468px] h-[585px] !my-5 bg-slate-200 rounded-sm border border-[#262626]"
+            src="https://th-thumbnailer.cdn-si-edu.com/3RQHyIdF6cCdAPoVL1NOZzyMCxY=/1000x750/filters:no_upscale():focal(594x274:595x275)/https://tf-cmsv2-smithsonianmag-media.s3.amazonaws.com/filer/95/db/95db799b-fddf-4fde-91f3-77024442b92d/egypt_kitty_social.jpg" />
 
         <div class="space-x-5">
-            <a href="#"><i class="fa-regular fa-heart text-2xl" ></i></a>
-            <a href="#"><i class="fa-regular fa-comment text-2xl" ></i></a>
-            <a href="#"><i class="fa-solid fa-share-nodes text-2xl" ></i></a>
+            <a href="#"><i class="fa-regular fa-heart text-2xl"></i></a>
+            <a href="#"><i class="fa-regular fa-comment text-2xl"></i></a>
+            <a href="#"><i class="fa-solid fa-share-nodes text-2xl"></i></a>
         </div>
-  
+
         <b class=" text-sm">{{100}} likes</b>
-        
-        <b class="w-[468px] text-sm block">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ullam eos est inventore nemo vitae iusto repellendus optio corrupti itaque ducimus, ratione perspiciatis corporis. Suscipit perspiciatis fuga nobis ullam hic perferendis!... <a href="#" class="text-gray-500">more</a></b>
-     
-        <hr class="!my-4 !mx-1 border-[#262626]"/>
+
+        <b class="w-[468px] text-sm block">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ullam eos est
+            inventore
+            nemo vitae iusto repellendus optio corrupti itaque ducimus, ratione perspiciatis corporis. Suscipit
+            perspiciatis
+            fuga nobis ullam hic perferendis!... <a href="#" class="text-gray-500">more</a></b>
+
+        <hr class="!my-4 !mx-1 border-[#262626]" />
 
     </div>
-    
+
+
 
     <div class="space-y-2">
         <div class="flex items-center space-x-5">
-            <img 
-                class="w-12 h-12 rounded-full"
-                {% if profile_pic.exist %}
+            <img class="w-12 h-12 rounded-full" 
+                {% if profile_pic.exist %} 
                     src="/uploads/{{profile_pic.file}}" 
-                {% else %}
-                    src="/static/{{profile_pic.file}}"
-                {% endif %}
+                {% else%}
+                    src="/static/{{profile_pic.file}}" 
+                {% endif %} 
                 alt=""
             >
             <b>{{username}}</b>
         </div>
 
-        <img 
-            class="w-[468px] h-[585px] !my-5 bg-slate-200 rounded-sm border border-[#262626]"
-            src="https://th-thumbnailer.cdn-si-edu.com/3RQHyIdF6cCdAPoVL1NOZzyMCxY=/1000x750/filters:no_upscale():focal(594x274:595x275)/https://tf-cmsv2-smithsonianmag-media.s3.amazonaws.com/filer/95/db/95db799b-fddf-4fde-91f3-77024442b92d/egypt_kitty_social.jpg"
-        />
+        <img class="w-[468px] h-[585px] !my-5 bg-slate-200 rounded-sm border border-[#262626]"
+            src="https://th-thumbnailer.cdn-si-edu.com/3RQHyIdF6cCdAPoVL1NOZzyMCxY=/1000x750/filters:no_upscale():focal(594x274:595x275)/https://tf-cmsv2-smithsonianmag-media.s3.amazonaws.com/filer/95/db/95db799b-fddf-4fde-91f3-77024442b92d/egypt_kitty_social.jpg" />
 
         <div class="space-x-5">
-            <a href="#"><i class="fa-regular fa-heart text-2xl" ></i></a>
-            <a href="#"><i class="fa-regular fa-comment text-2xl" ></i></a>
-            <a href="#"><i class="fa-solid fa-share-nodes text-2xl" ></i></a>
+            <a href="#"><i class="fa-regular fa-heart text-2xl"></i></a>
+            <a href="#"><i class="fa-regular fa-comment text-2xl"></i></a>
+            <a href="#"><i class="fa-solid fa-share-nodes text-2xl"></i></a>
         </div>
-  
+
         <b class=" text-sm">{{100}} likes</b>
-        
-        <b class="w-[468px] text-sm block">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ullam eos est inventore nemo vitae iusto repellendus optio corrupti itaque ducimus, ratione perspiciatis corporis. Suscipit perspiciatis fuga nobis ullam hic perferendis!... <a href="#" class="text-gray-500">more</a></b>
-     
-        <hr class="!my-4 !mx-1 border-[#262626]"/>
+
+        <b class="w-[468px] text-sm block">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ullam eos est
+            inventore
+            nemo vitae iusto repellendus optio corrupti itaque ducimus, ratione perspiciatis corporis. Suscipit
+            perspiciatis
+            fuga nobis ullam hic perferendis!... <a href="#" class="text-gray-500">more</a></b>
+
+        <hr class="!my-4 !mx-1 border-[#262626]" />
 
     </div>
-    
+
+
 
     <div class="space-y-2">
         <div class="flex items-center space-x-5">
-            <img 
-                class="w-12 h-12 rounded-full"
-                {% if profile_pic.exist %}
+            <img class="w-12 h-12 rounded-full" 
+                {% if profile_pic.exist %} 
                     src="/uploads/{{profile_pic.file}}" 
-                {% else %}
-                    src="/static/{{profile_pic.file}}"
-                {% endif %}
+                {% else%}
+                    src="/static/{{profile_pic.file}}" 
+                {% endif %} 
                 alt=""
             >
             <b>{{username}}</b>
         </div>
 
-        <img 
-            class="w-[468px] h-[585px] !my-5 bg-slate-200 rounded-sm border border-[#262626]"
-            src="https://th-thumbnailer.cdn-si-edu.com/3RQHyIdF6cCdAPoVL1NOZzyMCxY=/1000x750/filters:no_upscale():focal(594x274:595x275)/https://tf-cmsv2-smithsonianmag-media.s3.amazonaws.com/filer/95/db/95db799b-fddf-4fde-91f3-77024442b92d/egypt_kitty_social.jpg"
-        />
+        <img class="w-[468px] h-[585px] !my-5 bg-slate-200 rounded-sm border border-[#262626]"
+            src="https://th-thumbnailer.cdn-si-edu.com/3RQHyIdF6cCdAPoVL1NOZzyMCxY=/1000x750/filters:no_upscale():focal(594x274:595x275)/https://tf-cmsv2-smithsonianmag-media.s3.amazonaws.com/filer/95/db/95db799b-fddf-4fde-91f3-77024442b92d/egypt_kitty_social.jpg" />
 
         <div class="space-x-5">
-            <a href="#"><i class="fa-regular fa-heart text-2xl" ></i></a>
-            <a href="#"><i class="fa-regular fa-comment text-2xl" ></i></a>
-            <a href="#"><i class="fa-solid fa-share-nodes text-2xl" ></i></a>
+            <a href="#"><i class="fa-regular fa-heart text-2xl"></i></a>
+            <a href="#"><i class="fa-regular fa-comment text-2xl"></i></a>
+            <a href="#"><i class="fa-solid fa-share-nodes text-2xl"></i></a>
         </div>
-  
+
         <b class=" text-sm">{{100}} likes</b>
-        
-        <b class="w-[468px] text-sm block">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ullam eos est inventore nemo vitae iusto repellendus optio corrupti itaque ducimus, ratione perspiciatis corporis. Suscipit perspiciatis fuga nobis ullam hic perferendis!... <a href="#" class="text-gray-500">more</a></b>
-     
-        <hr class="!my-4 !mx-1 border-[#262626]"/>
+
+        <b class="w-[468px] text-sm block">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ullam eos est
+            inventore
+            nemo vitae iusto repellendus optio corrupti itaque ducimus, ratione perspiciatis corporis. Suscipit
+            perspiciatis
+            fuga nobis ullam hic perferendis!... <a href="#" class="text-gray-500">more</a></b>
+
+        <hr class="!my-4 !mx-1 border-[#262626]" />
 
     </div>
-    
 
 
-   
-   
+
+
 
 </div>
 
 
-{% comment %}  {% endcomment %}
+{% comment %} {% endcomment %}
 
 <div class="w-[30%] h-screen py-5 px-10 space-y-10">
-    <div class="w-full p-2 flex justify-between items-center"> 
+    <div class="w-full p-2 flex justify-between items-center">
         <div class="flex items-center space-x-5">
-            <img 
-                class="w-12 h-12 rounded-full"
-                {% if profile_pic.exist %}
-                    src="/uploads/{{profile_pic.file}}" 
+            <img class="w-12 h-12 rounded-full" 
+                {% if profile_pic.exist %} 
+                    src="/uploads/{{profile_pic.file}}"
                 {% else %}
-                    src="/static/{{profile_pic.file}}"
-                {% endif %}
+                    src="/static/{{profile_pic.file}}" 
+                {% endif %} 
                 alt=""
             >
 
@@ -246,76 +260,122 @@
             </div>
         </div>
 
-        <a 
-            class="h-fit mr-10 py-2 px-3 text-red-500 border border-red-500 rounded-[4px]"
-            href="{% url 'logout' %}" 
-        >
+        <a class="h-fit mr-10 py-2 px-3 text-red-500 border border-red-500 rounded-[4px]" href="{% url 'logout' %}">
             Logout
         </a>
     </div>
 
 
-  {% comment %}
-  https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Cat_August_2010-4.jpg/1200px-Cat_August_2010-4.jpg
-  {% endcomment %}
+{% comment %}
+    https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Cat_August_2010-4.jpg/1200px-Cat_August_2010-4.jpg
+{% endcomment %}
 
-  <div class="space-y-5">
-    <h1 class="text-2xl">Suggestions</h1>
+    <div class="space-y-5">
+        <h1 class="text-2xl">Suggestions</h1>
 
-    <div class="w-full h-full space-y-5">
+        <div class="w-full h-full space-y-5">
 
-        {% if no_suggestions_data %}
-        
-            <h1 class="text-center">No suggestions</h1>   
+            {% if no_suggestions_data %}
 
-        {% else %}
-        
+            <h1 class="text-center text-gray-500">No suggestions</h1>
+
+            {% else %}
+
             {% for data in suggestions_data %}
-        
-                <a href="/users/{{data.username}}">
-                    <div class="w-full p-2 flex justify-between items-center"> 
-                        <div class="flex items-center space-x-5">
-                            <img 
-                                class="w-12 h-12 rounded-full"
-                                {% if data.added_by_profile.exist %}
-                                    src="/uploads/{{data.added_by_profile.file}}" 
-                                {% else %}
-                                    src="/static/{{data.added_by_profile.file}}"
-                                {% endif %}
-                                alt=""
-                            >
 
-                            <div class="text-sm">
+            <a href="/users/{{data.username}}">
+                <div class="w-full p-2 flex justify-between items-center">
+                    <div class="flex items-center space-x-5">
+                        <img class="w-12 h-12 rounded-full" 
+                            {% if data.added_by_profile.exist %}
+                                src="/uploads/{{data.added_by_profile.file}}" 
+                            {% else %}
+                                src="/static/{{data.added_by_profile.file}}" 
+                            {% endif %}
+                            alt=""
+                        >
 
-                                <b>{{data.added_by}}</b>
-                                <p class="text-gray-500">Suggested for you</p>
-                            </div>
+                        <div class="text-sm">
+                            <b>{{data.added_by}}</b>
+                            <p class="text-gray-500">Suggested for you</p>
                         </div>
-
-                        <a href="" class="h-fit mx-3 py-1 px-2 text-sm text-blue-500 rounded-md">Follow</a>
                     </div>
-                </a>
+
+                    <a href="" class="h-fit mx-3 py-1 px-2 text-sm text-blue-500 rounded-md">Follow</a>
+                </div>
+            </a>
 
             {% endfor %}
-        
-        {% endif %}
-   
+
+            {% endif %}
+
+        </div>
+
     </div>
 
-</div>
+
+    <script>
+
+        function getCookie(cname) {
+            let name = cname + "=";
+            let decodedCookie = decodeURIComponent(document.cookie);
+            let ca = decodedCookie.split(';');
+            for (let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) == ' ') {
+                    c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                    return c.substring(name.length, c.length);
+                }
+            }
+            return "";
+        }
+
+        function copyLink(e) {
+            navigator.clipboard.writeText(window.location.origin + e.id);
+            document.getElementById('message' + e.id).style.display = 'inline';
+
+            setTimeout(function () {
+                document.getElementById('message' + e.id).style.display = 'none';
+            }, 1000);
+        }
+
+        async function handelLikes(e) {
+
+            try {
+                let res = await fetch('{% url "likes" %}', {
+                    method: 'POST',
+                    headers: {
+                        "X-CSRFToken": getCookie("csrftoken"),
+                        "Content-Type": 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        "post_id": e.id,
+                    })
+
+                });
+                res = await res.json();
+
+                const post_likes = document.getElementById('post_likes_' + e.id);
+                if (res.is_liked == true) {
+                    e.innerHTML = '<i class="fa-solid fa-heart text-2xl text-red-500 pointer-events-none"></i>';
+                    post_likes.innerText = res.current_likes + ' likes';
+                }
+                else {
+                    e.innerHTML = '<i class="fa-regular fa-heart text-2xl pointer-events-none"></i>';
+                    post_likes.innerText = res.current_likes + ' likes';
+                }
+            } catch (error) {
+                console.log(error);
+            }
+
+        }
 
 
-<script>
 
-    function copyLink(e){
-        navigator.clipboard.writeText(window.location.origin + e.id);
-        document.getElementById('message' + e.id).style.display = 'inline';
 
-        setTimeout(function () {
-            document.getElementById('message' + e.id).style.display = 'none';
-        }, 1000);
-    }
-
-</script>
+    </script>
 
 {% endblock body %}

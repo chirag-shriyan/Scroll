@@ -1,8 +1,9 @@
 from django.shortcuts import render,redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from posts.models import Post
+from posts.models import Post,Post_Like
 from myauth.models import ProfilePic
+from django.db.models import Q
 
 # Create your views here.
 
@@ -17,19 +18,26 @@ def Index(req):
     else:
         profile_pic = {"file": 'images/profile.jpg', "exist": False}
 
-    POST_DATA = Post.objects.filter(is_public = True).order_by('-updated_at').values()
+    POST_DATA = Post.objects.filter(is_public = True).order_by('-created_at').values()
 
-    for user in POST_DATA:
-        added_by = str(User.objects.get(id = user['user_id'])).capitalize()
-        added_by_url = '/users/' + User.objects.get(id = user['user_id']).username 
-        added_by_profile = ProfilePic.objects.filter(user_id = user['user_id']).values().first()
+    for post in POST_DATA:
+        added_by = str(User.objects.get(id = post['user_id'])).capitalize()
+        added_by_url = '/users/' + User.objects.get(id = post['user_id']).username 
+        added_by_profile = ProfilePic.objects.filter(user_id = post['user_id']).values().first()
+        is_liked = Post_Like.objects.filter(Q(user_id = req.user.id) & Q(post_id = post['post_id'])).first()
+      
+        post['added_by'] = added_by
+        post['added_by_url'] = added_by_url
 
-        user['added_by'] = added_by
-        user['added_by_url'] = added_by_url
         if added_by_profile:
-            user['added_by_profile'] = {"file": added_by_profile['file'] , "exist": True}
+            post['added_by_profile'] = {"file": added_by_profile['file'] , "exist": True}
         else:
-            user['added_by_profile'] = {"file": 'images/profile.jpg' , "exist": False}
+            post['added_by_profile'] = {"file": 'images/profile.jpg' , "exist": False}
+
+        if is_liked:
+            post['is_liked'] = True
+        else:
+            post['is_liked'] = False
         
     SUGGESTIONS_DATA = User.objects.all().order_by('-date_joined')[:4].values()
     no_suggestions_data = False
@@ -46,7 +54,7 @@ def Index(req):
             user['added_by_profile'] = {"file": added_by_profile['file'] , "exist": True}
         else:
             user['added_by_profile'] = {"file": 'images/profile.jpg' , "exist": False}
-
+    # print(POST_DATA)
     context = {
         "username" : username,
         "profile_pic" : profile_pic,
