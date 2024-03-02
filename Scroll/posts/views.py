@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 # Create your views here.
 
 @login_required(login_url='/login')
-def Post_view(req,post_id=None):
+def Post_View(req,post_id=None):
 
     if post_id:
         DATA = Post.objects.filter(post_id = post_id).values().first()

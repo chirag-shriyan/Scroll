@@ -26,10 +26,9 @@
 
         <div class="h-fit p-5 space-y-5">
             <div class="flex">
-                <h1 class="text-xl mr-16">{{username}}</h1>
+                <h1 class="text-xl mr-5">{{username}}</h1>
                 <div class="felx space-x-1">
-                    <button class="py-1 px-2 text-sm bg-gray-500 rounded">Edit Profile</button>
-                    <button class="py-1 px-2 text-sm bg-red-500 rounded">Logout</button>
+                    <button class="py-1 px-2 text-xs bg-blue-500 rounded">follow</button>
                 </div>
             </div>
             <div class="space-x-5 flex">
@@ -60,8 +59,7 @@
         {% if post_not_found %}
 
             <div class="w-full">
-                <h1 class="text-center block">Share Photos</h1>
-                <p class="text-center block">When you share photos, they will appear on your profile.</p>
+                <p class="text-center block">Looks like there is nothing to see here</p>
             </div> 
         
         {% else %}

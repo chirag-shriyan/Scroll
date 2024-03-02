@@ -6,10 +6,11 @@
 
 {% block body %}
 
-<div class="w-[70%] h-fit py-16 space-y-10 flex flex-col items-center text-white">
+<div class="w-[70%] h-fit py-10 space-y-10 flex flex-col items-center text-white">
 
-    {% for post in data %}
-        <div class="space-y-2">
+    {% for post in post_data %}
+        <a href="{{post.added_by_url}}">
+            <div class="space-y-2">
             <div class="flex items-center space-x-5">
                 <img 
                     class="w-12 h-12 rounded-full object-cover"
@@ -22,6 +23,7 @@
                 >
                 <b>{{post.added_by}}</b>
             </div>
+        </a>
 
             <a href="/posts/{{post.post_id}}">
                 <img 
@@ -259,131 +261,47 @@
 
   <div class="space-y-5">
     <h1 class="text-2xl">Suggestions</h1>
-   
+
     <div class="w-full h-full space-y-5">
 
-        <div class="w-full p-2 flex justify-between items-center"> 
-            <div class="flex items-center space-x-5">
-                <img 
-                    class="w-12 h-12 rounded-full"
-                    {% if profile_pic.exist %}
-                        src="/uploads/{{profile_pic.file}}" 
-                    {% else %}
-                        src="/static/{{profile_pic.file}}"
-                    {% endif %}
-                    alt=""
-                >
-
-                <div class="text-sm">
-
-                    <b>{{username}}</b>
-                    <p class="text-gray-500">Suggested for you</p>
-                </div>
-            </div>
-
-            <a href="" class="h-fit mx-3 py-1 px-2 text-sm text-blue-500 rounded-md">Follow</a>
-        </div>
-   
-
-        <div class="w-full p-2 flex justify-between items-center"> 
-            <div class="flex items-center space-x-5">
-                <img 
-                    class="w-12 h-12 rounded-full"
-                    {% if profile_pic.exist %}
-                        src="/uploads/{{profile_pic.file}}" 
-                    {% else %}
-                        src="/static/{{profile_pic.file}}"
-                    {% endif %}
-                    alt=""
-                >
-
-                <div class="text-sm">
-
-                    <b>{{username}}</b>
-                    <p class="text-gray-500">Suggested for you</p>
-                </div>
-            </div>
-
-            <a href="" class="h-fit mx-3 py-1 px-2 text-sm text-blue-500 rounded-md">Follow</a>
-        </div>
-   
-
-        <div class="w-full p-2 flex justify-between items-center"> 
-            <div class="flex items-center space-x-5">
-                <img 
-                    class="w-12 h-12 rounded-full"
-                    {% if profile_pic.exist %}
-                        src="/uploads/{{profile_pic.file}}" 
-                    {% else %}
-                        src="/static/{{profile_pic.file}}"
-                    {% endif %}
-                    alt=""
-                >
-
-                <div class="text-sm">
-
-                    <b>{{username}}</b>
-                    <p class="text-gray-500">Suggested for you</p>
-                </div>
-            </div>
-
-            <a href="" class="h-fit mx-3 py-1 px-2 text-sm text-blue-500 rounded-md">Follow</a>
-        </div>
-   
-
-        <div class="w-full p-2 flex justify-between items-center"> 
-            <div class="flex items-center space-x-5">
-                <img 
-                    class="w-12 h-12 rounded-full"
-                    {% if profile_pic.exist %}
-                        src="/uploads/{{profile_pic.file}}" 
-                    {% else %}
-                        src="/static/{{profile_pic.file}}"
-                    {% endif %}
-                    alt=""
-                >
-
-                <div class="text-sm">
-
-                    <b>{{username}}</b>
-                    <p class="text-gray-500">Suggested for you</p>
-                </div>
-            </div>
-
-            <a href="" class="h-fit mx-3 py-1 px-2 text-sm text-blue-500 rounded-md">Follow</a>
-        </div>
-   
-
-        <div class="w-full p-2 flex justify-between items-center"> 
-            <div class="flex items-center space-x-5">
-                <img 
-                    class="w-12 h-12 rounded-full"
-                    {% if profile_pic.exist %}
-                        src="/uploads/{{profile_pic.file}}" 
-                    {% else %}
-                        src="/static/{{profile_pic.file}}"
-                    {% endif %}
-                    alt=""
-                >
-
-                <div class="text-sm">
-
-                    <b>{{username}}</b>
-                    <p class="text-gray-500">Suggested for you</p>
-                </div>
-            </div>
-
-            <a href="" class="h-fit mx-3 py-1 px-2 text-sm text-blue-500 rounded-md">Follow</a>
-        </div>
-   
-
+        {% if no_suggestions_data %}
         
-   
+            <h1 class="text-center">No suggestions</h1>   
 
+        {% else %}
         
-   
+            {% for data in suggestions_data %}
+        
+                <a href="/users/{{data.username}}">
+                    <div class="w-full p-2 flex justify-between items-center"> 
+                        <div class="flex items-center space-x-5">
+                            <img 
+                                class="w-12 h-12 rounded-full"
+                                {% if data.added_by_profile.exist %}
+                                    src="/uploads/{{data.added_by_profile.file}}" 
+                                {% else %}
+                                    src="/static/{{data.added_by_profile.file}}"
+                                {% endif %}
+                                alt=""
+                            >
 
-  </div>
+                            <div class="text-sm">
+
+                                <b>{{data.added_by}}</b>
+                                <p class="text-gray-500">Suggested for you</p>
+                            </div>
+                        </div>
+
+                        <a href="" class="h-fit mx-3 py-1 px-2 text-sm text-blue-500 rounded-md">Follow</a>
+                    </div>
+                </a>
+
+            {% endfor %}
+        
+        {% endif %}
+   
+    </div>
+
 </div>
 
 
