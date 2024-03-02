@@ -14,7 +14,7 @@
     <div class="space-y-2">
         <div class="flex items-center space-x-5">
             <img 
-                class="w-12 h-12 rounded-full"
+                class="w-12 h-12 rounded-full object-cover"
                 {% if data.added_by_profile.exist %}
                    src="/uploads/{{data.added_by_profile.file}}" 
                 {% else %}
@@ -27,7 +27,7 @@
         </div>
 
         <img 
-            class="w-[468px] h-[585px] !my-5 bg-slate-200 rounded-sm border border-[#262626]"
+            class="w-[468px] h-[585px] !my-5 bg-slate-200 rounded-sm border border-[#262626] object-center"
             src="/uploads/{{data.file}}"
         />
 

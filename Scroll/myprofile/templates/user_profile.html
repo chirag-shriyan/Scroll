@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Scroll | {{username}}{% endblock title %}
+
+
+{% block body %}
+
+<div class="w-full h-fit py-[30px] flex justify-center">
+
+    <div class="w-[950px] space-y-8">
+        
+      <header class="flex p-8">
+        <img
+            class="w-[150px] h-[150px] mr-[100px] bg-white rounded-full object-cover"
+            {% if profile_pic.exist %}
+                src="/uploads/{{profile_pic.file}}" 
+            {% else %}
+                src="/static/{{profile_pic.file}}" 
+            {% endif %}
+            alt=""
+        >
+
+        <div class="h-fit p-5 space-y-5">
+            <div class="flex">
+                <h1 class="text-xl mr-16">{{username}}</h1>
+                <div class="felx space-x-1">
+                    <button class="py-1 px-2 text-sm bg-gray-500 rounded">Edit Profile</button>
+                    <button class="py-1 px-2 text-sm bg-red-500 rounded">Logout</button>
+                </div>
+            </div>
+            <div class="space-x-5 flex">
+                <b class="">
+                    {% if num_of_posts %}
+                        {{num_of_posts}} posts
+                    {% else %}
+                        0 posts
+                    {% endif %}
+                </b>
+                <b class="">
+                    {% if num_of_followers %}
+                        {{num_of_followers}} followers
+                    {% else %}
+                        0 followers
+                    {% endif %}
+                </b>
+            </div>
+        </div>
+
+      </header>
+
+      <hr class="border-[#262626]">
+
+        
+      <div class="mx-5 flex flex-wrap gap-1">
+
+        {% if not_found %}
+
+            <div class="w-full">
+                <h1 class="text-center block">Share Photos</h1>
+                <p class="text-center block">When you share photos, they will appear on your profile.</p>
+            </div> 
+        
+        {% else %}
+
+            {% for post in data %}
+                <a href="/posts/{{post.post_id}}">
+                    <img src="/uploads/{{post.file}}" class="w-[300px] h-[300px] object-cover" />
+                </a>
+            {% endfor %}
+
+        {% endif %}
+      </div>
+    
+        
+    </div>
+    
+</div>
+
+{% endblock body %}
