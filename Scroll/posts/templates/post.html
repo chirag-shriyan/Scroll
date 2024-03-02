@@ -31,10 +31,11 @@
             src="/uploads/{{data.file}}"
         />
 
-        <div class="space-x-5">
+        <div class="space-x-5 flex">
             <a href="#"><i class="fa-regular fa-heart text-2xl" ></i></a>
             <a href="#"><i class="fa-regular fa-comment text-2xl" ></i></a>
-            <a href="#"><i class="fa-solid fa-share-nodes text-2xl" ></i></a>
+            <i class="fa-solid fa-share-nodes text-2xl cursor-pointer" id="/posts/{{data.post_id}}" onclick="copyLink(this)"></i>
+            <p class="hidden text-green-400" id="message/posts/{{data.post_id}}">Link copied to clipboard</p>
         </div>
   
         <b class=" text-sm">{{100}} likes</b>
@@ -44,7 +45,22 @@
     </div>
 
 
+
+    <script>
+
+        function copyLink(e){
+            navigator.clipboard.writeText(window.location.origin + e.id);
+            document.getElementById('message' + e.id).style.display = 'inline';
+
+            setTimeout(function () {
+                document.getElementById('message' + e.id).style.display = 'none';
+            }, 1000);
+        }
+
+    </script>
+
     <script src="{% static 'js/tailwindcdn.js' %}"></script>
     <script src="{% static 'fontawesomefree/js/all.min.js' %}"></script>
+
 </body>
 </html>

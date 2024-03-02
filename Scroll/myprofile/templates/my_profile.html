@@ -1,13 +1,10 @@
+{% extends "base.html" %}
 {% load static %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scroll | {{username}}</title>
-</head>
-<body class="bg-black text-white">
+{% block title %}Scroll | {{username}}{% endblock title %}
+
+
+{% block body %}
 
 <div class="w-full h-fit py-[30px] flex justify-center">
 
@@ -57,7 +54,7 @@
         
       <div class="mx-5 flex flex-wrap gap-1">
 
-        {% if post_not_found %}
+        {% if not_found %}
 
             <div class="w-full">
                 <h1 class="text-center block">Share Photos</h1>
@@ -66,7 +63,7 @@
         
         {% else %}
 
-            {% for post in post_data %}
+            {% for post in data %}
                 <a href="/posts/{{post.post_id}}">
                     <img src="/uploads/{{post.file}}" class="w-[300px] h-[300px] object-cover" />
                 </a>
@@ -79,10 +76,5 @@
     </div>
     
 </div>
-    
 
-    <script src="{% static 'js/tailwindcdn.js' %}"></script>
-    <script src="{% static 'fontawesomefree/js/all.min.js' %}"></script>
-
-</body>
-</html>
+{% endblock body %}

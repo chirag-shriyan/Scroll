@@ -37,7 +37,7 @@ def Search(req):
     return render(req,'search.html')
 
 @login_required(login_url = '/login')
-def User_Profile(req):
+def My_Profile(req):
 
     username = req.user.username.capitalize()
     profile_pic = ProfilePic.objects.filter(user_id = req.user.id).values().first()
@@ -62,6 +62,46 @@ def User_Profile(req):
 
     if req.method == 'POST':
 
-        return render(req,'user_profile.html',context)
+        return render(req,'my_profile.html',context)
     else:
-        return render(req,'user_profile.html',context)
+        return render(req,'my_profile.html',context)
+    
+
+def User_Profile(req,username = None):
+
+    
+    if username:
+        DATA = User.objects.filter(username = username).values()
+        
+        if len(DATA) > 0:
+            DATA = DATA[0]
+
+            username = DATA['username'].capitalize()
+            profile_pic = ProfilePic.objects.filter(user_id = DATA['id']).values().first()
+            post_not_found = False
+
+            if profile_pic:
+                profile_pic = {"file": profile_pic['file'] , "exist": True}
+            else:
+                profile_pic = {"file": 'images/profile.jpg', "exist": False}
+
+            POST_DATA = Post.objects.filter(user_id = DATA['id']).values()
+
+            if not len(POST_DATA) > 0:
+                post_not_found = True
+
+            context = {
+                "data": DATA,
+                "post_data": POST_DATA,
+                "username": username,
+                "profile_pic": profile_pic,
+                "post_not_found": post_not_found
+            }
+
+            return render(req,'user_profile.html',context)
+        
+        else:
+            return render(req,'not_found.html')
+
+    else:
+        return render(req,'not_found.html')

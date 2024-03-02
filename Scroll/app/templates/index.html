@@ -30,10 +30,11 @@
                 />
             </a>
 
-            <div class="space-x-5">
-                <a href="#"><i class="fa-regular fa-heart text-2xl" ></i></a>
-                <a href="#"><i class="fa-regular fa-comment text-2xl" ></i></a>
-                <a href="#"><i class="fa-solid fa-share-nodes text-2xl" ></i></a>
+            <div class="space-x-5 flex">
+                <a href="#"><i class="fa-regular fa-heart text-2xl pointer-events-none"></i></a>
+                <a href="#"><i class="fa-regular fa-comment text-2xl pointer-events-none"></i></a>
+                <i class="fa-solid fa-share-nodes text-2xl cursor-pointer" id="/posts/{{post.post_id}}" onclick="copyLink(this)"></i>
+                <p class="hidden text-green-400" id="message/posts/{{post.post_id}}">Link copied to clipboard</p>
             </div>
 
             <b class=" text-sm">{{100}} likes</b>
@@ -384,5 +385,19 @@
 
   </div>
 </div>
+
+
+<script>
+
+    function copyLink(e){
+        navigator.clipboard.writeText(window.location.origin + e.id);
+        document.getElementById('message' + e.id).style.display = 'inline';
+
+        setTimeout(function () {
+            document.getElementById('message' + e.id).style.display = 'none';
+        }, 1000);
+    }
+
+</script>
 
 {% endblock body %}

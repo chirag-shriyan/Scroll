@@ -28,10 +28,10 @@ def Post_view(req,post_id=None):
 
             return render(req,'post.html',context)
         else:
-            return render(req,'not-found.html')
+            return render(req,'not_found.html')
     
     else:
-        return render(req,'not-found.html')
+        return render(req,'not_found.html')
 
 @login_required(login_url='/login')
 def Create_Posts(req):

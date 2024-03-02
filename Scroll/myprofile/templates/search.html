@@ -23,6 +23,8 @@
 
             {% for user in data %}
                     
+            <a href="/users/{{user.username}}">
+
             <div class="w-full p-2 flex justify-between items-center hover:bg-[#1a1a1a] hover:cursor-pointer rounded-md">
                 <div class="flex items-center space-x-5">
                     <img 
@@ -43,6 +45,8 @@
                 
                 <a href="" class="h-fit mx-3 py-1 px-2 text-sm text-blue-500 rounded-md">Follow</a>
             </div>
+
+            </a>
             
             {% endfor %}
 
