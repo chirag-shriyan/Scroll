@@ -6,7 +6,7 @@
 
 {% block body %}
 
-<div class="w-[70%] h-fit py-10 space-y-10 flex flex-col items-center text-white">
+<div class="w-[70%] h-fit py-10 space-y-10 flex flex-col items-center text-white max-2xl:w-full">
 
 {% for post in post_data %}
     <div class="space-y-2">
@@ -40,7 +40,8 @@
             </div>
             {% endif %}
 
-            <a href="#"><i class="fa-regular fa-comment text-2xl pointer-events-none"></i></a>
+            <i class="fa-regular fa-comment text-2xl cursor-pointer" onclick="handelComment('comment_box_{{post.post_id}}')"></i>
+
             <i class="fa-solid fa-share-nodes text-2xl cursor-pointer" id="/posts/{{post.post_id}}"
                 onclick="copyLink(this)"></i>
             <p class="hidden text-green-400" id="message/posts/{{post.post_id}}">Link copied to clipboard</p>
@@ -49,6 +50,18 @@
         <b class="text-sm select-none" id="post_likes_{{post.post_id}}">{{post.num_of_likes}} likes</b>
 
         <b class="w-[468px] text-sm block">{{post.bio}}</b>
+
+        <a href="/posts/{{post.post_id}}" class="w-[468px] block text-sm text-gray-400">View comments</a>
+
+        <form class="hidden space-x-2" id="comment_box_{{post.post_id}}" onsubmit="handelCommentSubmit(event,'{{post.post_id}}')">
+            {% csrf_token %}
+            <input type="text" name="post_id" value="{{post.post_id}}" class="hidden" required>
+            <textarea name="comment" id="" rows="1" class="w-full py-1 px-2 bg-transparent border rounded-sm focus:outline-0" required></textarea>
+            <input type="submit" value="Comment" class="w-[20%] h-[35px] self-end bg-white text-black text-sm py-1 rounded-sm cursor-pointer hover:opacity-90">
+        </form>
+
+        <p class="hidden text-green-500 text-sm" id="comment_message_{{post.post_id}}">Comment added successfully</p>
+       
 
         <hr class="!my-4 !mx-1 border-[#262626]" />
     </div>
@@ -242,7 +255,7 @@
 
 {% comment %} {% endcomment %}
 
-<div class="w-[30%] h-screen py-5 px-10 space-y-10">
+<div class="w-[30%] h-screen py-5 px-10 space-y-10 max-2xl:hidden">
     <div class="w-full p-2 flex justify-between items-center">
         <div class="flex items-center space-x-5">
             <img class="w-12 h-12 rounded-full border border-[#262626]" 
@@ -283,27 +296,27 @@
 
             {% for data in suggestions_data %}
 
-            <a href="/users/{{data.username}}">
-                <div class="w-full p-2 flex justify-between items-center">
-                    <div class="flex items-center space-x-5">
-                        <img class="w-12 h-12 rounded-full object-cover border border-[#262626]" 
-                            {% if data.added_by_profile.exist %}
-                                src="/uploads/{{data.added_by_profile.file}}" 
-                            {% else %}
-                                src="/static/{{data.added_by_profile.file}}" 
-                            {% endif %}
-                            alt=""
-                        >
+                <a href="/users/{{data.username}}">
+                    <div class="w-full p-2 flex justify-between items-center">
+                        <div class="flex items-center space-x-5">
+                            <img class="w-12 h-12 rounded-full object-cover border border-[#262626]" 
+                                {% if data.added_by_profile.exist %}
+                                    src="/uploads/{{data.added_by_profile.file}}" 
+                                {% else %}
+                                    src="/static/{{data.added_by_profile.file}}" 
+                                {% endif %}
+                                alt=""
+                            >
 
-                        <div class="text-sm">
-                            <b>{{data.added_by}}</b>
-                            <p class="text-gray-500">Suggested for you</p>
+                            <div class="text-sm">
+                                <b>{{data.added_by}}</b>
+                                <p class="text-gray-500">Suggested for you</p>
+                            </div>
                         </div>
-                    </div>
 
-                    <a href="/users/{{data.username}}" class="h-fit mx-3 py-1 px-2 text-sm text-blue-500 rounded-md">Follow</a>
-                </div>
-            </a>
+                        <a href="/users/{{data.username}}" class="h-fit mx-3 py-1 px-2 text-sm text-blue-500 rounded-md">Follow</a>
+                    </div>
+                </a>
 
             {% endfor %}
 
@@ -372,6 +385,52 @@
             console.log(error);
         }
 
+    }
+
+    function handelComment(id){
+        const comment_box = document.getElementById(id);
+        if (comment_box.style.display !== 'flex') {
+            comment_box.style.display = 'flex';
+            comment_box.children[2].focus();
+        }
+        else{
+            comment_box.style.display = 'none';
+        }
+    }
+
+    async function handelCommentSubmit(e,id){
+        e.preventDefault();
+        const element = e.target;
+
+        if (element.children[2].value != '') {
+            try {
+                let res = await fetch('{% url "comments" %}', {
+                    method: 'POST',
+                    headers: {
+                        "X-CSRFToken": getCookie("csrftoken"),
+                        "Content-Type": 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        "post_id": id,
+                        "comment": element.children[2].value,
+                    })
+
+                });
+                res = await res.json();
+
+                if (res.status === 200) {
+                    const comment_message = document.getElementById('comment_message_' + id);
+                    element.style.display = 'none';
+                    comment_message.style.display = 'block';
+                    setTimeout(() => {
+                        comment_message.style.display = 'none';
+                    }, 1000);
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        }
     }
 
 </script>

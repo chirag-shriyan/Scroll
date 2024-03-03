@@ -1,10 +1,11 @@
 from django.shortcuts import render
 from .forms import PostForm
-from .models import Post,Post_Like
+from .models import Post,Post_Like,Post_Comment
 from myauth.models import ProfilePic
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
+from django.contrib.messages import add_message,constants as level
 
 # Create your views here.
 
@@ -32,8 +33,21 @@ def Post_View(req,post_id=None):
             else:
                 DATA['is_liked'] = False
 
+            COMMENT_DATA = Post_Comment.objects.filter(post_id = post_id).values()
+
+            for comment in COMMENT_DATA:
+                added_by = User.objects.get(id = comment['user_id']).username.capitalize()
+                added_by_profile = ProfilePic.objects.filter(user_id = comment['user_id']).values().first()
+
+                comment['added_by'] = added_by
+                if added_by_profile:
+                    comment['added_by_profile'] = {"file": added_by_profile['file'] , "exist": True}
+                else:
+                    comment['added_by_profile'] = {"file": 'images/profile.jpg' , "exist": False}
+
             context = {
-                "data": DATA
+                "data": DATA,
+                "comment_data": COMMENT_DATA
             }
 
             return render(req,'post.html',context)
@@ -43,7 +57,7 @@ def Post_View(req,post_id=None):
     else:
         return render(req,'not_found.html')
 
-# @login_required(login_url='/login')
+@login_required(login_url='/login')
 def Create_Posts(req):
 
     if req.method == 'POST':
@@ -104,6 +118,22 @@ def Like_Posts(req):
                 "current_likes":current_post.num_of_likes,
             })
 
+    return render(req,'not_found.html')
 
+
+@login_required(login_url='/login')
+def Comment_Posts(req):
+    
+    if req.method == "POST":
+        body = json.loads(req.body)
+        post_id = body['post_id']
+        comment = body['comment']
+
+        Post_Comment.objects.create(post_id = post_id,user_id = req.user.id,comment=comment)
+        
+        return JsonResponse({
+            "status":200,
+            "post_id": body['post_id'],
+        })
 
     return render(req,'not_found.html')

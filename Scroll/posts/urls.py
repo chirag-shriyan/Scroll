@@ -5,4 +5,5 @@ urlpatterns = [
     path('posts/', views.Create_Posts ,name='posts'),
     path('posts/<int:post_id>', views.Post_View),
     path('likes/', views.Like_Posts,name='likes'),
+    path('comments/', views.Comment_Posts,name='comments'),
 ]
