@@ -15,7 +15,7 @@
         
       <header class="flex p-8">
         <img
-            class="w-[150px] h-[150px] mr-[100px] bg-white rounded-full object-cover"
+            class="w-[150px] h-[150px] mr-[100px] bg-white rounded-full object-cover border border-[#262626]"
             {% if profile_pic.exist %}
                 src="/uploads/{{profile_pic.file}}" 
             {% else %}
@@ -28,7 +28,11 @@
             <div class="flex">
                 <h1 class="text-xl mr-5">{{username}}</h1>
                 <div class="felx space-x-1">
-                    <button class="py-1 px-2 text-xs bg-blue-500 rounded">follow</button>
+                    {% if is_following %}
+                        <button class="py-1 px-2 text-xs bg-red-500 rounded" id="{{user_data.id}}" onclick="handelFollow(this)">unfollow</button>
+                    {% else %}
+                        <button class="py-1 px-2 text-xs bg-blue-500 rounded" id="{{user_data.id}}" onclick="handelFollow(this)">follow</button>
+                    {% endif %}
                 </div>
             </div>
             <div class="space-x-5 flex">
@@ -39,7 +43,7 @@
                         0 posts
                     {% endif %}
                 </b>
-                <b class="">
+                <b class="" id="num_of_followers{{user_data.id}}">
                     {% if num_of_followers %}
                         {{num_of_followers}} followers
                     {% else %}
@@ -77,6 +81,63 @@
     </div>
     
 </div>
+    
+    <script>
+
+        function getCookie(cname) {
+            let name = cname + "=";
+            let decodedCookie = decodeURIComponent(document.cookie);
+            let ca = decodedCookie.split(';');
+            for (let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) == ' ') {
+                    c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                    return c.substring(name.length, c.length);
+                }
+            }
+            return "";
+        }
+
+        async function handelFollow(e) {
+
+            try {
+                let res = await fetch('{% url "follow" %}', {
+                    method: 'POST',
+                    headers: {
+                        "X-CSRFToken": getCookie("csrftoken"),
+                        "Content-Type": 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        "user_id": e.id,
+                    })
+
+                });
+                res = await res.json();
+
+                const num_of_followers = document.getElementById('num_of_followers' + e.id);
+                if (res.is_following == true) {
+                    e.innerText = 'unfollow';
+                    e.classList.remove('bg-blue-500');
+                    e.classList.add('bg-red-500');
+                    num_of_followers.innerText = res.current_followers + ' followers';
+                }
+                else {
+                    e.innerText = 'follow';
+                    e.classList.remove('bg-red-500');
+                    e.classList.add('bg-blue-500');
+                    num_of_followers.innerText = res.current_followers + ' followers';
+                }
+            } catch (error) {
+                console.log(error);
+            }
+
+        }
+
+    </script>
+
     
 
     <script src="{% static 'js/tailwindcdn.js' %}"></script>

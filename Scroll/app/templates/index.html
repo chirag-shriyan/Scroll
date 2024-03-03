@@ -12,7 +12,7 @@
     <div class="space-y-2">
         <a href="{{post.added_by_url}}">
             <div class="flex items-center space-x-5">
-                <img class="w-12 h-12 rounded-full object-cover" 
+                <img class="w-12 h-12 rounded-full object-cover border border-[#262626]" 
                     {% if post.added_by_profile.exist %}
                         src="/uploads/{{post.added_by_profile.file}}" 
                     {% else %}
@@ -48,7 +48,7 @@
 
         <b class="text-sm select-none" id="post_likes_{{post.post_id}}">{{post.num_of_likes}} likes</b>
 
-        <b class="w-[468px] text-sm block">{{post.bio}}... <a href="#" class="text-gray-500">more</a></b>
+        <b class="w-[468px] text-sm block">{{post.bio}}</b>
 
         <hr class="!my-4 !mx-1 border-[#262626]" />
     </div>
@@ -245,7 +245,7 @@
 <div class="w-[30%] h-screen py-5 px-10 space-y-10">
     <div class="w-full p-2 flex justify-between items-center">
         <div class="flex items-center space-x-5">
-            <img class="w-12 h-12 rounded-full" 
+            <img class="w-12 h-12 rounded-full border border-[#262626]" 
                 {% if profile_pic.exist %} 
                     src="/uploads/{{profile_pic.file}}"
                 {% else %}
@@ -256,7 +256,7 @@
 
             <div class="text-sm">
                 <b>{{username}}</b>
-                <p class="text-gray-500">Current logged in as</p>
+                <p class="text-gray-500">Currently logged in as</p>
             </div>
         </div>
 
@@ -286,7 +286,7 @@
             <a href="/users/{{data.username}}">
                 <div class="w-full p-2 flex justify-between items-center">
                     <div class="flex items-center space-x-5">
-                        <img class="w-12 h-12 rounded-full" 
+                        <img class="w-12 h-12 rounded-full object-cover border border-[#262626]" 
                             {% if data.added_by_profile.exist %}
                                 src="/uploads/{{data.added_by_profile.file}}" 
                             {% else %}
@@ -301,7 +301,7 @@
                         </div>
                     </div>
 
-                    <a href="" class="h-fit mx-3 py-1 px-2 text-sm text-blue-500 rounded-md">Follow</a>
+                    <a href="/users/{{data.username}}" class="h-fit mx-3 py-1 px-2 text-sm text-blue-500 rounded-md">Follow</a>
                 </div>
             </a>
 
@@ -310,72 +310,70 @@
             {% endif %}
 
         </div>
-
     </div>
 
+</div>
 
-    <script>
 
-        function getCookie(cname) {
-            let name = cname + "=";
-            let decodedCookie = decodeURIComponent(document.cookie);
-            let ca = decodedCookie.split(';');
-            for (let i = 0; i < ca.length; i++) {
-                let c = ca[i];
-                while (c.charAt(0) == ' ') {
-                    c = c.substring(1);
-                }
-                if (c.indexOf(name) == 0) {
-                    return c.substring(name.length, c.length);
-                }
+<script>
+
+    function getCookie(cname) {
+        let name = cname + "=";
+        let decodedCookie = decodeURIComponent(document.cookie);
+        let ca = decodedCookie.split(';');
+        for (let i = 0; i < ca.length; i++) {
+            let c = ca[i];
+            while (c.charAt(0) == ' ') {
+                c = c.substring(1);
             }
-            return "";
-        }
-
-        function copyLink(e) {
-            navigator.clipboard.writeText(window.location.origin + e.id);
-            document.getElementById('message' + e.id).style.display = 'inline';
-
-            setTimeout(function () {
-                document.getElementById('message' + e.id).style.display = 'none';
-            }, 1000);
-        }
-
-        async function handelLikes(e) {
-
-            try {
-                let res = await fetch('{% url "likes" %}', {
-                    method: 'POST',
-                    headers: {
-                        "X-CSRFToken": getCookie("csrftoken"),
-                        "Content-Type": 'application/json',
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        "post_id": e.id,
-                    })
-
-                });
-                res = await res.json();
-
-                const post_likes = document.getElementById('post_likes_' + e.id);
-                if (res.is_liked == true) {
-                    e.innerHTML = '<i class="fa-solid fa-heart text-2xl text-red-500 pointer-events-none"></i>';
-                    post_likes.innerText = res.current_likes + ' likes';
-                }
-                else {
-                    e.innerHTML = '<i class="fa-regular fa-heart text-2xl pointer-events-none"></i>';
-                    post_likes.innerText = res.current_likes + ' likes';
-                }
-            } catch (error) {
-                console.log(error);
+            if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length);
             }
+        }
+        return "";
+    }
 
+    function copyLink(e) {
+        navigator.clipboard.writeText(window.location.origin + e.id);
+        document.getElementById('message' + e.id).style.display = 'inline';
+
+        setTimeout(function () {
+            document.getElementById('message' + e.id).style.display = 'none';
+        }, 1000);
+    }
+
+    async function handelLikes(e) {
+
+        try {
+            let res = await fetch('{% url "likes" %}', {
+                method: 'POST',
+                headers: {
+                    "X-CSRFToken": getCookie("csrftoken"),
+                    "Content-Type": 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    "post_id": e.id,
+                })
+
+            });
+            res = await res.json();
+
+            const post_likes = document.getElementById('post_likes_' + e.id);
+            if (res.is_liked == true) {
+                e.innerHTML = '<i class="fa-solid fa-heart text-2xl text-red-500 pointer-events-none"></i>';
+                post_likes.innerText = res.current_likes + ' likes';
+            }
+            else {
+                e.innerHTML = '<i class="fa-regular fa-heart text-2xl pointer-events-none"></i>';
+                post_likes.innerText = res.current_likes + ' likes';
+            }
+        } catch (error) {
+            console.log(error);
         }
 
+    }
 
-
-
-    </script>
+</script>
 
 {% endblock body %}

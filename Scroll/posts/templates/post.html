@@ -12,33 +12,44 @@
 <body class="w-full h-fit py-16 space-y-10 flex flex-col items-center bg-black text-white">
     
     <div class="space-y-2">
-        <div class="flex items-center space-x-5">
-            <img 
-                class="w-12 h-12 rounded-full object-cover"
-                {% if data.added_by_profile.exist %}
-                   src="/uploads/{{data.added_by_profile.file}}" 
-                {% else %}
-                    src="/static/{{data.added_by_profile.file}}"
-                {% endif %}
-                
-                alt=""
-            >
-            <b>{{data.added_by}}</b>
-        </div>
+        <a href="{{data.added_by_url}}">
+            <div class="flex items-center space-x-5">
+                <img 
+                    class="w-12 h-12 rounded-full object-cover"
+                    {% if data.added_by_profile.exist %}
+                    src="/uploads/{{data.added_by_profile.file}}" 
+                    {% else %}
+                        src="/static/{{data.added_by_profile.file}}"
+                    {% endif %}
+                    alt=""
+                >
+                <b>{{data.added_by}}</b>
+            </div>
+        </a>
+        
 
         <img 
             class="w-[468px] h-[585px] !my-5 bg-slate-200 rounded-sm border border-[#262626] object-center"
             src="/uploads/{{data.file}}"
         />
 
-        <div class="space-x-5 flex">
-            <a href="#"><i class="fa-regular fa-heart text-2xl" ></i></a>
+        <div class="space-x-5 flex select-none">
+            {% if data.is_liked %}
+                <div class="cursor-pointer" id="{{data.post_id}}" onclick="handelLikes(this)">
+                    <i class="fa-solid fa-heart text-2xl text-red-500 pointer-events-none"></i>
+                </div>
+            {% else %}
+                <div class="cursor-pointer" id="{{data.post_id}}" onclick="handelLikes(this)">
+                    <i class="fa-regular fa-heart text-2xl pointer-events-none"></i>
+                </div>
+            {% endif %}
+
             <a href="#"><i class="fa-regular fa-comment text-2xl" ></i></a>
             <i class="fa-solid fa-share-nodes text-2xl cursor-pointer" id="/posts/{{data.post_id}}" onclick="copyLink(this)"></i>
             <p class="hidden text-green-400" id="message/posts/{{data.post_id}}">Link copied to clipboard</p>
         </div>
   
-        <b class=" text-sm">{{data.num_of_likes}} likes</b>
+        <b class="text-sm" id="post_likes_{{data.post_id}}">{{data.num_of_likes}} likes</b>
         
         <b class="w-[468px] text-sm block">{{data.bio}}... <a href="#" class="text-gray-500">more</a></b>
 
@@ -46,18 +57,65 @@
 
 
 
-    <script>
+<script>
 
-        function copyLink(e){
-            navigator.clipboard.writeText(window.location.origin + e.id);
-            document.getElementById('message' + e.id).style.display = 'inline';
+    function getCookie(cname) {
+        let name = cname + "=";
+        let decodedCookie = decodeURIComponent(document.cookie);
+        let ca = decodedCookie.split(';');
+        for (let i = 0; i < ca.length; i++) {
+            let c = ca[i];
+            while (c.charAt(0) == ' ') {
+                c = c.substring(1);
+            }
+            if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length);
+            }
+        }
+        return "";
+    }
 
-            setTimeout(function () {
-                document.getElementById('message' + e.id).style.display = 'none';
-            }, 1000);
+    function copyLink(e) {
+        navigator.clipboard.writeText(window.location.origin + e.id);
+        document.getElementById('message' + e.id).style.display = 'inline';
+
+        setTimeout(function () {
+            document.getElementById('message' + e.id).style.display = 'none';
+        }, 1000);
+    }
+
+    async function handelLikes(e) {
+
+        try {
+            let res = await fetch('{% url "likes" %}', {
+                method: 'POST',
+                headers: {
+                    "X-CSRFToken": getCookie("csrftoken"),
+                    "Content-Type": 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    "post_id": e.id,
+                })
+
+            });
+            res = await res.json();
+
+            const post_likes = document.getElementById('post_likes_' + e.id);
+            if (res.is_liked == true) {
+                e.innerHTML = '<i class="fa-solid fa-heart text-2xl text-red-500 pointer-events-none"></i>';
+                post_likes.innerText = res.current_likes + ' likes';
+            }
+            else {
+                e.innerHTML = '<i class="fa-regular fa-heart text-2xl pointer-events-none"></i>';
+                post_likes.innerText = res.current_likes + ' likes';
+            }
+        } catch (error) {
+            console.log(error);
         }
 
-    </script>
+    }
+</script>
 
     <script src="{% static 'js/tailwindcdn.js' %}"></script>
     <script src="{% static 'fontawesomefree/js/all.min.js' %}"></script>

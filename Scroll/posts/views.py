@@ -12,16 +12,25 @@ from django.db.models import Q
 def Post_View(req,post_id=None):
 
     if post_id:
-        DATA = Post.objects.filter(post_id = post_id).values().first()
+        DATA = Post.objects.filter(Q(post_id = post_id) & (Q(is_public = True) | Q(user_id = req.user.id))).values().first()
         if DATA:
             added_by = str(User.objects.get(id = DATA['user_id'])).capitalize()
+            added_by_url = '/users/' + User.objects.get(id = DATA['user_id']).username 
             added_by_profile = ProfilePic.objects.filter(user_id = DATA['user_id']).values().first()
+            is_liked = Post_Like.objects.filter(Q(user_id = req.user.id) & Q(post_id = DATA['post_id'])).first()
 
             DATA['added_by'] = added_by
+            DATA['added_by_url'] = added_by_url or '#'
+
             if added_by_profile:
                 DATA['added_by_profile'] = {"file": added_by_profile['file'] , "exist": True}
             else:
                 DATA['added_by_profile'] = {"file": 'images/profile.jpg' , "exist": False}
+            
+            if is_liked:
+                DATA['is_liked'] = True
+            else:
+                DATA['is_liked'] = False
 
             context = {
                 "data": DATA
@@ -65,9 +74,9 @@ def Like_Posts(req):
     if req.method == "POST":
         body = json.loads(req.body)
         is_liked = Post_Like.objects.filter(Q(user_id = req.user.id) & Q(post_id = body['post_id'])).first()
-
+        
         if is_liked == None:
-            current_likes = Post.objects.filter(post_id = body['post_id']).values().first()['num_of_likes']
+            current_likes = len(Post_Like.objects.filter(post_id = body['post_id']).values())
             post_id = Post.objects.filter(post_id = body['post_id']).first()
 
             Post_Like.objects.create(user_id = req.user.id,post_id = post_id)
@@ -82,7 +91,7 @@ def Like_Posts(req):
                 "current_likes": current_post.num_of_likes,
             })
         else:
-            current_likes = Post.objects.filter(post_id = body['post_id']).values().first()['num_of_likes']
+            current_likes = len(Post_Like.objects.filter(post_id = body['post_id']).values())
             is_liked.delete()
 
             current_post = Post.objects.filter(post_id = body['post_id']).first()

@@ -27,7 +27,7 @@ def Index(req):
         is_liked = Post_Like.objects.filter(Q(user_id = req.user.id) & Q(post_id = post['post_id'])).first()
       
         post['added_by'] = added_by
-        post['added_by_url'] = added_by_url
+        post['added_by_url'] = added_by_url or '#'
 
         if added_by_profile:
             post['added_by_profile'] = {"file": added_by_profile['file'] , "exist": True}

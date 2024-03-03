@@ -1,9 +1,10 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
+from django.db.models import Q
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from myauth.models import ProfilePic
 from posts.models import Post
-from django.db.models import Q
-from django.contrib.auth.decorators import login_required
+from .models import Follower
 
 
 # Create your views here.
@@ -29,7 +30,7 @@ def Search(req):
 
         context = {
             "data": DATA,
-            "not_found": not_found
+            "not_found": not_found,
         }
 
         return render(req,'search.html',context)
@@ -41,6 +42,8 @@ def My_Profile(req):
 
     username = req.user.username.capitalize()
     profile_pic = ProfilePic.objects.filter(user_id = req.user.id).values().first()
+    num_of_followers = len(Follower.objects.filter(user_id = req.user.id).values())
+    num_of_posts = len(Post.objects.filter(Q(user_id = req.user.id)).values())
     not_found = False
 
     if profile_pic:
@@ -57,7 +60,9 @@ def My_Profile(req):
         "username": username,
         "profile_pic": profile_pic,
         "data": DATA,
-        "not_found": not_found
+        "not_found": not_found,
+        "num_of_followers":num_of_followers,
+        "num_of_posts":num_of_posts
     }
 
     if req.method == 'POST':
@@ -69,39 +74,78 @@ def My_Profile(req):
 
 def User_Profile(req,username = None):
 
-    
     if username:
-        DATA = User.objects.filter(username = username).values()
         
-        if len(DATA) > 0:
-            DATA = DATA[0]
+        USER_DATA = User.objects.filter(username = username).values()
 
-            username = DATA['username'].capitalize()
-            profile_pic = ProfilePic.objects.filter(user_id = DATA['id']).values().first()
-            post_not_found = False
+        if len(USER_DATA) > 0:
+            USER_DATA = USER_DATA[0]
 
-            if profile_pic:
-                profile_pic = {"file": profile_pic['file'] , "exist": True}
+            if USER_DATA['id'] != req.user.id:
+                username = USER_DATA['username'].capitalize()
+                profile_pic = ProfilePic.objects.filter(user_id = USER_DATA['id']).values().first()
+                is_following = Follower.objects.filter(Q(user_id = USER_DATA['id']) & Q(follower_id = req.user.id)).first()
+                num_of_followers = len(Follower.objects.filter(user_id = USER_DATA['id']).values())
+                num_of_posts = len(Post.objects.filter(Q(user_id = USER_DATA['id']) & Q(is_public = True)).values())
+                post_not_found = False
+  
+                if profile_pic:
+                    profile_pic = {"file": profile_pic['file'] , "exist": True}
+                else:
+                    profile_pic = {"file": 'images/profile.jpg', "exist": False}
+
+                POST_DATA = Post.objects.filter(Q(user_id = USER_DATA['id']) & Q(is_public = True)).values()
+
+                if not len(POST_DATA) > 0:
+                    post_not_found = True
+
+                context = {
+                    "user_data": USER_DATA,
+                    "post_data": POST_DATA,
+                    "username": username,
+                    "profile_pic": profile_pic,
+                    "post_not_found": post_not_found,
+                    "num_of_followers": num_of_followers,
+                    "num_of_posts": num_of_posts,
+                    "is_following":is_following
+                }
+
+                return render(req,'user_profile.html',context)
             else:
-                profile_pic = {"file": 'images/profile.jpg', "exist": False}
-
-            POST_DATA = Post.objects.filter(user_id = DATA['id']).values()
-
-            if not len(POST_DATA) > 0:
-                post_not_found = True
-
-            context = {
-                "data": DATA,
-                "post_data": POST_DATA,
-                "username": username,
-                "profile_pic": profile_pic,
-                "post_not_found": post_not_found
-            }
-
-            return render(req,'user_profile.html',context)
+                return redirect('/profile')
         
         else:
             return render(req,'not_found.html')
 
     else:
         return render(req,'not_found.html')
+    
+import json
+from django.http import JsonResponse
+    
+@login_required(login_url = '/login')  
+def Handel_Follow_Req(req):
+    if req.method == "POST":
+        body = json.loads(req.body)
+ 
+        is_following = Follower.objects.filter(Q(user_id = body['user_id']) & Q(follower_id = req.user.id)).first()
+
+        if is_following == None:            
+            Follower.objects.create(user_id = body['user_id'],follower_id = req.user.id)
+            current_followers = len(Follower.objects.filter(user_id = body['user_id']).values())
+
+            return JsonResponse({
+                "status":200,
+                "is_following":True,
+                "current_followers": current_followers,
+            })
+        else:
+            is_following.delete()
+            current_followers = len(Follower.objects.filter(user_id = body['user_id']).values())
+
+            return JsonResponse({
+                "status":200,
+                "is_following":False,
+                "current_followers":current_followers,
+            })
+    return render(req,'not_found.html')
