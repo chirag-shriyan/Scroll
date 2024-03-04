@@ -19,7 +19,11 @@
             {% if error %}
                 <b class="text-red-500">{{error}}</b>
             {% endif %}
-            <a href="{% url 'signup' %}" class="mx-2 underline self-end">Create a new account</a>
+            
+            <div class="flex justify-between">
+                <a href="{% url 'password_reset' %}" class="mx-2 underline self-end">Forgot password?</a>
+                <a href="{% url 'signup' %}" class="mx-2 underline self-end">Create a new account</a>
+            </div>
         </div>
 
         <input type="submit" value="Login" class="bg-white text-black text-2xl font-semibold py-3 rounded-xl cursor-pointer hover:opacity-90">

@@ -40,7 +40,7 @@
             </div>
             {% endif %}
 
-            <i class="fa-regular fa-comment text-2xl cursor-pointer" onclick="handelComment('comment_box_{{post.post_id}}')"></i>
+            <i class="fa-regular fa-comment text-2xl cursor-pointer" onclick="handelComment(event,'comment_box_{{post.post_id}}')"></i>
 
             <i class="fa-solid fa-share-nodes text-2xl cursor-pointer" id="/posts/{{post.post_id}}"
                 onclick="copyLink(this)"></i>
@@ -51,7 +51,7 @@
 
         <b class="w-[468px] text-sm block">{{post.bio}}</b>
 
-        <a href="/posts/{{post.post_id}}" class="w-[468px] block text-sm text-gray-400">View comments</a>
+        <a href="/posts/{{post.post_id}}" class="block w-fit text-sm text-gray-400">View all comments</a>
 
         <form class="hidden space-x-2" id="comment_box_{{post.post_id}}" onsubmit="handelCommentSubmit(event,'{{post.post_id}}')">
             {% csrf_token %}
@@ -387,15 +387,26 @@
 
     }
 
-    function handelComment(id){
+    function handelComment(e,id){
         const comment_box = document.getElementById(id);
+
+        function closeCommentBox(event) {
+            const target = event.target;
+            if (target !== comment_box.children[2] && target !== comment_box.children[3] && target !== e.target) {
+                comment_box.style.display = 'none';
+                window.removeEventListener('click', closeCommentBox);
+            }
+        }
+
         if (comment_box.style.display !== 'flex') {
             comment_box.style.display = 'flex';
             comment_box.children[2].focus();
+            window.addEventListener('click', closeCommentBox);
         }
         else{
             comment_box.style.display = 'none';
         }
+        
     }
 
     async function handelCommentSubmit(e,id){
