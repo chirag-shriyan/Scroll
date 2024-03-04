@@ -33,7 +33,7 @@ def Post_View(req,post_id=None):
             else:
                 DATA['is_liked'] = False
 
-            COMMENT_DATA = Post_Comment.objects.filter(post_id = post_id).values()
+            COMMENT_DATA = Post_Comment.objects.filter(post_id = post_id).values().order_by('-created_at')
 
             for comment in COMMENT_DATA:
                 added_by = User.objects.get(id = comment['user_id']).username.capitalize()
@@ -91,9 +91,9 @@ def Like_Posts(req):
         
         if is_liked == None:
             current_likes = len(Post_Like.objects.filter(post_id = body['post_id']).values())
-            post_id = Post.objects.filter(post_id = body['post_id']).first()
+            # post_id = Post.objects.filter(post_id = body['post_id']).first()
 
-            Post_Like.objects.create(user_id = req.user.id,post_id = post_id)
+            Post_Like.objects.create(user_id = req.user.id,post_id = body['post_id'])
 
             current_post = Post.objects.filter(post_id = body['post_id']).first()
             current_post.num_of_likes = current_likes + 1

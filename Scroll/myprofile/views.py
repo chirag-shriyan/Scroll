@@ -149,3 +149,47 @@ def Handel_Follow_Req(req):
                 "current_followers":current_followers,
             })
     return render(req,'not_found.html')
+
+@login_required(login_url = '/login')  
+def Handel_Edit_User(req):
+    
+    context = {
+        "username" : str(req.user).capitalize()
+    }
+
+    if req.method == "POST":
+
+        username = req.POST['username']
+        profile_pic = req.FILES and req.FILES['post_file']
+        # profile_pic_model = ProfilePic.objects.filter(user_id = req.user.id).values().first()
+
+        if username and req.user.username != username:
+            already_exist = User.objects.filter(Q(username = username) & ~Q(id = req.user.id))
+
+            if not len(already_exist) > 0:
+                user_model = User.objects.get(id = req.user.id)
+                user_model.username = username
+                user_model.save()
+                context['message'] = 'Profile updated successfully'
+            else:
+                context['error'] = 'Username already taken'
+                return render(req,'edit_profile.html',context)
+            
+        if profile_pic:
+            profile_pic_model = ProfilePic.objects.filter(user_id = req.user.id).first()
+
+            if profile_pic_model:
+                profile_pic_model.file = profile_pic
+                profile_pic_model.save()
+                context['message'] = 'Profile updated successfully'
+            else:
+                ProfilePic.objects.create(user_id = req.user.id,file = profile_pic)
+                context['message'] = 'Profile updated successfully'
+
+        return render(req,'edit_profile.html',context)
+       
+
+    else:
+        
+
+        return render(req,'edit_profile.html',context)

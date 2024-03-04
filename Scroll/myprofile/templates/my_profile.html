@@ -25,8 +25,8 @@
             <div class="flex">
                 <h1 class="text-xl mr-16">{{username}}</h1>
                 <div class="felx space-x-1">
-                    <button class="py-1 px-2 text-xs bg-gray-500 rounded">Edit Profile</button>
-                    <button class="py-1 px-2 text-xs bg-red-500 rounded">Logout</button>
+                    <a href="{% url 'edit' %}" class="py-1 px-2 text-xs bg-gray-500 rounded">Edit Profile</a>
+                    <a href="{% url 'logout' %}" class="py-1 px-2 text-xs bg-red-500 rounded">Logout</a>
                 </div>
             </div>
             <div class="space-x-5 flex">

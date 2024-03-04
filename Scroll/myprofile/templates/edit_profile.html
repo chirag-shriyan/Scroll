@@ -1,14 +1,14 @@
 {% extends "base.html" %}
 
-{% block title %}Scroll | Create Post{% endblock title %}
+{% block title %}Scroll | {{username}}{% endblock title %}
 
 
 {% block body %}
 
 
-
-<form class="w-full h-fit py-16 space-y-10 flex flex-col items-center" action="{% url 'posts' %}" method="post"
-    enctype="multipart/form-data" autocomplete="off">
+    
+<form class="w-full h-fit py-16 space-y-10 flex flex-col items-center" action="{% url 'edit' %}" method="post"
+enctype="multipart/form-data" autocomplete="off">
 
     {% csrf_token %}
 
@@ -25,7 +25,7 @@
         </div>
 
         <div class="w-[400px] h-[400px] relative">
-            <input class="w-full h-full absolute opacity-0 z-10 hover:cursor-pointer" type="file" name="post_file" id="post_file" required />
+            <input class="w-full h-full absolute opacity-0 z-10 hover:cursor-pointer" type="file" name="post_file" id="post_file" />
 
             <label
                 class="w-full h-full p-4 flex flex-col items-center justify-center text-gray-500 bg-transparent border rounded-lg focus:outline-0 z-0"
@@ -34,15 +34,7 @@
             </label>
         </div>
 
-        <textarea class="w-full p-4 bg-transparent border rounded-lg focus:outline-0 z-0" name="post_bio" rows="5"
-            placeholder="Enter your bio" required></textarea>
-
-        <select name="post_type" class="w-full p-4 bg-black text-[#9ca3af] border rounded-lg focus:outline-0 z-0"
-            placeholder="Enter your bio" style="-webkit-appearance: none;" required>
-            <option value="">-- Select --</option>
-            <option value="True">Public</option>
-            <option value="False">Private</option>
-        </select>
+        <input type="text" name="username" class="w-full p-4 bg-transparent border rounded-lg focus:outline-0 z-0" name="post_bio" placeholder="Enter username" value="{{user.username}}" required>
 
         <input type="submit"
             class="w-full bg-white text-black text-2xl font-semibold py-3 rounded-xl cursor-pointer hover:opacity-90">
@@ -94,6 +86,7 @@
 
 
 </script>
+
 
 
 {% endblock body %}

@@ -14,7 +14,7 @@ class Post(models.Model):
     updated_at = models.DateTimeField(auto_now = True)
 
 class Post_Like(models.Model):
-    post_id = models.ForeignKey(Post,on_delete = models.CASCADE,null = True, blank = True)
+    post = models.ForeignKey(Post,on_delete = models.CASCADE,null = True, blank = True)
     user = models.ForeignKey(User,on_delete = models.CASCADE,null = True, blank = True)
     created_at = models.DateTimeField(auto_now_add = True)
     updated_at = models.DateTimeField(auto_now = True)
