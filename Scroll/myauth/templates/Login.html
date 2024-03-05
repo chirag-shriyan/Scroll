@@ -7,30 +7,40 @@
     <title>Scroll | Login</title>
     
 </head>
-<body class="w-full h-screen bg-[#333] flex justify-center items-center relative">
+<body class="w-full h-full bg-[#333] flex justify-center items-center relative max-md:bg-black">
     
-    <form action="{% url 'login' %}" method="post" class="w-[40%] h-[85vh] bg-black text-white rounded-2xl p-12 flex flex-col gap-24 shadow-xl mt-2" autocomplete="off">
+    <form action="{% url 'login' %}" method="post" class="w-[40%] h-[85vh] bg-black text-white rounded-2xl p-12 flex flex-col gap-24 shadow-xl mt-2 max-md:w-full max-md:h-full max-md:rounded-none max-sm:p-3 max-md:gap-16 max-md:justify-center" autocomplete="off">
         {% csrf_token %}
-        <h1 class="text-left text-4xl font-bold">Login to your account</h1>
+        <h1 class="text-left text-4xl font-bold max-md:text-3xl max-md:mt-10">Login to your account</h1>
         
         <div class="w-full flex flex-col gap-8">
             <input type="text" name="username_or_email" placeholder="Username / Email" class="p-4 bg-transparent border rounded-lg focus:outline-0" autofocus required>
             <input type="password" name="password" placeholder="Password" class="flex-auto p-4 bg-transparent border rounded-lg focus:outline-0" required>
             {% if error %}
-                <b class="text-red-500">{{error}}</b>
+                <b class="mx-1 text-red-500 text-sm" id="error_box">{{error}}</b>
             {% endif %}
             
-            <div class="flex justify-between">
-                <a href="{% url 'password_reset' %}" class="mx-2 underline self-end">Forgot password?</a>
-                <a href="{% url 'signup' %}" class="mx-2 underline self-end">Create a new account</a>
+            <div class="mx-2 flex justify-between text-xs max-md:m-0">
+                <a href="{% url 'password_reset' %}" class="underline self-end">Forgot password?</a>
+                <a href="{% url 'signup' %}" class="underline self-end">Create a new account</a>
             </div>
         </div>
 
         <input type="submit" value="Login" class="bg-white text-black text-2xl font-semibold py-3 rounded-xl cursor-pointer hover:opacity-90">
     </form>
 
+    <script>
+
+        const error_box = document.getElementById('error_box');
+
+        setTimeout(function() {
+           error_box.style.display = 'none';
+        }, 2500);
+
+    </script>
 
     <script src="{% static 'js/tailwindcdn.js' %}"></script>
+
 
 </body>
 </html>

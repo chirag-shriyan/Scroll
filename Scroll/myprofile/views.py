@@ -13,6 +13,14 @@ from .models import Follower
 def Search(req):
 
     search = req.GET.get('q')
+    profile_pic = ProfilePic.objects.filter(user_id = req.user.id).values().first()
+
+    if profile_pic:
+        profile_pic = {"file": profile_pic['file'] , "exist": True}
+    else:
+        profile_pic = {"file": 'images/profile.jpg', "exist": False}
+
+
     if search:
         DATA = User.objects.filter(Q(username__contains = search) & ~Q(id = req.user.id)).values()
         not_found = False
@@ -31,11 +39,12 @@ def Search(req):
         context = {
             "data": DATA,
             "not_found": not_found,
+            "profile_pic": profile_pic,
         }
 
         return render(req,'search.html',context)
 
-    return render(req,'search.html')
+    return render(req,'search.html',{"profile_pic":profile_pic})
 
 @login_required(login_url = '/login')
 def My_Profile(req):
@@ -152,9 +161,18 @@ def Handel_Follow_Req(req):
 
 @login_required(login_url = '/login')  
 def Handel_Edit_User(req):
+
+    profile_pic = ProfilePic.objects.filter(user_id = req.user.id).values().first()
+
+    if profile_pic:
+        profile_pic = {"file": profile_pic['file'] , "exist": True}
+    else:
+        profile_pic = {"file": 'images/profile.jpg', "exist": False}
+
     
     context = {
-        "username" : str(req.user).capitalize()
+        "username" : str(req.user).capitalize(),
+        "profile_pic" :profile_pic
     }
 
     if req.method == "POST":

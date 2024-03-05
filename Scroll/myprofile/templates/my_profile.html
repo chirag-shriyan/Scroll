@@ -12,7 +12,7 @@
         
       <header class="flex p-8">
         <img
-            class="w-[150px] h-[150px] mr-[100px] bg-white rounded-full object-cover border border-[#262626]"
+            class="w-[150px] h-[150px] mr-[100px] bg-white rounded-full object-cover border border-[#262626] max-md:w-[60px] max-md:h-[60px] max-md:mr-5"
             {% if profile_pic.exist %}
                 src="/uploads/{{profile_pic.file}}" 
             {% else %}
@@ -23,10 +23,11 @@
 
         <div class="h-fit p-5 space-y-5">
             <div class="flex">
-                <h1 class="text-xl mr-16">{{username}}</h1>
-                <div class="felx space-x-1">
-                    <a href="{% url 'edit' %}" class="py-1 px-2 text-xs bg-gray-500 rounded">Edit Profile</a>
-                    <a href="{% url 'logout' %}" class="py-1 px-2 text-xs bg-red-500 rounded">Logout</a>
+                <h1 class="text-xl mr-16 max-md:mr-10">{{username}}</h1>
+                <div class="felx space-x-1 max-md:flex-col max-md:w-full max-md:space-x-0 max-md:space-y-3">
+                    <a href="{% url 'logout' %}" class="hidden py-1 px-2 text-xs text-center bg-red-500 rounded max-md:w-full max-md:block max-md:text-[10px]">Logout</a>
+                    <a href="{% url 'edit' %}" class="py-1 px-2 text-xs text-center bg-gray-500 rounded max-md:w-full max-md:block max-md:text-[10px]">Edit Profile</a>
+                    <a href="{% url 'logout' %}" class="py-1 px-2 text-xs text-center bg-red-500 rounded max-md:hidden">Logout</a>
                 </div>
             </div>
             <div class="space-x-5 flex">
@@ -56,7 +57,7 @@
 
         {% if not_found %}
 
-            <div class="w-full">
+            <div class="w-full max-md:text-sm">
                 <h1 class="text-center block text-gray-500">Share Photos</h1>
                 <p class="text-center block text-gray-500">When you share photos, they will appear on your profile.</p>
             </div> 
@@ -65,7 +66,7 @@
 
             {% for post in data %}
                 <a href="/posts/{{post.post_id}}">
-                    <img src="/uploads/{{post.file}}" class="w-[300px] h-[300px] object-cover" />
+                    <img src="/uploads/{{post.file}}" class="w-[300px] h-[300px] object-cover max-md:w-[100px] max-md:h-[100px]" />
                 </a>
             {% endfor %}
 

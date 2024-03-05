@@ -59,6 +59,12 @@ def Post_View(req,post_id=None):
 
 @login_required(login_url='/login')
 def Create_Posts(req):
+    profile_pic = ProfilePic.objects.filter(user_id = req.user.id).values().first()
+
+    if profile_pic:
+        profile_pic = {"file": profile_pic['file'] , "exist": True}
+    else:
+        profile_pic = {"file": 'images/profile.jpg', "exist": False}
 
     if req.method == 'POST':
         form = PostForm(req.POST,req.FILES)
@@ -71,13 +77,13 @@ def Create_Posts(req):
             Post.objects.create(user_id = req.user.id,file = post_file,bio = post_bio,is_public = post_type)
             message = 'Post uploaded successfully'
 
-            return render(req,'create_posts.html' , {"message":message})
+            return render(req,'create_posts.html' , {"message":message, "profile_pic":profile_pic})
         else:
             error = 'Something went wrong try again'
-            return render(req,'create_posts.html' , {"error":error})
+            return render(req,'create_posts.html' , {"error":error, "profile_pic":profile_pic})
 
     else:
-        return render(req, 'create_posts.html')
+        return render(req, 'create_posts.html',{"profile_pic":profile_pic})
     
 import json
 from django.http import JsonResponse
@@ -130,10 +136,26 @@ def Comment_Posts(req):
         comment = body['comment']
 
         Post_Comment.objects.create(post_id = post_id,user_id = req.user.id,comment=comment)
-        
+
+        comment_data = Post_Comment.objects.filter(post_id = post_id).order_by('-created_at').values()
+
+        for comment in comment_data:
+                added_by = User.objects.get(id = comment['user_id']).username.capitalize()
+                added_by_profile = ProfilePic.objects.filter(user_id = comment['user_id']).values().first()
+
+                comment['added_by'] = added_by
+                if added_by_profile:
+                    comment['added_by_profile'] = {"file": added_by_profile['file'] , "exist": True}
+                else:
+                    comment['added_by_profile'] = {"file": 'images/profile.jpg' , "exist": False}
+
+        if len(comment_data) > 0:
+            comment_data = list(comment_data)
+
         return JsonResponse({
             "status":200,
             "post_id": body['post_id'],
+            "comment_data": comment_data,
         })
 
     return render(req,'not_found.html')

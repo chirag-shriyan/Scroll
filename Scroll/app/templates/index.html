@@ -3,13 +3,12 @@
 
 {% block title %}Scroll{% endblock title %}
 
-
 {% block body %}
 
-<div class="w-[70%] h-fit py-10 space-y-10 flex flex-col items-center text-white max-2xl:w-full">
+<div class="w-[70%] h-fit py-10 space-y-5 flex flex-col items-center text-white max-2xl:w-full max-md:overflow-hidden max-md:py-0 max-md:my-[50px]">
 
 {% for post in post_data %}
-    <div class="space-y-2">
+    <div class="space-y-2 max-md:w-full max-md:p-3">
         <a href="{{post.added_by_url}}">
             <div class="flex items-center space-x-5">
                 <img class="w-12 h-12 rounded-full object-cover border border-[#262626]" 
@@ -25,7 +24,7 @@
         </a>
 
         <a href="/posts/{{post.post_id}}">
-            <img class="w-[468px] h-[585px] !my-5 bg-slate-200 rounded-sm border border-[#262626] object-center"
+            <img class="w-[468px] h-[585px] !my-5 bg-slate-200 rounded-sm border border-[#262626] object-center max-md:w-full max-md:h-[468px]"
                 src="/uploads/{{post.file}}" />
         </a>
 
@@ -68,7 +67,7 @@
 {% endfor %}
 
 
-    <div class="space-y-2">
+    <div class="space-y-2 max-md:w-full max-md:p-3">
         <div class="flex items-center space-x-5">
             <img class="w-12 h-12 rounded-full" 
                 {% if profile_pic.exist %} 
@@ -81,7 +80,7 @@
             <b>{{username}}</b>
         </div>
 
-        <img class="w-[468px] h-[585px] !my-5 bg-slate-200 rounded-sm border border-[#262626]"
+        <img class="w-[468px] h-[585px] !my-5 bg-slate-200 rounded-sm border border-[#262626] max-md:w-full max-md:h-[468px]"
             src="https://th-thumbnailer.cdn-si-edu.com/3RQHyIdF6cCdAPoVL1NOZzyMCxY=/1000x750/filters:no_upscale():focal(594x274:595x275)/https://tf-cmsv2-smithsonianmag-media.s3.amazonaws.com/filer/95/db/95db799b-fddf-4fde-91f3-77024442b92d/egypt_kitty_social.jpg" />
 
         <div class="space-x-5">
@@ -90,9 +89,9 @@
             <a href="#"><i class="fa-solid fa-share-nodes text-2xl"></i></a>
         </div>
 
-        <b class=" text-sm">{{100}} likes</b>
+        <b class="text-sm">{{100}} likes</b>
 
-        <b class="w-[468px] text-sm block">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ullam eos est
+        <b class="w-[468px] text-sm block max-md:w-full">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ullam eos est
             inventore
             nemo vitae iusto repellendus optio corrupti itaque ducimus, ratione perspiciatis corporis. Suscipit
             perspiciatis
@@ -101,150 +100,7 @@
         <hr class="!my-4 !mx-1 border-[#262626]" />
 
     </div>
-
-
-
-    <div class="space-y-2">
-        <div class="flex items-center space-x-5">
-            <img class="w-12 h-12 rounded-full" 
-                {% if profile_pic.exist %} 
-                    src="/uploads/{{profile_pic.file}}" 
-                {% else%}
-                    src="/static/{{profile_pic.file}}" 
-                {% endif %} 
-                alt=""
-            >
-            <b>{{username}}</b>
-        </div>
-
-        <img class="w-[468px] h-[585px] !my-5 bg-slate-200 rounded-sm border border-[#262626]"
-            src="https://th-thumbnailer.cdn-si-edu.com/3RQHyIdF6cCdAPoVL1NOZzyMCxY=/1000x750/filters:no_upscale():focal(594x274:595x275)/https://tf-cmsv2-smithsonianmag-media.s3.amazonaws.com/filer/95/db/95db799b-fddf-4fde-91f3-77024442b92d/egypt_kitty_social.jpg" />
-
-        <div class="space-x-5">
-            <a href="#"><i class="fa-regular fa-heart text-2xl"></i></a>
-            <a href="#"><i class="fa-regular fa-comment text-2xl"></i></a>
-            <a href="#"><i class="fa-solid fa-share-nodes text-2xl"></i></a>
-        </div>
-
-        <b class=" text-sm">{{100}} likes</b>
-
-        <b class="w-[468px] text-sm block">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ullam eos est
-            inventore
-            nemo vitae iusto repellendus optio corrupti itaque ducimus, ratione perspiciatis corporis. Suscipit
-            perspiciatis
-            fuga nobis ullam hic perferendis!... <a href="#" class="text-gray-500">more</a></b>
-
-        <hr class="!my-4 !mx-1 border-[#262626]" />
-
-    </div>
-
-
-
-    <div class="space-y-2">
-        <div class="flex items-center space-x-5">
-            <img class="w-12 h-12 rounded-full" 
-                {% if profile_pic.exist %} 
-                    src="/uploads/{{profile_pic.file}}" 
-                {% else%}
-                    src="/static/{{profile_pic.file}}" 
-                {% endif %} 
-                alt=""
-            >
-            <b>{{username}}</b>
-        </div>
-
-        <img class="w-[468px] h-[585px] !my-5 bg-slate-200 rounded-sm border border-[#262626]"
-            src="https://th-thumbnailer.cdn-si-edu.com/3RQHyIdF6cCdAPoVL1NOZzyMCxY=/1000x750/filters:no_upscale():focal(594x274:595x275)/https://tf-cmsv2-smithsonianmag-media.s3.amazonaws.com/filer/95/db/95db799b-fddf-4fde-91f3-77024442b92d/egypt_kitty_social.jpg" />
-
-        <div class="space-x-5">
-            <a href="#"><i class="fa-regular fa-heart text-2xl"></i></a>
-            <a href="#"><i class="fa-regular fa-comment text-2xl"></i></a>
-            <a href="#"><i class="fa-solid fa-share-nodes text-2xl"></i></a>
-        </div>
-
-        <b class=" text-sm">{{100}} likes</b>
-
-        <b class="w-[468px] text-sm block">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ullam eos est
-            inventore
-            nemo vitae iusto repellendus optio corrupti itaque ducimus, ratione perspiciatis corporis. Suscipit
-            perspiciatis
-            fuga nobis ullam hic perferendis!... <a href="#" class="text-gray-500">more</a></b>
-
-        <hr class="!my-4 !mx-1 border-[#262626]" />
-
-    </div>
-
-
-
-    <div class="space-y-2">
-        <div class="flex items-center space-x-5">
-            <img class="w-12 h-12 rounded-full" 
-                {% if profile_pic.exist %} 
-                    src="/uploads/{{profile_pic.file}}" 
-                {% else%}
-                    src="/static/{{profile_pic.file}}" 
-                {% endif %} 
-                alt=""
-            >
-            <b>{{username}}</b>
-        </div>
-
-        <img class="w-[468px] h-[585px] !my-5 bg-slate-200 rounded-sm border border-[#262626]"
-            src="https://th-thumbnailer.cdn-si-edu.com/3RQHyIdF6cCdAPoVL1NOZzyMCxY=/1000x750/filters:no_upscale():focal(594x274:595x275)/https://tf-cmsv2-smithsonianmag-media.s3.amazonaws.com/filer/95/db/95db799b-fddf-4fde-91f3-77024442b92d/egypt_kitty_social.jpg" />
-
-        <div class="space-x-5">
-            <a href="#"><i class="fa-regular fa-heart text-2xl"></i></a>
-            <a href="#"><i class="fa-regular fa-comment text-2xl"></i></a>
-            <a href="#"><i class="fa-solid fa-share-nodes text-2xl"></i></a>
-        </div>
-
-        <b class=" text-sm">{{100}} likes</b>
-
-        <b class="w-[468px] text-sm block">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ullam eos est
-            inventore
-            nemo vitae iusto repellendus optio corrupti itaque ducimus, ratione perspiciatis corporis. Suscipit
-            perspiciatis
-            fuga nobis ullam hic perferendis!... <a href="#" class="text-gray-500">more</a></b>
-
-        <hr class="!my-4 !mx-1 border-[#262626]" />
-
-    </div>
-
-
-
-    <div class="space-y-2">
-        <div class="flex items-center space-x-5">
-            <img class="w-12 h-12 rounded-full" 
-                {% if profile_pic.exist %} 
-                    src="/uploads/{{profile_pic.file}}" 
-                {% else%}
-                    src="/static/{{profile_pic.file}}" 
-                {% endif %} 
-                alt=""
-            >
-            <b>{{username}}</b>
-        </div>
-
-        <img class="w-[468px] h-[585px] !my-5 bg-slate-200 rounded-sm border border-[#262626]"
-            src="https://th-thumbnailer.cdn-si-edu.com/3RQHyIdF6cCdAPoVL1NOZzyMCxY=/1000x750/filters:no_upscale():focal(594x274:595x275)/https://tf-cmsv2-smithsonianmag-media.s3.amazonaws.com/filer/95/db/95db799b-fddf-4fde-91f3-77024442b92d/egypt_kitty_social.jpg" />
-
-        <div class="space-x-5">
-            <a href="#"><i class="fa-regular fa-heart text-2xl"></i></a>
-            <a href="#"><i class="fa-regular fa-comment text-2xl"></i></a>
-            <a href="#"><i class="fa-solid fa-share-nodes text-2xl"></i></a>
-        </div>
-
-        <b class=" text-sm">{{100}} likes</b>
-
-        <b class="w-[468px] text-sm block">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ullam eos est
-            inventore
-            nemo vitae iusto repellendus optio corrupti itaque ducimus, ratione perspiciatis corporis. Suscipit
-            perspiciatis
-            fuga nobis ullam hic perferendis!... <a href="#" class="text-gray-500">more</a></b>
-
-        <hr class="!my-4 !mx-1 border-[#262626]" />
-
-    </div>
+ 
 
 
 

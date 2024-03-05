@@ -8,16 +8,16 @@
 
 <div class="w-full h-fit py-16 flex justify-center">
 
-    <div class="w-[500px] space-y-8">
+    <div class="w-[500px] space-y-8 max-md:p-3 max-md:space-y-1">
         
         <form action="{% url 'search' %}" method="get" class="flex space-x-2">
             <input class="w-full h-full p-4 bg-transparent border rounded-lg focus:outline-0" type="text" placeholder="Search" name="q" id="search" required />
-            <input type="submit" value="Search" class="p-3  bg-white text-black text-xl font-semibold rounded-lg cursor-pointer hover:opacity-90">
+            <input type="submit" value="Search" class="p-3 bg-white text-black text-xl font-semibold rounded-lg cursor-pointer hover:opacity-90">
         </form>
 
         {% if not_found %}
 
-            <h1 class="text-center" >No user found</h1>
+            <h1 class="!mt-5 text-center text-gray-400" >No user found</h1>
 
         {% else %}
 

@@ -7,17 +7,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scroll | {{data.added_by}}</title>
     <link href="{% static 'fontawesomefree/css/all.min.css' %}" rel="stylesheet" type="text/css">
-
 </head>
-<body class="w-full h-fit py-16 space-y-10 flex flex-col items-center bg-black text-white">
+<body class="w-full h-fit py-16 space-y-10 flex flex-col items-center bg-black text-white max-md:py-0">
     
-    <div class="max-w-[466px] space-y-2">
+    <div class="max-w-[466px] space-y-2 max-md:w-full max-md:p-3 max-md:overflow-hidden">
         <a href="{{data.added_by_url}}">
             <div class="flex items-center space-x-5">
                 <img 
                     class="w-12 h-12 rounded-full object-cover"
                     {% if data.added_by_profile.exist %}
-                    src="/uploads/{{data.added_by_profile.file}}" 
+                        src="/uploads/{{data.added_by_profile.file}}" 
                     {% else %}
                         src="/static/{{data.added_by_profile.file}}"
                     {% endif %}
@@ -29,7 +28,7 @@
         
 
         <img 
-            class="w-[468px] h-[585px] !my-5 bg-slate-200 rounded-sm border border-[#262626] object-center"
+            class="w-[468px] h-[585px] !my-5 bg-slate-200 rounded-sm border border-[#262626] object-center max-md:w-full max-md:h-[468px]"
             src="/uploads/{{data.file}}"
         />
 
@@ -59,14 +58,14 @@
             {% csrf_token %}
             <input type="text" name="post_id" value="{{data.post_id}}" class="hidden" required>
             <textarea name="comment" id="" rows="1" class="w-full py-1 px-2 bg-transparent border rounded-sm focus:outline-0" required></textarea>
-            <input type="submit" value="Comment" class="w-[20%] h-[35px] self-end bg-white text-black text-sm py-1 rounded-sm cursor-pointer hover:opacity-90">
+            <input type="submit" value="Comment" class="w-[20%] h-[35px] self-end bg-white text-black text-sm py-1 rounded-sm cursor-pointer hover:opacity-90 max-md:w-[30%]">
         </form>
 
         <p class="hidden text-green-500 text-sm" id="comment_message_{{data.post_id}}">Comment added successfully</p>
 
         <hr class="!my-4 !mx-1 border-[#262626]"/>
 
-        <div class="space-y-3">
+        <div class="space-y-3" id="comment_data_{{data.post_id}}">
             
             {% for comment in comment_data %}
             
@@ -198,15 +197,43 @@
                     })
 
                 });
-                res = await res.json();
+                element.children[2].value = '';
 
+                res = await res.json();
                 if (res.status === 200) {
                     const comment_message = document.getElementById('comment_message_' + id);
+                    const comment_data = document.getElementById('comment_data_' + id);
+
                     element.style.display = 'none';
                     comment_message.style.display = 'block';
                     setTimeout(() => {
                         comment_message.style.display = 'none';
                     }, 1000);
+
+                    let commentData = '';
+
+                    if (res.comment_data.length > 0) {
+                        res.comment_data.forEach(comment => {
+                        
+                            commentData += `
+                                <div class="w-full p-2 flex justify-between items-center">
+                                    <div class="flex items-center space-x-5">
+                                        <img class="w-10 h-10 self-start rounded-full object-cover border border-[#262626]" 
+                                                src="${comment.added_by_profile.exist ? '/uploads/' + comment.added_by_profile.file : '/static/' +comment.added_by_profile.file}" 
+                                            alt=""
+                                        >
+
+                                        <div class="w-full text-sm break-words">
+                                            <b>${comment.added_by}</b>
+                                            <p class="text-sm">${comment.comment}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                            comment_data.innerHTML = commentData;
+                        });
+
+                    }
                 }
             } catch (error) {
                 console.log(error);
