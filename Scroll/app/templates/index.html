@@ -203,12 +203,20 @@
     }
 
     function copyLink(e) {
-        navigator.clipboard.writeText(window.location.origin + e.id);
-        document.getElementById('message' + e.id).style.display = 'inline';
 
-        setTimeout(function () {
-            document.getElementById('message' + e.id).style.display = 'none';
-        }, 1000);
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(window.location.origin + e.id);
+
+            document.getElementById('message' + e.id).style.display = 'inline';
+
+            setTimeout(function () {
+                document.getElementById('message' + e.id).style.display = 'none';
+            }, 1000);
+        }
+        else{
+            alert('Clipboard is not available')
+        }
+      
     }
 
     async function handelLikes(e) {

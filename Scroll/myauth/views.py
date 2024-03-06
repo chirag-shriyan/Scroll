@@ -7,7 +7,7 @@ from .models import ProfilePic
 # Create your views here.
 
 def Signup(req):
-    if req.user:
+    if req.user.is_authenticated:
         return redirect('/')
 
     if req.method == 'POST':
@@ -49,7 +49,7 @@ def Signup(req):
 
 
 def Login(req):
-    if req.user:
+    if req.user.is_authenticated:
         return redirect('/')
 
     global next_url
