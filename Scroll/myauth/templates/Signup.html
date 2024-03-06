@@ -7,10 +7,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scroll | Signup</title>
+    {% include "components/Favicons.html" %}
 
 </head>
 
-<body class="w-full h-full bg-[#333] flex justify-center items-center max-md:bg-black">
+<body class="w-full h-screen bg-[#333] flex justify-center items-center max-md:bg-black max-md:h-full">
 
     <form action="{% url 'signup' %}" method="post" enctype="multipart/form-data"
         class="w-[40%] h-[85vh] bg-black  text-white rounded-2xl p-12 mb-5 flex flex-col gap-12 shadow-xl mt-2 max-md:w-full max-md:h-full max-md:rounded-none max-sm:p-3 max-md:gap-8 max-md:justify-center"
@@ -41,7 +42,7 @@
             {% if error %}
             <b class="mx-1 text-red-500 text-sm">{{error}}</b>
             {% endif %}
-            <a href="{% url 'login' %}" class="mx-2 underline self-end max-md:m-0">Already have an account?</a>
+            <a href="{% url 'login' %}" class="mx-2 underline self-end max-md:text-xs max-md:m-0">Already have an account?</a>
         </div>
 
         <input type="submit" value="Create account"

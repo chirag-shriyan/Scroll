@@ -7,6 +7,8 @@ from .models import ProfilePic
 # Create your views here.
 
 def Signup(req):
+    if req.user:
+        return redirect('/')
 
     if req.method == 'POST':
         form = SignupForm(req.POST,req.FILES)
@@ -47,6 +49,8 @@ def Signup(req):
 
 
 def Login(req):
+    if req.user:
+        return redirect('/')
 
     global next_url
     
