@@ -5,10 +5,10 @@
 
 {% block body %}
 
-<div class="w-[70%] h-fit py-10 space-y-5 flex flex-col items-center text-white max-2xl:w-full max-md:overflow-hidden max-md:py-0 max-md:my-[50px]">
+<div id="posts_container" class="w-[70%] h-fit py-10 space-y-5 flex flex-col items-center text-white max-2xl:w-full max-md:overflow-hidden max-md:py-0 max-md:my-[50px]">
 
 {% for post in post_data %}
-    <div class="space-y-2 max-md:w-full max-md:p-3">
+    <div class="space-y-2 max-md:w-full max-md:p-3 posts">
         <a href="{{post.added_by_url}}">
             <div class="flex items-center space-x-5">
                 <img class="w-12 h-12 rounded-full object-cover border border-[#262626]" 
@@ -104,7 +104,7 @@
 
 
 
-
+    <div class="opacity-0" id="observer_element"></div>
 
 </div>
 
@@ -309,5 +309,122 @@
     }
 
 </script>
+
+{% comment %} For infinite scroll {% endcomment %}
+<script>
+
+    const posts = document.querySelectorAll('.posts');
+    let current_element = posts[posts.length - 3];
+    let current_page = 1;
+    let get_post = true;
+
+    const observer = new IntersectionObserver((entries)=>{
+
+        entries.forEach(async(entry) => {
+            if (entry.isIntersecting) {
+                
+                let res = await fetch('{% url "get_posts" %}',{
+                    method:"POST",
+                       headers: {
+                        "X-CSRFToken": getCookie("csrftoken"),
+                        "Content-Type": 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        "posts_limit": parseInt('{{posts_limit}}'),
+                        "total_num_posts": parseInt('{{total_num_posts}}'),
+                        "current_page": current_page,
+                    })
+                });
+                res = await res.json();
+
+                if (res.status === 200 && res.more_post) {
+                    current_page = res.current_page;
+                    get_post = res.more_post;
+
+                    let html = '';
+
+                    res.posts_data.forEach(post => {
+                        html += `
+                            <div class="space-y-2 max-md:w-full max-md:p-3 posts">
+                                <a href="${post.added_by_url}">
+                                    <div class="flex items-center space-x-5">
+                                        <img class="w-12 h-12 rounded-full object-cover border border-[#262626]"
+                                            src="${post.added_by_profile.exist ? `/uploads/${post.added_by_profile.file}` : `/static/${post.added_by_profile.file}`}"
+                                            alt=""
+                                        >
+                                        <b>${post.added_by}</b>
+                                    </div>
+                                </a>
+
+                                <a href="/posts/${post.post_id}">
+                                    <img class="w-[468px] h-[585px] !my-5 bg-slate-200 rounded-sm border border-[#262626] object-center max-md:w-full max-md:h-[468px]"
+                                        src="/uploads/${post.file}" />
+                                </a>
+
+                                <div class="space-x-5 flex select-none">
+                                    ${
+                                        post.is_liked ?
+                                            `
+                                                <div class="cursor-pointer" id="${post.post_id}" onclick="handelLikes(this)">
+                                                    <i class="fa-solid fa-heart text-2xl text-red-500 pointer-events-none"></i>
+                                                </div>
+                                            `
+                                            :
+                                            `
+                                                <div class="cursor-pointer" id="${post.post_id}" onclick="handelLikes(this)">
+                                                    <i class="fa-regular fa-heart text-2xl pointer-events-none"></i>
+                                                </div>
+                                            `
+                                    }
+
+                                    <i class="fa-regular fa-comment text-2xl cursor-pointer" onclick="handelComment(event,'comment_box_${post.post_id}')"></i>
+
+                                    <i class="fa-solid fa-share-nodes text-2xl cursor-pointer" id="/posts/${post.post_id}"
+                                        onclick="copyLink(this)"></i>
+                                    <p class="hidden text-green-400" id="message/posts/{{post.post_id}}">Link copied to clipboard</p>
+                                </div>
+
+                                <b class="text-sm select-none" id="post_likes_{{post.post_id}}">${post.num_of_likes} likes</b>
+
+                                <b class="w-[468px] text-sm block">${post.bio}</b>
+
+                                <a href="/posts/${post.post_id}" class="block w-fit text-sm text-gray-400">View all comments</a>
+
+                                <form class="hidden space-x-2" id="comment_box_${post.post_id}" onsubmit="handelCommentSubmit(event,'${post.post_id}')">
+                                    {% csrf_token %}
+                                    <input type="text" name="post_id" value="${post.post_id}" class="hidden" required>
+                                    <textarea name="comment" id="" rows="1" class="w-full py-1 px-2 bg-transparent border rounded-sm focus:outline-0" required></textarea>
+                                    <input type="submit" value="Comment" class="w-[20%] h-[35px] self-end bg-white text-black text-sm py-1 rounded-sm cursor-pointer hover:opacity-90 max-md:w-[30%]">
+                                </form>
+
+                                <p class="hidden text-green-500 text-sm" id="comment_message_${post.post_id}">Comment added successfully</p>
+
+
+                                <hr class="!my-4 !mx-1 border-[#262626]" />
+                            </div>
+                
+                        `
+                    });
+
+                    document.getElementById('posts_container').innerHTML += html; 
+
+                    const posts = document.querySelectorAll('.posts');
+                    current_element = posts[posts.length - 3];
+                    observer.observe(current_element);
+                }
+                else{
+                    observer.unobserve(current_element);
+                    get_post = res.more_post;
+                }
+            } 
+        });
+
+    });
+    observer.observe(document.getElementById('observer_element'));
+    observer.observe(current_element);
+    
+</script>
+
 
 {% endblock body %}
