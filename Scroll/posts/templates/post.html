@@ -11,7 +11,19 @@
 </head>
 <body class="w-full h-fit py-16 space-y-10 flex flex-col items-center bg-black text-white max-md:py-0">
     
-    <div class="max-w-[466px] space-y-2 max-md:w-full max-md:p-3 max-md:overflow-hidden">
+    {% if is_owner %}
+
+        {% if not data.is_public %}
+
+            <h1 class="p-2 self-start text-gray-500 border border-gray-500 rounded-md fixed top-3 left-2 max-md:!m-2 max-md:static max-sm:self-center">Private Post</h1>
+
+        {% endif %}
+
+    {% endif %}
+
+    
+    <div class="max-w-[466px] !mt-0 space-y-2 max-md:w-full max-md:p-3 max-md:overflow-hidden">
+
         <a href="{{data.added_by_url}}">
             <div class="flex items-center space-x-5">
                 <img 
@@ -33,21 +45,37 @@
             src="/uploads/{{data.file}}"
         />
 
-        <div class="space-x-5 flex select-none">
-            {% if data.is_liked %}
-                <div class="cursor-pointer" id="{{data.post_id}}" onclick="handelLikes(this)">
-                    <i class="fa-solid fa-heart text-2xl text-red-500 pointer-events-none"></i>
+        <div class="flex justify-between select-none">
+            <div class="flex space-x-5">
+
+                {% if data.is_liked %}
+                    <div class="cursor-pointer" id="{{data.post_id}}" onclick="handelLikes(this)">
+                        <i class="fa-solid fa-heart text-2xl text-red-500 pointer-events-none"></i>
+                    </div>
+                {% else %}
+                    <div class="cursor-pointer" id="{{data.post_id}}" onclick="handelLikes(this)">
+                        <i class="fa-regular fa-heart text-2xl pointer-events-none"></i>
+                    </div>
+                {% endif %}
+
+                <i class="fa-regular fa-comment text-2xl cursor-pointer" onclick="handelComment(event,'comment_box_{{data.post_id}}')"></i>
+
+                <i class="fa-solid fa-share-nodes text-2xl cursor-pointer" id="/posts/{{data.post_id}}" onclick="copyLink(this)"></i>
+                <p class="hidden text-green-400" id="message/posts/{{data.post_id}}">Link copied to clipboard</p>
+
+            </div>
+
+            {% if is_owner %}
+            
+                <div class="space-x-5 flex">
+
+             
+                    <a href="/edit_posts/{{data.post_id}}"><i class="fa-regular fa-pen-to-square text-2xl cursor-pointer"></i></a>
+                    <i class="fa-regular fa-trash-can text-2xl text-red-500 cursor-pointer" onclick="handelDelete('{{data.post_id}}')"></i>
+
                 </div>
-            {% else %}
-                <div class="cursor-pointer" id="{{data.post_id}}" onclick="handelLikes(this)">
-                    <i class="fa-regular fa-heart text-2xl pointer-events-none"></i>
-                </div>
+            
             {% endif %}
-
-            <i class="fa-regular fa-comment text-2xl cursor-pointer" onclick="handelComment(event,'comment_box_{{data.post_id}}')"></i>
-
-            <i class="fa-solid fa-share-nodes text-2xl cursor-pointer" id="/posts/{{data.post_id}}" onclick="copyLink(this)"></i>
-            <p class="hidden text-green-400" id="message/posts/{{data.post_id}}">Link copied to clipboard</p>
         </div>
   
         <b class="text-sm" id="post_likes_{{data.post_id}}">{{data.num_of_likes}} likes</b>
@@ -63,6 +91,7 @@
         </form>
 
         <p class="hidden text-green-500 text-sm" id="comment_message_{{data.post_id}}">Comment added successfully</p>
+        <p id="res_message" class="hidden text-green-500 text-sm"></p>
 
         <hr class="!my-4 !mx-1 border-[#262626]"/>
 
@@ -248,6 +277,44 @@
                 console.log(error);
             }
         }
+    }
+
+    async function handelDelete(id){
+        const delete_verified = confirm('Are you sure you want to delete this post');
+
+        if (delete_verified) {
+            
+            try {
+                let res = await fetch("{% url 'post_delete' %}", {
+                    method: 'POST',
+                    headers: {
+                        "X-CSRFToken": getCookie("csrftoken"),
+                        "Content-Type": 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        "post_id": id,
+                    })
+                });
+                res = await res.json();
+
+                if (res.status === 200) {
+                    const res_message = document.getElementById('res_message');
+                    res_message.textContent = res.message;
+                    res_message.style.display = 'block';
+                    res_message.scrollIntoView(true);
+
+                    setTimeout(function () {
+                        res_message.style.display = 'none';
+                        window.location.href = window.location.origin + '/profile';
+                    }, 1500);
+                }
+            } catch (error) {
+                console.log(error);
+            }
+
+        }
+
     }
 
 </script>

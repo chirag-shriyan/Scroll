@@ -5,7 +5,6 @@ from myauth.models import ProfilePic
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
-from django.contrib.messages import add_message,constants as level
 
 # Create your views here.
 
@@ -14,12 +13,15 @@ def Post_View(req,post_id=None):
 
     if post_id:
         DATA = Post.objects.filter(Q(post_id = post_id) & (Q(is_public = True) | Q(user_id = req.user.id))).values().first()
+
         if DATA:
+            is_owner = DATA['user_id'] == req.user.id
+
             added_by = str(User.objects.get(id = DATA['user_id'])).capitalize()
             added_by_url = '/users/' + User.objects.get(id = DATA['user_id']).username 
             added_by_profile = ProfilePic.objects.filter(user_id = DATA['user_id']).values().first()
             is_liked = Post_Like.objects.filter(Q(user_id = req.user.id) & Q(post_id = DATA['post_id'])).first()
-
+    
             DATA['added_by'] = added_by
             DATA['added_by_url'] = added_by_url or '#'
 
@@ -47,7 +49,8 @@ def Post_View(req,post_id=None):
 
             context = {
                 "data": DATA,
-                "comment_data": COMMENT_DATA
+                "comment_data": COMMENT_DATA,
+                "is_owner": is_owner,
             }
 
             return render(req,'post.html',context)
@@ -56,6 +59,7 @@ def Post_View(req,post_id=None):
     
     else:
         return render(req,'not_found.html')
+
 
 @login_required(login_url='/login')
 def Create_Posts(req):
@@ -84,6 +88,7 @@ def Create_Posts(req):
 
     else:
         return render(req, 'create_posts.html',{"profile_pic":profile_pic})
+
     
 import json
 from django.http import JsonResponse
@@ -157,5 +162,87 @@ def Comment_Posts(req):
             "post_id": body['post_id'],
             "comment_data": comment_data,
         })
+
+    return render(req,'not_found.html')
+
+
+@login_required(login_url='/login')
+def Post_Edit(req,post_id = None):
+    post_model = Post.objects.get(post_id = post_id)
+
+    if post_model.user_id == req.user.id:
+        profile_pic = ProfilePic.objects.filter(user_id = req.user.id).values().first()
+
+        if profile_pic:
+            profile_pic = {"file": profile_pic['file'] , "exist": True}
+        else:
+            profile_pic = {"file": 'images/profile.jpg', "exist": False}
+
+        context = {
+            "username" : str(req.user).capitalize(),
+            "post_id" : post_id,
+            "profile_pic" : profile_pic,
+            "bio" : post_model.bio,
+            "is_public" : bool(post_model.is_public),
+        }
+    
+        if req.method == "POST":
+            post_bio = req.POST['post_bio']
+            post_type = req.POST['post_type']
+
+            if post_bio != post_model.bio:
+                post_model.bio = post_bio
+                post_model.save()
+
+                context['message'] = 'Post updated successfully'
+                context['bio'] = post_model.bio
+
+            if post_type == 'True' and post_model.is_public == False:
+                post_model.is_public = True
+                post_model.save()
+
+                context['is_public'] = post_model.is_public
+                context['message'] = 'Post updated successfully'
+            elif post_type == 'False' and post_model.is_public == True:
+                post_model.is_public = False
+                post_model.save()
+
+                context['is_public'] = post_model.is_public
+                context['message'] = 'Post updated successfully'
+
+            return render(req,'edit_post.html',context)
+        else:
+            return render(req,'edit_post.html',context)
+    else:
+        return render(req,'not_found.html')
+
+
+@login_required(login_url='/login')
+def Post_Delete(req):
+
+    if req.method == "POST":
+        body = json.loads(req.body)
+        post_id = body['post_id']
+
+        if post_id:
+            post_data = Post.objects.filter(Q(post_id = post_id) & Q(user_id = req.user.id)).first()
+           
+            if post_data:
+                post_data.delete()
+                return JsonResponse({
+                    "status": 200,
+                    "message": 'Post deleted successfully',
+                })
+            else:
+                return JsonResponse({
+                    "status": 401,
+                    "message": 'Unauthorized request',
+                })
+
+        else:
+            return JsonResponse({
+                "status": 400,
+                "message": 'Bad request',
+            })
 
     return render(req,'not_found.html')
