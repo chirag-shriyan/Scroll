@@ -34,7 +34,7 @@ enctype="multipart/form-data" autocomplete="off">
             </label>
         </div>
 
-        <input type="text" name="username" class="w-full p-4 bg-transparent border rounded-lg focus:outline-0 z-0" name="post_bio" placeholder="Enter username" value="{{user.username}}" required>
+        <input type="text" name="username" class="w-full p-4 bg-transparent border rounded-lg focus:outline-0 z-0" name="post_bio" placeholder="Enter username" value="{% if new_username %}{{new_username}}{% else %}{{user.username}}{% endif %}" required>
 
         <input type="submit"
             class="w-full bg-white text-black text-2xl font-semibold py-3 rounded-xl cursor-pointer hover:opacity-90">

@@ -22,15 +22,15 @@ def Search(req):
 
 
     if search:
-        DATA = User.objects.filter(Q(username__contains = search) & ~Q(id = req.user.id)).values()
+        DATA = User.objects.filter(Q(username__contains = search) & ~Q(id = req.user.id)).values().order_by('-date_joined')
         not_found = False
 
         if len(DATA) > 0:
             for user in DATA:
-                profile_pic = ProfilePic.objects.filter(user_id = user['id']).values().first()
+                user_profile_pic = ProfilePic.objects.filter(user_id = user['id']).values().first()
                 
-                if profile_pic:
-                    user['profile_pic'] = {"file": profile_pic['file'] , "exist": True}
+                if user_profile_pic:
+                    user['profile_pic'] = {"file": user_profile_pic['file'] , "exist": True}
                 else:
                     user['profile_pic'] = {"file": 'images/profile.jpg', "exist": False}
         else:
@@ -60,7 +60,7 @@ def My_Profile(req):
     else:
         profile_pic = {"file": 'images/profile.jpg', "exist": False}
 
-    DATA = Post.objects.filter(user_id = req.user.id).values()
+    DATA = Post.objects.filter(user_id = req.user.id).values().order_by('-created_at')
 
     if not len(DATA) > 0:
         not_found = True
@@ -103,7 +103,7 @@ def User_Profile(req,username = None):
                 else:
                     profile_pic = {"file": 'images/profile.jpg', "exist": False}
 
-                POST_DATA = Post.objects.filter(Q(user_id = USER_DATA['id']) & Q(is_public = True)).values()
+                POST_DATA = Post.objects.filter(Q(user_id = USER_DATA['id']) & Q(is_public = True)).values().order_by('-created_at')
 
                 if not len(POST_DATA) > 0:
                     post_not_found = True
@@ -179,7 +179,6 @@ def Handel_Edit_User(req):
 
         username = req.POST['username']
         profile_pic = req.FILES and req.FILES['post_file']
-        # profile_pic_model = ProfilePic.objects.filter(user_id = req.user.id).values().first()
 
         if username and req.user.username != username:
             already_exist = User.objects.filter(Q(username = username) & ~Q(id = req.user.id))
@@ -188,7 +187,9 @@ def Handel_Edit_User(req):
                 user_model = User.objects.get(id = req.user.id)
                 user_model.username = username
                 user_model.save()
+
                 context['message'] = 'Profile updated successfully'
+                context['new_username'] = user_model.username
             else:
                 context['error'] = 'Username already taken'
                 return render(req,'edit_profile.html',context)

@@ -22,6 +22,11 @@ def Index(req):
     total_num_posts = Post.objects.filter(is_public = True).order_by('-created_at').count()
     POST_DATA = Post.objects.filter(is_public = True).order_by('-created_at').values()[0:posts_limit]
 
+    if total_num_posts <= 0:
+        no_posts_found = True
+    else:
+        no_posts_found = False
+
     for post in POST_DATA:
         added_by = str(User.objects.get(id = post['user_id'])).capitalize()
         added_by_url = '/users/' + User.objects.get(id = post['user_id']).username 
@@ -61,10 +66,11 @@ def Index(req):
         "username" : username,
         "profile_pic" : profile_pic,
         "post_data" : POST_DATA,
+        "total_num_posts" : total_num_posts,
+        "posts_limit" : posts_limit,
+        "no_posts_found":no_posts_found,
         "suggestions_data" : SUGGESTIONS_DATA,
         "no_suggestions_data" : no_suggestions_data,
-        "total_num_posts" : total_num_posts,
-        "posts_limit" : posts_limit
     }
     return render(req,'index.html',context)
 

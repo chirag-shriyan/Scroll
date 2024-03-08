@@ -7,14 +7,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scroll | Signup</title>
+    <link href="{% static 'fontawesomefree/css/all.min.css' %}" rel="stylesheet" type="text/css">
     {% include "components/Favicons.html" %}
 
 </head>
 
-<body class="w-full h-screen bg-[#333] flex justify-center items-center max-md:bg-black max-md:h-full">
+<body class="w-full min-h-screen max-h-fit bg-[#333] flex justify-center items-center max-md:bg-black max-md:h-full max-md:items-start">
 
     <form action="{% url 'signup' %}" method="post" enctype="multipart/form-data"
-        class="w-[40%] h-[85vh] bg-black  text-white rounded-2xl p-12 mb-5 flex flex-col gap-12 shadow-xl mt-2 max-md:w-full max-md:h-full max-md:rounded-none max-sm:p-3 max-md:gap-8 max-md:justify-center"
+        class="w-[40%] min-h-[85vh] max-h-fit bg-black  text-white rounded-2xl p-12 mb-5 flex flex-col gap-12 shadow-xl mt-2 max-md:w-full max-md:h-full max-md:rounded-none max-sm:p-3 max-md:gap-8 max-md:justify-center"
         autocomplete="off">
         {% csrf_token %}
         <h1 class="text-left text-4xl font-bold max-md:text-3xl max-md:mt-10">Create your account</h1>
@@ -45,10 +46,19 @@
             <a href="{% url 'login' %}" class="mx-2 underline self-end max-md:text-xs max-md:m-0">Already have an account?</a>
         </div>
 
-        <input type="submit" value="Create account"
-            class="bg-white text-black text-2xl font-semibold py-3 rounded-xl cursor-pointer hover:opacity-90">
+        <div class="flex flex-col space-y-5">
+            <input type="submit" value="Signup" class="bg-white text-black text-2xl font-semibold py-3 rounded-xl cursor-pointer hover:opacity-90">
+            
+            <p class="text-gray-400 text-center">Or</p>
+
+            <a href="{% url "social:begin" "google-oauth2" %}" class="space-x-2 flex justify-center items-center bg-white text-black text-2xl font-semibold py-3 rounded-xl cursor-pointer hover:opacity-90">
+                <i class="fa-brands fa-google-plus-g text-4xl"></i>
+                <p>Signup with Google</p>
+            </a> 
+        </div>
     </form>
 
+    <script src="{% static 'fontawesomefree/js/all.min.js' %}"></script>
     <script src="{% static 'js/tailwindcdn.js' %}"></script>
 
 </body>

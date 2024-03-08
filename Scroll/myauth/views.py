@@ -69,7 +69,7 @@ def Login(req):
             user = authenticate_user(username_or_email, password)
 
             if user is not None:
-                auth_login(req, user)
+                auth_login(req, user,backend='django.contrib.auth.backends.ModelBackend')
 
                 if next_url:
                     return redirect(next_url)

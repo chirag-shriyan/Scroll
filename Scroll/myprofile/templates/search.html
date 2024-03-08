@@ -8,7 +8,7 @@
 
 <div class="w-full h-fit py-16 flex justify-center">
 
-    <div class="w-[500px] space-y-8 max-md:p-3 max-md:space-y-1">
+    <div class="w-[500px] space-y-8 max-md:p-3 max-md:space-y-3">
         
         <form action="{% url 'search' %}" method="get" class="flex space-x-2">
             <input class="w-full h-full p-4 bg-transparent border rounded-lg focus:outline-0" type="text" placeholder="Search" name="q" id="search" required />
@@ -30,7 +30,7 @@
                             {% if user.profile_pic.exist %}
                                 src="/uploads/{{user.profile_pic.file}}"
                             {% else %}
-                                src="{% static 'images/profile.jpg' %}"
+                                src="/static/{{user.profile_pic.file}}" 
                             {% endif %} 
                             alt=""
                         >

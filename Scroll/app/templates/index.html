@@ -7,101 +7,96 @@
 
 <div id="posts_container" class="w-[70%] h-fit py-10 space-y-5 flex flex-col items-center text-white max-2xl:w-full max-md:overflow-hidden max-md:py-0 max-md:my-[50px]">
 
-{% for post in post_data %}
-    <div class="space-y-2 max-md:w-full max-md:p-3 posts">
-        <a href="{{post.added_by_url}}">
+    {% if no_posts_found %}
+    
+        <div class="space-y-2 max-md:w-full max-md:p-3">
             <div class="flex items-center space-x-5">
-                <img class="w-12 h-12 rounded-full object-cover border border-[#262626]" 
-                    {% if post.added_by_profile.exist %}
-                        src="/uploads/{{post.added_by_profile.file}}" 
-                    {% else %}
-                        src="/static/{{post.added_by_profile.file}}" 
-                    {% endif %}
+                <img class="w-12 h-12 rounded-full object-cover" 
+                    src="{% static 'images/logo_bigR.png' %}"
                     alt=""
                 >
-                <b>{{post.added_by}}</b>
+                <b>Scroll</b>
             </div>
-        </a>
 
-        <a href="/posts/{{post.post_id}}">
-            <img class="w-[468px] h-[585px] !my-5 bg-slate-200 rounded-sm border border-[#262626] object-center max-md:w-full max-md:h-[468px]"
-                src="/uploads/{{post.file}}" />
-        </a>
+            <img class="w-[468px] h-[585px] !my-5 bg-slate-200 rounded-sm border border-[#262626] max-md:w-full max-md:h-[468px] object-cover"
+                src="{% static 'images/logo.jpg' %}" />
 
-        <div class="space-x-5 flex select-none">
-            {% if post.is_liked %}
-            <div class="cursor-pointer" id="{{post.post_id}}" onclick="handelLikes(this)">
-                <i class="fa-solid fa-heart text-2xl text-red-500 pointer-events-none"></i>
+            <div class="space-x-5">
+                <a href="#"><i class="fa-regular fa-heart text-2xl"></i></a>
+                <a href="#"><i class="fa-regular fa-comment text-2xl"></i></a>
+                <a href="#"><i class="fa-solid fa-share-nodes text-2xl"></i></a>
             </div>
-            {% else %}
-            <div class="cursor-pointer" id="{{post.post_id}}" onclick="handelLikes(this)">
-                <i class="fa-regular fa-heart text-2xl pointer-events-none"></i>
-            </div>
-            {% endif %}
 
-            <i class="fa-regular fa-comment text-2xl cursor-pointer" onclick="handelComment(event,'comment_box_{{post.post_id}}')"></i>
+            <b class="text-sm">{{100}} likes</b>
 
-            <i class="fa-solid fa-share-nodes text-2xl cursor-pointer" id="/posts/{{post.post_id}}"
-                onclick="copyLink(this)"></i>
-            <p class="hidden text-green-400" id="message/posts/{{post.post_id}}">Link copied to clipboard</p>
+            <b class="w-[468px] text-sm block max-md:w-full">Welcome to scroll this is a dummy post so it does not have any functionality as the a actual post</b>
+
+            <hr class="!my-4 !mx-1 border-[#262626]" />
+
         </div>
 
-        <b class="text-sm select-none" id="post_likes_{{post.post_id}}">{{post.num_of_likes}} likes</b>
+    {% else %}
+    
+        {% for post in post_data %}
+            <div class="space-y-2 max-md:w-full max-md:p-3 posts">
+                <a href="{{post.added_by_url}}">
+                    <div class="flex items-center space-x-5">
+                        <img class="w-12 h-12 rounded-full object-cover border border-[#262626]" 
+                            {% if post.added_by_profile.exist %}
+                                src="/uploads/{{post.added_by_profile.file}}" 
+                            {% else %}
+                                src="/static/{{post.added_by_profile.file}}" 
+                            {% endif %}
+                            alt=""
+                        >
+                        <b>{{post.added_by}}</b>
+                    </div>
+                </a>
 
-        <b class="w-[468px] text-sm block">{{post.bio}}</b>
+                <a href="/posts/{{post.post_id}}">
+                    <img class="w-[468px] h-[585px] !my-5 bg-slate-200 rounded-sm border border-[#262626] object-center max-md:w-full max-md:h-[468px]"
+                        src="/uploads/{{post.file}}" />
+                </a>
 
-        <a href="/posts/{{post.post_id}}" class="block w-fit text-sm text-gray-400">View all comments</a>
+                <div class="space-x-5 flex select-none">
+                    {% if post.is_liked %}
+                    <div class="cursor-pointer" id="{{post.post_id}}" onclick="handelLikes(this)">
+                        <i class="fa-solid fa-heart text-2xl text-red-500 pointer-events-none"></i>
+                    </div>
+                    {% else %}
+                    <div class="cursor-pointer" id="{{post.post_id}}" onclick="handelLikes(this)">
+                        <i class="fa-regular fa-heart text-2xl pointer-events-none"></i>
+                    </div>
+                    {% endif %}
 
-        <form class="hidden space-x-2" id="comment_box_{{post.post_id}}" onsubmit="handelCommentSubmit(event,'{{post.post_id}}')">
-            {% csrf_token %}
-            <input type="text" name="post_id" value="{{post.post_id}}" class="hidden" required>
-            <textarea name="comment" id="" rows="1" class="w-full py-1 px-2 bg-transparent border rounded-sm focus:outline-0" required></textarea>
-            <input type="submit" value="Comment" class="w-[20%] h-[35px] self-end bg-white text-black text-sm py-1 rounded-sm cursor-pointer hover:opacity-90 max-md:w-[30%]">
-        </form>
+                    <i class="fa-regular fa-comment text-2xl cursor-pointer" onclick="handelComment(event,'comment_box_{{post.post_id}}')"></i>
 
-        <p class="hidden text-green-500 text-sm" id="comment_message_{{post.post_id}}">Comment added successfully</p>
-       
+                    <i class="fa-solid fa-share-nodes text-2xl cursor-pointer" id="/posts/{{post.post_id}}"
+                        onclick="copyLink(this)"></i>
+                    <p class="hidden text-green-400" id="message/posts/{{post.post_id}}">Link copied to clipboard</p>
+                </div>
 
-        <hr class="!my-4 !mx-1 border-[#262626]" />
-    </div>
-{% endfor %}
+                <b class="text-sm select-none" id="post_likes_{{post.post_id}}">{{post.num_of_likes}} likes</b>
 
+                <b class="w-[468px] text-sm block">{{post.bio}}</b>
 
-    <div class="space-y-2 max-md:w-full max-md:p-3">
-        <div class="flex items-center space-x-5">
-            <img class="w-12 h-12 rounded-full" 
-                {% if profile_pic.exist %} 
-                    src="/uploads/{{profile_pic.file}}" 
-                {% else%}
-                    src="/static/{{profile_pic.file}}" 
-                {% endif %} 
-                alt=""
-            >
-            <b>{{username}}</b>
-        </div>
+                <a href="/posts/{{post.post_id}}" class="block w-fit text-sm text-gray-400">View all comments</a>
 
-        <img class="w-[468px] h-[585px] !my-5 bg-slate-200 rounded-sm border border-[#262626] max-md:w-full max-md:h-[468px]"
-            src="https://th-thumbnailer.cdn-si-edu.com/3RQHyIdF6cCdAPoVL1NOZzyMCxY=/1000x750/filters:no_upscale():focal(594x274:595x275)/https://tf-cmsv2-smithsonianmag-media.s3.amazonaws.com/filer/95/db/95db799b-fddf-4fde-91f3-77024442b92d/egypt_kitty_social.jpg" />
+                <form class="hidden space-x-2" id="comment_box_{{post.post_id}}" onsubmit="handelCommentSubmit(event,'{{post.post_id}}')">
+                    {% csrf_token %}
+                    <input type="text" name="post_id" value="{{post.post_id}}" class="hidden" required>
+                    <textarea name="comment" id="" rows="1" class="w-full py-1 px-2 bg-transparent border rounded-sm focus:outline-0" required></textarea>
+                    <input type="submit" value="Comment" class="w-[20%] h-[35px] self-end bg-white text-black text-sm py-1 rounded-sm cursor-pointer hover:opacity-90 max-md:w-[30%]">
+                </form>
 
-        <div class="space-x-5">
-            <a href="#"><i class="fa-regular fa-heart text-2xl"></i></a>
-            <a href="#"><i class="fa-regular fa-comment text-2xl"></i></a>
-            <a href="#"><i class="fa-solid fa-share-nodes text-2xl"></i></a>
-        </div>
+                <p class="hidden text-green-500 text-sm" id="comment_message_{{post.post_id}}">Comment added successfully</p>
+            
 
-        <b class="text-sm">{{100}} likes</b>
+                <hr class="!my-4 !mx-1 border-[#262626]" />
+            </div>
+        {% endfor %}
 
-        <b class="w-[468px] text-sm block max-md:w-full">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ullam eos est
-            inventore
-            nemo vitae iusto repellendus optio corrupti itaque ducimus, ratione perspiciatis corporis. Suscipit
-            perspiciatis
-            fuga nobis ullam hic perferendis!... <a href="#" class="text-gray-500">more</a></b>
-
-        <hr class="!my-4 !mx-1 border-[#262626]" />
-
-    </div>
- 
-
+    {% endif %}
 
 
     <div class="opacity-0" id="observer_element"></div>
@@ -114,7 +109,7 @@
 <div class="w-[30%] h-screen py-5 px-10 space-y-10 max-2xl:hidden">
     <div class="w-full p-2 flex justify-between items-center">
         <div class="flex items-center space-x-5">
-            <img class="w-12 h-12 rounded-full border border-[#262626]" 
+            <img class="w-12 h-12 rounded-full border border-[#262626] object-cover" 
                 {% if profile_pic.exist %} 
                     src="/uploads/{{profile_pic.file}}"
                 {% else %}
@@ -337,7 +332,7 @@
                     })
                 });
                 res = await res.json();
-
+                console.log(res);
                 if (res.status === 200 && res.more_post) {
                     current_page = res.current_page;
                     get_post = res.more_post;
