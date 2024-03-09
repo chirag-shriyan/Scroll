@@ -217,6 +217,9 @@ def Post_Edit(req,post_id = None):
         return render(req,'not_found.html')
 
 
+from pathlib import Path
+import os 
+
 @login_required(login_url='/login')
 def Post_Delete(req):
 
@@ -229,6 +232,10 @@ def Post_Delete(req):
            
             if post_data:
                 post_data.delete()
+                file_to_delete = Path.cwd() / 'uploads' / str(post_data.file)
+                if os.path.exists(file_to_delete):
+                    os.remove(file_to_delete)
+
                 return JsonResponse({
                     "status": 200,
                     "message": 'Post deleted successfully',

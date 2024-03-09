@@ -8,12 +8,15 @@
     <title>{% block title %}{% endblock title %}</title>
 
     {% include "components/Favicons.html" %}
-
+    
+    <link rel="stylesheet" href="{% static "css/output.css" %}">
+    
     <link
       href="{% static 'fontawesomefree/css/all.min.css' %}"
       rel="stylesheet"
       type="text/css"
     />
+
 
     {% block links %} {% endblock links %}
   </head>
@@ -31,7 +34,7 @@
       {% endblock body %}
     </div>
 
-    <script src="{% static 'js/tailwindcdn.js' %}"></script>
+    {% comment %} <script src="{% static 'js/tailwindcdn.js' %}"></script> {% endcomment %}
     <script src="{% static 'fontawesomefree/js/all.min.js' %}"></script>
     {% block scripts %} {% endblock scripts %}
   </body>
