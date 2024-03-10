@@ -15,67 +15,83 @@
 
     <div class="w-[950px] space-y-8 max-md:w-full">
         
-      <header class="flex p-8">
-        <img
-            class="w-[150px] h-[150px] mr-[100px] bg-white rounded-full object-cover border border-[#262626] max-md:w-[70px] max-md:h-[70px] max-md:mr-5"
-            {% if profile_pic.exist %}
-                src="/uploads/{{profile_pic.file}}" 
-            {% else %}
-                src="/static/{{profile_pic.file}}" 
-            {% endif %}
-            alt=""
-        >
-
-        <div class="h-fit p-5 space-y-5 max-md:py-5 max-md:px-2">
-            <div class="flex">
-                <h1 class="text-xl mr-16 max-md:mr-10">{{username}}</h1>
-                {% if is_following %}
-                    <button class="py-1 px-2 text-xs bg-red-500 rounded" id="{{user_data.id}}" onclick="handelFollow(this)">unfollow</button>
+        <header class="flex p-8 items-center max-md:pb-5 max-md:py-0">
+            
+            <img
+                class="w-[150px] mr-[100px] h-[150px] bg-white rounded-full object-cover border border-[#262626] max-md:w-[70px] max-md:h-[70px] max-md:mr-5"
+                {% if profile_pic.exist %}
+                    src="/uploads/{{profile_pic.file}}" 
                 {% else %}
-                    <button class="py-1 px-2 text-xs bg-blue-500 rounded" id="{{user_data.id}}" onclick="handelFollow(this)">follow</button>
+                    src="/static/{{profile_pic.file}}" 
                 {% endif %}
-            </div>
-            <div class="space-x-5 flex">
-                <b class="">
-                    {% if num_of_posts %}
-                        {{num_of_posts}} posts
+                alt=""
+            >
+                
+            <div class="h-fit p-5 space-y-5 max-md:space-y-[10px]">
+                <p class="hidden max-md:block">{{username}}</p>
+                
+                <div class="flex max-md:hidden">
+                    <h1 class="text-xl mr-16">{{username}}</h1>
+                    {% if is_following %}
+                        <button class="p-2 text-xs bg-red-500 rounded" id="{{user_data.id}}" onclick="handelFollow(this)">unfollow</button>
                     {% else %}
-                        0 posts
+                        <button class="p-2 text-xs bg-blue-500 rounded" id="{{user_data.id}}" onclick="handelFollow(this)">follow</button>
                     {% endif %}
-                </b>
-                <b class="" id="num_of_followers{{user_data.id}}">
-                    {% if num_of_followers %}
-                        {{num_of_followers}} followers
-                    {% else %}
-                        0 followers
-                    {% endif %}
-                </b>
+                </div>
+
+                <div class="space-x-5 flex">
+                    <b class="">
+                        {% if num_of_posts %}
+                            {{num_of_posts}} posts
+                        {% else %}
+                            0 posts
+                        {% endif %}
+                    </b>
+                    <b class="" id="num_of_followers{{user_data.id}}">
+                        {% if num_of_followers %}
+                            {{num_of_followers}} followers
+                        {% else %}
+                            0 followers
+                        {% endif %}
+                    </b>
+                </div>
             </div>
+
+        </header>
+
+        <div class="hidden w-full px-3 !m-0 space-x-3 max-md:flex ">
+            {% if is_following %}
+                <button class="w-full p-2 text-xs bg-red-500 rounded" id="{{user_data.id}}" onclick="handelFollow(this)">unfollow</button>
+            {% else %}
+                <button class="w-full p-2 text-xs bg-blue-500 rounded" id="{{user_data.id}}" onclick="handelFollow(this)">follow</button>
+            {% endif %}
         </div>
 
-      </header>
-
-      <hr class="border-[#262626]">
+        <hr class="border-[#262626]">
 
         
-      <div class="mx-5 flex flex-wrap gap-1">
+        <div class="flex justify-center">
 
-        {% if post_not_found %}
+            <div class="w-[924px] flex flex-wrap gap-2 max-md:w-[324px]">
 
-            <div class="w-full max-md:text-sm">
-                <p class="text-center block text-gray-500">Looks like there is nothing to see here</p>
-            </div> 
-        
-        {% else %}
+                {% if post_not_found %}
 
-            {% for post in post_data %}
-                <a href="/posts/{{post.post_id}}">
-                    <img src="/uploads/{{post.file}}" class="w-[300px] h-[300px] object-cover max-md:w-[100px] max-md:h-[100px]" />
-                </a>
-            {% endfor %}
+                    <div class="w-full max-md:text-sm">
+                        <p class="text-center block text-gray-500">Looks like there is nothing to see here</p>
+                    </div> 
+                
+                {% else %}
 
-        {% endif %}
-      </div>
+                    {% for post in post_data %}
+                        <a href="/posts/{{post.post_id}}">
+                            <img src="/uploads/{{post.file}}" class="w-[300px] h-[300px] object-cover max-md:w-[100px] max-md:h-[100px]" />
+                        </a>
+                    {% endfor %}
+
+                {% endif %}
+            </div>
+
+        </div>
     
         
     </div>

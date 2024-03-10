@@ -309,7 +309,7 @@
 <script>
 
     const posts = document.querySelectorAll('.posts');
-    let current_element = posts[posts.length - 3];
+    let current_element = posts[posts.length - 2];
     let current_page = 1;
     let get_post = true;
 
@@ -405,7 +405,7 @@
                     document.getElementById('posts_container').innerHTML += html; 
 
                     const posts = document.querySelectorAll('.posts');
-                    current_element = posts[posts.length - 3];
+                    current_element = posts[posts.length - 2];
                     observer.observe(current_element);
                 }
                 else{
@@ -416,8 +416,9 @@
         });
 
     });
-    observer.observe(document.getElementById('observer_element'));
-    observer.observe(current_element);
+
+    current_element && observer.observe(current_element);
+    document.getElementById('observer_element') && observer.observe(document.getElementById('observer_element'));
     
 </script>
 
