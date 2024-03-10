@@ -22,13 +22,15 @@
   </head>
 
   <body class="w-full h-full flex bg-black relative">
-    <div class="w-[18%] h-screen py-10 px-8 flex flex-col border-r border-[#262626] text-[#f5f5f5] fixed max-md:hidden">
+    <div 
+        class="w-[18%] h-screen py-10 px-8 flex flex-col border-r border-[#262626] text-[#f5f5f5] fixed max-xl:w-[10%] max-xl:px-0max-xl:px-0     max-xl:items-center max-md:hidden"
+    >
       {% include "components/SideBar.html" %}
     </div>
 
     {% include "components/WidgetBar.html" %}
 
-    <div class="w-[82%] h-fit flex text-white absolute right-0 max-md:w-full">    
+    <div class="w-[82%] h-fit flex text-white absolute right-0 max-xl:w-[90%] max-md:w-full">    
       {% block body %} 
       
       {% endblock body %}

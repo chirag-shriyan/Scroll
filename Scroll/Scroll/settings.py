@@ -27,6 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
+# CSRF_TRUSTED_ORIGINS = ['https://*.ngrok-free.app'] # For reverse proxy (ngrok) [WARNING]: Not to be used in production
 
 # Application definition
 INSTALLED_APPS = [
