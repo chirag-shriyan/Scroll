@@ -3,7 +3,7 @@
     <a href="/"><b class="text-xl">Scroll</b></a>
 
     <a href="/profile" class="flex items-center">
-        <img class="w-10 h-10 rounded-full border border-[#262626]" 
+        <img class="w-10 h-10 rounded-full border border-[#262626] object-cover" 
             {% if profile_pic.exist %}
                 src="/uploads/{{profile_pic.file}}" 
             {% else %} 

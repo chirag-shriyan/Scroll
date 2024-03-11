@@ -13,12 +13,13 @@ def Signup(req):
     if req.method == 'POST':
         form = SignupForm(req.POST,req.FILES)
 
+        username = req.POST['username']
+        email = req.POST['email']
+        password = req.POST['password']
+        re_password = req.POST['re_password']
+        profile_pic = req.FILES['profile_pic']
+
         if form.is_valid():
-            username = form.cleaned_data['username']
-            email = form.cleaned_data['email']
-            password = form.cleaned_data['password']
-            re_password = form.cleaned_data['re_password']
-            profile_pic = form.cleaned_data['profile_pic']
 
             db_username = User.objects.filter(username = username).values()
             db_email = User.objects.filter(email = email).values()
@@ -38,11 +39,20 @@ def Signup(req):
             elif db_email:
                 error = 'Email already exist'
                 return render(req,'Signup.html',{"error":error})
-        
                 
         else:
-            error = 'Something went wrong try again'
-            return render(req,'Signup.html',{"error":error})
+            if len(username) < 3:
+                error = 'Username must have at least 3 or more characters'
+                return render(req,'Signup.html',{"error":error})
+            elif len(username) > 30:
+                error = 'Username must be less than 30 characters'
+                return render(req,'Signup.html',{"error":error})
+            elif len(password) < 8:
+                error = 'Password must have at least 8 or more characters'
+                return render(req,'Signup.html',{"error":error})
+            else:
+                error = 'Something went wrong try again'
+                return render(req,'Signup.html',{"error":error})
         
     else:
         return render(req,'Signup.html')
