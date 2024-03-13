@@ -13,12 +13,12 @@
         <i class="fa-solid fa-magnifying-glass text-2xl"></i>
         <h1 class="text-xl max-xl:hidden">Search</h1>
     </a>
-{% comment %} 
-    <a
+
+    <a href="{% url 'lobby' %}"
         class="space-x-3 p-3 flex items-center text-white rounded-md hover:cursor-pointer hover:bg-[#1a1a1a] transition-transform">
-        <i class="fa-brands fa-wpexplorer text-2xl"></i>
-        <h1 class="text-xl">Explore</h1>
-    </a> {% endcomment %}
+        <i class="fa-regular fa-comments text-2xl"></i>
+        <h1 class="text-xl">Chat</h1>
+    </a> 
 
     <a  href="{% url 'posts' %}"
         class="space-x-3 p-3 flex items-center text-white rounded-md hover:cursor-pointer hover:bg-[#1a1a1a] transition-transform">
@@ -28,7 +28,7 @@
 
     <a  href="{% url 'profile' %}"
         class="space-x-3 p-3 flex items-center text-white rounded-md hover:cursor-pointer hover:bg-[#1a1a1a] transition-transform">
-        <i class="fa-solid fa-user text-2xl"></i>
+        <i class="fa-regular fa-user text-2xl"></i>
         <h1 class="text-xl max-xl:hidden">Profile</h1>
     </a>
 

@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'myauth',
     'posts',
     'myprofile',
+    'chat',
     'fontawesomefree',
     'social_django',
 ]

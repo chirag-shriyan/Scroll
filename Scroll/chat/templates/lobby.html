@@ -10,7 +10,7 @@
 
     <div class="w-[500px] space-y-8 max-md:p-3 max-md:space-y-3">
         
-        <form action="{% url 'search' %}" method="get" class="flex space-x-2">
+        <form action="{% url 'lobby' %}" method="get" class="flex space-x-2">
             <input autofocus class="w-full h-full p-4 bg-transparent border rounded-lg focus:outline-0" type="text" placeholder="Search" name="q" id="search" required />
             <input type="submit" value="Search" class="p-3 bg-white text-black text-xl font-semibold rounded-lg cursor-pointer hover:opacity-90">
         </form>
@@ -23,7 +23,7 @@
 
             {% for user in data %}
 
-                <a href="/users/{{user.username}}" class="w-full p-2 flex justify-between items-center hover:bg-[#1a1a1a] hover:cursor-pointer rounded-md">
+                <a href="/chats/{{user.username}}" class="w-full p-2 flex justify-between items-center hover:bg-[#1a1a1a] hover:cursor-pointer rounded-md">
                     <div class="flex items-center space-x-5">
                         <img 
                             class="w-12 h-12 rounded-full object-cover border border-[#262626]"

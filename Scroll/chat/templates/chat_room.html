@@ -1,0 +1,84 @@
+
+{% extends "base.html" %}
+
+{% block title %}Scroll | Chat{% endblock title %}
+
+{% block body %}
+  
+    <div class="w-full h-dvh flex flex-col justify-between">
+
+        <div class="w-full min-h-[60px] px-5 flex items-center space-x-5 border-b border-[#262626]  ">
+            <img 
+                class="w-12 h-12 rounded-full object-cover border border-[#262626]"
+                {% if profile_pic.exist %}
+                    src="{{profile_pic.file.url}}"
+                {% else %}
+                    src="/static/{{profile_pic.file}}" 
+                {% endif %} 
+                alt=""
+            >
+        
+            <div class="text-sm">
+                <b>{{username}}</b>
+            </div>
+        </div>
+
+        <div class="mt-auto overflow-y-auto">
+            <div id="chat_container" class="w-full p-5 space-y-1 flex flex-col">
+                <p class="w-fit max-w-[30%] py-1 px-2 bg-white text-black rounded-md rounded-tl-none">Hello</p>
+                <p class="w-fit max-w-[30%] py-1 px-2 self-end bg-white text-black rounded-md rounded-tr-none">Hello</p>
+            </div>
+
+            <div id="scroll_to_view"></div>
+        </div>
+
+
+        <form onsubmit="sendChat(event)" class="w-full min-h-[60px] flex space-x-5 px-3 mb-3 max-md:space-x-2 max-md:px-2 ">
+            <input type="text" class="w-full h-full p-4 bg-transparent border rounded-lg focus:outline-0 " placeholder="Enter something">
+            <button class="w-[10%] p-3  bg-white text-black text-xl font-semibold rounded-lg cursor-pointer hover:opacity-90 max-md:w-[30%]">Send</button>
+        </form>
+    </div>
+
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.4/socket.io.js" integrity="sha512-tE1z+95+lMCGwy+9PnKgUSIeHhvioC9lMlI7rLWU0Ps3XTdjRygLcy4mLuL0JAoK4TLdQEyP0yOl/9dMOqpH/Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        document.getElementById('widget_top_nav').style.display = 'none';
+        document.getElementById('widget_bottom_nav').style.display = 'none';
+        const scroll_to_view = document.getElementById('scroll_to_view');
+        scroll_to_view.scrollIntoView(true);
+
+        const socket = io('ws://192.168.100.5:3000',{query: {roomIds:JSON.stringify(['{{room_id}}']),username:'{{user.username}}'}});
+
+        function sendChat(e) {
+            e.preventDefault();
+            const input = document.querySelector('input');
+
+            if (input.value.trim().length > 0) {
+                // console.log(input.value);
+                socket.emit('message',input.value);
+                input.value = '';
+                input.focus();
+                
+            }
+
+        }
+
+        const chat_container = document.getElementById('chat_container');
+        
+        socket.on('message',(data)=>{
+            // console.log('Server data: ',data);
+            const {message,id} = data;
+            if (socket.id === id) {
+                chat_container.innerHTML += `<p class="w-fit max-w-[30%] py-1 px-2 self-end bg-white text-black rounded-md rounded-tr-none">${message}</p>`;
+                scroll_to_view.scrollIntoView(true);
+            }
+            else{
+                chat_container.innerHTML += `<p class="w-fit max-w-[30%] py-1 px-2 bg-white text-black rounded-md rounded-tl-none">${message}</p>`;
+                scroll_to_view.scrollIntoView(true);
+            }
+        });
+
+    </script>
+
+{% endblock body %}

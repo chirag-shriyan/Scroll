@@ -26,6 +26,7 @@ urlpatterns = [
     path('', include('myauth.urls')),
     path('', include('posts.urls')),
     path('', include('myprofile.urls')),
+    path('', include('chat.urls')),
 
     # For forget password
     path('password-reset/', auth_views.PasswordResetView.as_view(), name='password_reset'),
