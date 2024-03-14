@@ -86,7 +86,8 @@
                 },
                 body: JSON.stringify({
                     "message": message,
-                    "receiver": '{{send_to_user.id}}'
+                    "receiver": '{{send_to_user.id}}',
+                    "room_id": '{{room_id}}'
                 })
             });
             res = await res.json();

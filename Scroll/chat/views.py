@@ -20,11 +20,11 @@ def Lobby(req):
 
 
     if search:
-        DATA = User.objects.filter(Q(username__contains = search) & ~Q(id = req.user.id)).values().order_by('-date_joined')
+        SEARCH_DATA = User.objects.filter(Q(username__contains = search) & ~Q(id = req.user.id)).values().order_by('-date_joined')
         not_found = False
 
-        if len(DATA) > 0:
-            for user in DATA:
+        if len(SEARCH_DATA) > 0:
+            for user in SEARCH_DATA:
                 user_profile_pic = ProfilePic.objects.filter(user_id = user['id']).values().first()
                 
                 if user_profile_pic:
@@ -35,14 +35,38 @@ def Lobby(req):
             not_found = True
 
         context = {
-            "data": DATA,
+            "search_data": SEARCH_DATA,
             "not_found": not_found,
             "profile_pic": profile_pic,
         }
 
         return render(req,'lobby.html',context)
+    else:
+        CHAT_DATA = Chat_Room_Model.objects.filter(Q(user1 = req.user.id) | Q(user2 = req.user.id)).order_by('-updated_at')
+        data_list = []
 
-    return render(req,'lobby.html',{"profile_pic":profile_pic})
+        for user in CHAT_DATA:
+            temp = user.user2 if user.user1 == req.user else user.user1
+            temp.last_message = user.last_message
+            if temp.last_message:
+                data_list.append(temp)
+   
+        if len(data_list) > 0:
+            for user in data_list:
+                user_profile_pic = ProfilePic.objects.filter(user_id = user.id).values().first()
+                
+                if user_profile_pic:
+                    user.profile_pic = {"file": user_profile_pic["file"] , "exist": True}
+                else:
+                    user.profile_pic = {"file": 'images/profile.jpg', "exist": False}
+        
+        context = {
+            "chat_data": data_list,
+            "profile_pic": profile_pic,
+        }
+
+        return render(req,'lobby.html',context)
+    
 
 import uuid
 
@@ -67,7 +91,6 @@ def Chat_Room(req,username):
 
         chats = Message.objects.filter(Q(sender_id = req.user.id) & Q(receiver_id = send_to_user.id) | Q(sender_id = send_to_user.id) & Q(receiver_id = req.user.id)).order_by('created_at')
         chats_data = chats
-        print(chats)
 
         for chat in chats:
             if chat.is_unread:
@@ -99,8 +122,17 @@ def Add_Messages(req):
         body = json.loads(req.body)
         message = body['message']
         receiver = body['receiver']
+        room_id = body['room_id']
 
         if message and receiver:
+            chat_room = Chat_Room_Model.objects.filter(room_id = room_id).first()
+           
+            if len(message) > 10:
+                chat_room.last_message = message[0:30] + '...'
+            else:
+                chat_room.last_message = message
+            chat_room.save()
+
             Message.objects.create(sender_id = req.user.id,receiver_id = receiver,message = message)
             return JsonResponse({
                 "status":200,

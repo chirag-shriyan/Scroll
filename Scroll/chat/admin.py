@@ -9,6 +9,6 @@ class MessageAdmin(admin.ModelAdmin):
 admin.site.register(Message,MessageAdmin)
 
 class Chat_RoomAdmin(admin.ModelAdmin):
-    list_display = ['user1','user2',"room_id","created_at"]
+    list_display = ['user1','user2',"room_id","last_message","created_at","updated_at"]
 
 admin.site.register(Chat_Room,Chat_RoomAdmin)

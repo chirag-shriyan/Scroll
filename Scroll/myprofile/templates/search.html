@@ -21,28 +21,32 @@
 
         {% else %}
 
-            {% for user in data %}
+            <div class="space-y-3">
 
-                <a href="/users/{{user.username}}" class="w-full p-2 flex justify-between items-center hover:bg-[#1a1a1a] hover:cursor-pointer rounded-md">
-                    <div class="flex items-center space-x-5">
-                        <img 
-                            class="w-12 h-12 rounded-full object-cover border border-[#262626]"
-                            {% if user.profile_pic.exist %}
-                                src="/uploads/{{user.profile_pic.file}}"
-                            {% else %}
-                                src="/static/{{user.profile_pic.file}}" 
-                            {% endif %} 
-                            alt=""
-                        >
-                    
-                        <div class="text-sm">
-                            <b>{{user.username}}</b>
+                {% for user in data %}
+
+                    <a href="/users/{{user.username}}" class="w-full p-2 flex justify-between items-center hover:bg-[#1a1a1a] hover:cursor-pointer rounded-md">
+                        <div class="flex items-center space-x-5">
+                            <img 
+                                class="w-12 h-12 rounded-full object-cover border border-[#262626]"
+                                {% if user.profile_pic.exist %}
+                                    src="/uploads/{{user.profile_pic.file}}"
+                                {% else %}
+                                    src="/static/{{user.profile_pic.file}}" 
+                                {% endif %} 
+                                alt=""
+                            >
+                        
+                            <div class="text-sm">
+                                <b>{{user.username}}</b>
+                            </div>
                         </div>
-                    </div>
-                </a>
-          
+                    </a>
             
-            {% endfor %}
+                
+                {% endfor %}
+
+            </div>
 
         {% endif %}
         
