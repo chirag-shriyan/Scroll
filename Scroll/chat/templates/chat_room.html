@@ -1,4 +1,3 @@
-
 {% extends "base.html" %}
 
 {% block title %}Scroll | Chat{% endblock title %}
@@ -7,76 +6,153 @@
   
     <div class="w-full h-dvh flex flex-col justify-between">
 
-        <div class="w-full min-h-[60px] px-5 flex items-center space-x-5 border-b border-[#262626]  ">
-            <img 
-                class="w-12 h-12 rounded-full object-cover border border-[#262626]"
-                {% if profile_pic.exist %}
-                    src="{{profile_pic.file.url}}"
-                {% else %}
-                    src="/static/{{profile_pic.file}}" 
-                {% endif %} 
-                alt=""
-            >
-        
+        <div class="w-full min-h-[60px] space-x-5 px-5 flex items-center border-b border-[#262626] max-md:px-3">
+            <a href="{% url 'lobby' %}" class="hidden max-md:block"><i class="fa-solid fa-arrow-left text-xl"></i></a>
+
+          <a href="/users/{{send_to_user.username}}" class="flex items-center !ml-0 space-x-3  max-md:!ml-5">
+            <img class="w-12 h-12 rounded-full object-cover border border-[#262626]" {% if profile_pic.exist %}
+                src="{{profile_pic.file.url}}" {% else %} src="/static/{{profile_pic.file}}" {% endif %} alt="">
+            
             <div class="text-sm">
                 <b>{{username}}</b>
             </div>
+          </a>
         </div>
 
         <div class="mt-auto overflow-y-auto">
             <div id="chat_container" class="w-full p-5 space-y-1 flex flex-col">
-                <p class="w-fit max-w-[30%] py-1 px-2 bg-white text-black rounded-md rounded-tl-none">Hello</p>
-                <p class="w-fit max-w-[30%] py-1 px-2 self-end bg-white text-black rounded-md rounded-tr-none">Hello</p>
+
+                {% for chat in chats %}
+                    {% if not chat.is_unread %}
+                        {% if chat.sender == user %}
+                            <p class="w-fit max-w-[30%] py-1 px-2 self-end bg-white text-black break-words rounded-md rounded-tr-none max-md:max-w-[75%]">{{chat.message}}</p>
+                        {% else %}
+                            <p class="w-fit max-w-[30%] py-1 px-2 bg-white text-black break-words rounded-md rounded-tl-none max-md:max-w-[75%]">{{chat.message}}</p>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+
+                <div id="unread_chat_below"></div>
+
+                {% for chat in chats %}
+                    {% if chat.is_unread %}
+                        {% if chat.sender == user %}
+                            <p class="w-fit max-w-[30%] py-1 px-2 self-end bg-white text-black break-words rounded-md rounded-tr-none max-md:max-w-[75%]">{{chat.message}}</p>
+                        {% else %}
+                            <p class="w-fit max-w-[30%] py-1 px-2 bg-white text-black break-words rounded-md rounded-tl-none max-md:max-w-[75%]">{{chat.message}}</p>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+
             </div>
 
             <div id="scroll_to_view"></div>
         </div>
 
 
-        <form onsubmit="sendChat(event)" class="w-full min-h-[60px] flex space-x-5 px-3 mb-3 max-md:space-x-2 max-md:px-2 ">
-            <input type="text" class="w-full h-full p-4 bg-transparent border rounded-lg focus:outline-0 " placeholder="Enter something">
+        <form onsubmit="handelSubmit(event)" class="w-full min-h-[60px] flex space-x-5 px-3 mb-3 max-md:space-x-2 max-md:px-2 " autocomplete="off">
+            <input autofocus type="text" class="w-full h-full p-4 bg-transparent border rounded-lg focus:outline-0 " placeholder="Enter something">
             <button class="w-[10%] p-3  bg-white text-black text-xl font-semibold rounded-lg cursor-pointer hover:opacity-90 max-md:w-[30%]">Send</button>
         </form>
     </div>
 
 
+    <script>
+
+        function getCookie(cname) {
+            let name = cname + "=";
+            let decodedCookie = decodeURIComponent(document.cookie);
+            let ca = decodedCookie.split(';');
+            for (let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) == ' ') {
+                    c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                    return c.substring(name.length, c.length);
+                }
+            }
+            return "";
+        }
+
+        async function sendChat(message) {
+
+            let res = await fetch('{% url "add_messages" %}', {
+                method: 'POST',
+                headers: {
+                    "X-CSRFToken": getCookie("csrftoken"),
+                    "Content-Type": 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    "message": message,
+                    "receiver": '{{send_to_user.id}}'
+                })
+            });
+            res = await res.json();
+            console.log(res);
+            return res
+
+        }
+
+    </script>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.4/socket.io.js" integrity="sha512-tE1z+95+lMCGwy+9PnKgUSIeHhvioC9lMlI7rLWU0Ps3XTdjRygLcy4mLuL0JAoK4TLdQEyP0yOl/9dMOqpH/Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
+
         document.getElementById('widget_top_nav').style.display = 'none';
         document.getElementById('widget_bottom_nav').style.display = 'none';
-        const scroll_to_view = document.getElementById('scroll_to_view');
-        scroll_to_view.scrollIntoView(true);
+        const unread_chat_below = document.getElementById('unread_chat_below');
+        unread_chat_below.scrollIntoView(true);
 
         const socket = io('ws://192.168.100.5:3000',{query: {roomIds:JSON.stringify(['{{room_id}}']),username:'{{user.username}}'}});
 
-        function sendChat(e) {
+        async function handelSubmit(e) {
             e.preventDefault();
             const input = document.querySelector('input');
 
             if (input.value.trim().length > 0) {
                 // console.log(input.value);
-                socket.emit('message',input.value);
-                input.value = '';
-                input.focus();
+                const res = await sendChat(input.value)
+                if(res.status === 200){
+                    socket.emit('message', input.value);
+                    input.value = '';
+                    input.focus();
+                }
+                else{
+                    alert('Something went wrong');
+                }
                 
             }
 
         }
 
         const chat_container = document.getElementById('chat_container');
+        const scroll_to_view = document.getElementById('scroll_to_view');
         
         socket.on('message',(data)=>{
             // console.log('Server data: ',data);
             const {message,id} = data;
-            if (socket.id === id) {
-                chat_container.innerHTML += `<p class="w-fit max-w-[30%] py-1 px-2 self-end bg-white text-black rounded-md rounded-tr-none">${message}</p>`;
-                scroll_to_view.scrollIntoView(true);
+
+            if (message) {
+                 if (socket.id === id) {
+                    chat_container.innerHTML += `
+                    <p class="w-fit max-w-[30%] py-1 px-2 self-end bg-white text-black break-words rounded-md rounded-tr-none max-md:max-w-[75%]">
+                        ${message}
+                    </p>
+                    `;
+                    scroll_to_view.scrollIntoView(true);
+                }
+                else {
+                    chat_container.innerHTML += `
+                    <p class="w-fit max-w-[30%] py-1 px-2 bg-white text-black break-words rounded-md rounded-tl-none max-md:max-w-[75%]">
+                        ${message}
+                    </p>
+                        `;
+                    scroll_to_view.scrollIntoView(true);
+                }
             }
-            else{
-                chat_container.innerHTML += `<p class="w-fit max-w-[30%] py-1 px-2 bg-white text-black rounded-md rounded-tl-none">${message}</p>`;
-                scroll_to_view.scrollIntoView(true);
-            }
+           
         });
 
     </script>

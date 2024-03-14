@@ -23,15 +23,7 @@
             >
 
             <div class="h-fit p-5 space-y-5 max-md:space-y-[10px]">
-                <p class="hidden max-md:block">{{username}}</p>
-
-                <div class="flex max-md:hidden">
-                    <h1 class="text-xl mr-16">{{username}}</h1>
-                    <div class="felx space-x-1">
-                        <a href="{% url 'edit' %}" class="p-2 text-xs text-center bg-gray-500 rounded">Edit Profile</a>
-                        <a href="{% url 'logout' %}" class="p-2 text-xs text-center bg-red-500 rounded">Logout</a>
-                    </div>
-                </div>
+                <p>{{username}}</p>
 
                 <div class="space-x-5 flex max-sm:self-center">
                     <b class="">
@@ -53,9 +45,9 @@
             
         </header>
 
-        <div class="hidden w-full px-3 !m-0 space-x-3 max-md:flex">
-            <a href="{% url 'edit' %}" class=" w-full p-2 text-xs text-center bg-gray-500 rounded">Edit Profile</a>
-            <a href="{% url 'logout' %}" class=" w-full p-2 text-xs text-center bg-red-500 rounded">Logout</a>
+        <div class="flex w-full px-3 !m-0 space-x-3 ">
+            <a href="{% url 'edit' %}" class=" w-full p-2 text-center bg-gray-500 rounded max-md:text-xs">Edit Profile</a>
+            <a href="{% url 'logout' %}" class=" w-full p-2 text-center bg-red-500 rounded max-md:text-xs">Logout</a>
         </div>
 
 

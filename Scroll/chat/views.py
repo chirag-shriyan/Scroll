@@ -3,7 +3,7 @@ from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from myauth.models import ProfilePic
-from .models import Chat_Room as Chat_Room_Model
+from .models import Chat_Room as Chat_Room_Model,Message
 
 # Create your views here.
 
@@ -48,28 +48,68 @@ import uuid
 
 @login_required(login_url = '/login')
 def Chat_Room(req,username):
+    send_to_user = User.objects.filter(username = username).first()
 
+    if send_to_user:
+        profile_pic = ProfilePic.objects.filter(user_id = send_to_user.id).first()
+
+        if profile_pic:
+            profile_pic = {"file": profile_pic.file , "exist": True}
+        else:
+            profile_pic = {"file": 'images/profile.jpg', "exist": False}
+
+        room_id =  Chat_Room_Model.objects.filter(Q(user1_id = req.user.id) & Q(user2_id = send_to_user.id) | Q(user1_id = send_to_user.id) & Q(user2_id = req.user.id)).first()
+
+        if room_id:
+            room_id = room_id.room_id
+        else:
+            room_id = Chat_Room_Model.objects.create(user1_id =  req.user.id,user2_id = send_to_user.id,room_id = uuid.uuid4()).room_id
+
+        chats = Message.objects.filter(Q(sender_id = req.user.id) & Q(receiver_id = send_to_user.id) | Q(sender_id = send_to_user.id) & Q(receiver_id = req.user.id)).order_by('created_at')
+        chats_data = chats
+        print(chats)
+
+        for chat in chats:
+            if chat.is_unread:
+                chat.is_unread = False
+                chat.save()
+        
+        username = username.capitalize()
+
+        context = {
+            "username":username,
+            "send_to_user":send_to_user,
+            "room_id":room_id,
+            "profile_pic": profile_pic,
+            "chats": chats_data,
+        }
+
+        return render(req,'chat_room.html',context)
+    else:
+        return render(req,'not_found.html')
     
-    user = User.objects.filter(username = username).first()
-    profile_pic = ProfilePic.objects.filter(user_id = user.id).first()
 
-    room_id =  Chat_Room_Model.objects.filter(Q(user1_id = req.user.id) & Q(user2_id = user.id) | Q(user1_id = user.id) & Q(user2_id = req.user.id)).first()
-    if room_id:
-        room_id = room_id.room_id
+import json
+from django.http import JsonResponse 
+
+@login_required(login_url = '/login')
+def Add_Messages(req):
+
+    if req.method == 'POST':
+        body = json.loads(req.body)
+        message = body['message']
+        receiver = body['receiver']
+
+        if message and receiver:
+            Message.objects.create(sender_id = req.user.id,receiver_id = receiver,message = message)
+            return JsonResponse({
+                "status":200,
+                "message":'Message successfully added'
+            })
+        else:
+            return JsonResponse({
+                "status":401,
+                "message":'Bad request'
+            })
     else:
-        room_id = Chat_Room_Model.objects.create(user1_id =  req.user.id,user2_id = user.id,room_id = uuid.uuid4()).room_id
-
-    if profile_pic:
-        profile_pic = {"file": profile_pic.file , "exist": True}
-    else:
-        profile_pic = {"file": 'images/profile.jpg', "exist": False}
-
-    username = username.capitalize()
-
-    context = {
-        "username":username,
-        "room_id":room_id,
-        "profile_pic": profile_pic,
-    }
-
-    return render(req,'chat_room.html',context)
+        return render(req,'not_found.html')

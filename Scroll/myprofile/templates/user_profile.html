@@ -28,17 +28,8 @@
             >
                 
             <div class="h-fit p-5 space-y-5 max-md:space-y-[10px]">
-                <p class="hidden max-md:block">{{username}}</p>
-                
-                <div class="flex max-md:hidden">
-                    <h1 class="text-xl mr-16">{{username}}</h1>
-                    {% if is_following %}
-                        <button class="p-2 text-xs bg-red-500 rounded" id="{{user_data.id}}" onclick="handelFollow(this)">unfollow</button>
-                    {% else %}
-                        <button class="p-2 text-xs bg-blue-500 rounded" id="{{user_data.id}}" onclick="handelFollow(this)">follow</button>
-                    {% endif %}
-                </div>
-
+                <p>{{username}}</p>
+            
                 <div class="space-x-5 flex">
                     <b class="">
                         {% if num_of_posts %}
@@ -59,11 +50,13 @@
 
         </header>
 
-        <div class="hidden w-full px-3 !m-0 space-x-3 max-md:flex ">
+        <div class="flex w-full px-3 !m-0 space-x-3">
+            <a href="/chats/{{user_data.username}}" class="w-full p-2 text-center bg-gray-500 rounded max-md:text-xs">message</a>
+
             {% if is_following %}
-                <button class="w-full p-2 text-xs bg-red-500 rounded" id="{{user_data.id}}" onclick="handelFollow(this)">unfollow</button>
+                <button class="w-full p-2 bg-red-500 rounded max-md:text-xs" id="{{user_data.id}}" onclick="handelFollow(this)">unfollow</button>
             {% else %}
-                <button class="w-full p-2 text-xs bg-blue-500 rounded" id="{{user_data.id}}" onclick="handelFollow(this)">follow</button>
+                <button class="w-full p-2 bg-blue-500 rounded max-md:text-xs" id="{{user_data.id}}" onclick="handelFollow(this)">follow</button>
             {% endif %}
         </div>
 

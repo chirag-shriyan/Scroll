@@ -8,10 +8,10 @@ class Message(models.Model):
     receiver = models.ForeignKey(User,on_delete = models.SET_NULL,null = True,related_name='receiver')
     message = models.TextField()
     is_unread = models.BooleanField(default = True)
-    created_at = models.DateField(auto_now_add = True)
+    created_at = models.DateTimeField(auto_now_add = True)
 
 class Chat_Room(models.Model):
     user1 = models.ForeignKey(User,on_delete = models.SET_NULL,null = True,related_name='user1')
     user2 = models.ForeignKey(User,on_delete = models.SET_NULL,null = True,related_name='user2')
     room_id = models.TextField()
-    created_at = models.DateField(auto_now_add = True)
+    created_at = models.DateTimeField(auto_now_add = True)
