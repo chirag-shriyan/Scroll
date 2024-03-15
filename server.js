@@ -24,8 +24,9 @@ io.on("connection", (socket) => {
     });
 
     socket.on('message', (data) => {
+        const { message, message_id } = data
         console.log('Received data: ', data);
-        io.to(roomIds).emit('message', { id: socket.id, message: data });
+        io.to(roomIds).emit('message', { id: socket.id, message: message, message_id: message_id });
 
     });
 

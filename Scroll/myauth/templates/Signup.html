@@ -42,7 +42,7 @@
             </div>
 
             {% if error %}
-            <b class="mx-1 text-red-500 text-sm">{{error}}</b>
+            <b class="mx-1 text-red-500 text-sm" id="error_box">{{error}}</b>
             {% endif %}
             <a href="{% url 'login' %}" class="mx-2 underline self-end max-md:text-xs max-md:m-0">Already have an account?</a>
         </div>
@@ -58,6 +58,16 @@
             </a> 
         </div>
     </form>
+
+    <script>
+
+        const error_box = document.getElementById('error_box');
+
+        setTimeout(function() {
+          error_box && error_box.style.display = 'none';
+        }, 2500);
+
+    </script>
 
     <script src="{% static 'fontawesomefree/js/all.min.js' %}"></script>
     {% comment %} <script src="{% static 'js/tailwindcdn.js' %}"></script> {% endcomment %}

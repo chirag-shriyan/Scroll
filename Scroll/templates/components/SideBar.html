@@ -15,9 +15,12 @@
     </a>
 
     <a href="{% url 'lobby' %}"
-        class="space-x-3 p-3 flex items-center text-white rounded-md hover:cursor-pointer hover:bg-[#1a1a1a] transition-transform">
+        class="space-x-3 p-3 flex items-center text-white rounded-md hover:cursor-pointer hover:bg-[#1a1a1a] transition-transform relative">
         <i class="fa-regular fa-comments text-2xl"></i>
         <h1 class="text-xl max-xl:hidden">Chat</h1>
+        <div id="chat_notification" class="hidden w-6 h-6 p-[2px] text-center text-sm bg-red-600 absolute top-0 -left-2 rounded-full z-50">
+            {% comment %} 9<sup>+</sup> {% endcomment %}
+        </div>
     </a> 
 
     <a  href="{% url 'posts' %}"

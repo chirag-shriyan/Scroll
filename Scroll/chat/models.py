@@ -17,3 +17,11 @@ class Chat_Room(models.Model):
     last_message = models.TextField(default = '')
     created_at = models.DateTimeField(auto_now_add = True)
     updated_at = models.DateTimeField(auto_now = True)
+
+class Notification(models.Model):
+    user = models.ForeignKey(User,on_delete = models.CASCADE)
+    room_id = models.TextField()
+    num_of_notifications = models.IntegerField(default = 0)
+    is_notification = models.BooleanField(default = True)
+    created_at = models.DateTimeField(auto_now_add = True)
+    updated_at = models.DateTimeField(auto_now = True)

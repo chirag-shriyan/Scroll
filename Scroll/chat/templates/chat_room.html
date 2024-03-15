@@ -32,7 +32,7 @@
                     {% endif %}
                 {% endfor %}
 
-                <div id="unread_chat_below"></div>
+                <div id="unread_chat_below" class="!m-0"></div>
 
                 {% for chat in chats %}
                     {% if chat.is_unread %}
@@ -46,7 +46,7 @@
 
             </div>
 
-            <div id="scroll_to_view"></div>
+            <div id="scroll_to_view" class="!m-0"></div>
         </div>
 
 
@@ -91,7 +91,6 @@
                 })
             });
             res = await res.json();
-            console.log(res);
             return res
 
         }
@@ -116,7 +115,7 @@
                 // console.log(input.value);
                 const res = await sendChat(input.value)
                 if(res.status === 200){
-                    socket.emit('message', input.value);
+                    socket.emit('message', {message: input.value,message_id:res.message_id});
                     input.value = '';
                     input.focus();
                 }

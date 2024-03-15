@@ -39,5 +39,34 @@
     {% comment %} <script src="{% static 'js/tailwindcdn.js' %}"></script> {% endcomment %}
     <script src="{% static 'fontawesomefree/js/all.min.js' %}"></script>
     {% block scripts %} {% endblock scripts %}
+
+    <!-- To get notifications data -->
+    <script type="module">
+      const chat_notification = document.getElementById('chat_notification');
+      const chat_widget_notification = document.getElementById('chat_widget_notification');
+
+      let res = await fetch("{% url 'notifications' %}");
+      res = await res.json();
+
+      if (res.status === 200) {
+          if(res.data.length){
+            if (res.data.length < 9) {
+              chat_notification.style.display = 'block';
+              chat_widget_notification.style.display = 'block';
+              chat_notification.innerText = res.data.length;
+              chat_widget_notification.innerText = res.data.length;
+            }
+            else {
+              chat_notification.style.display = 'block';
+              chat_widget_notification.style.display = 'block';
+              chat_notification.innerHTML = '9<sup>+</sup>';
+              chat_widget_notification.innerHTML = '9<sup>+</sup>';
+            }
+          }
+          
+      }
+
+    </script>
+
   </body>
 </html>
