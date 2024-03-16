@@ -7,7 +7,7 @@
     <div class="w-full h-dvh flex flex-col justify-between">
 
         <div class="w-full min-h-[60px] space-x-5 px-5 flex items-center border-b border-[#262626] max-md:px-3">
-            <a href="{% url 'lobby' %}" class="hidden max-md:block"><i class="fa-solid fa-arrow-left text-xl"></i></a>
+            <a href="{% url 'lobby' %}" class="hidden max-md:block" id="go_lobby"><i class="fa-solid fa-arrow-left text-xl"></i></a>
 
           <a href="/users/{{send_to_user.username}}" class="flex items-center !ml-0 space-x-3  max-md:!ml-5">
             <img class="w-12 h-12 rounded-full object-cover border border-[#262626]" {% if profile_pic.exist %}
@@ -130,12 +130,14 @@
         const chat_container = document.getElementById('chat_container');
         const scroll_to_view = document.getElementById('scroll_to_view');
         
-        socket.on('message',(data)=>{
+        socket.on('message',async(data)=>{
             // console.log('Server data: ',data);
             const {message,id} = data;
-
+            console.log(window.location.origin + `/clear_notifications?room_id=${"{{room_id}}"}`);
+            await fetch("{% url 'notifications' %}");
+            await fetch(window.location.origin + `/clear_notifications?room_id=${"{{room_id}}"}`);
             if (message) {
-                 if (socket.id === id) {
+                if (socket.id === id) {
                     chat_container.innerHTML += `
                     <p class="w-fit max-w-[30%] py-1 px-2 self-end bg-white text-black break-words rounded-md rounded-tr-none max-md:max-w-[75%]">
                         ${message}

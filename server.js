@@ -33,5 +33,5 @@ io.on("connection", (socket) => {
 
 });
 
-httpServer.listen(3000, '192.168.100.5')
+httpServer.listen(3000)
 // io.listen(3000);

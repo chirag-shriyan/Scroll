@@ -99,8 +99,9 @@ def Chat_Room(req,username):
             room_id = Chat_Room_Model.objects.create(user1_id =  req.user.id,user2_id = send_to_user.id,room_id = uuid.uuid4()).room_id
 
         NOTIFICATION_DATA = Notification_Model.objects.filter(Q(user_id = req.user.id) & Q(room_id = room_id)).first()
-        NOTIFICATION_DATA.num_of_notifications = 0
-        NOTIFICATION_DATA.save()
+        if NOTIFICATION_DATA:
+            NOTIFICATION_DATA.num_of_notifications = 0
+            NOTIFICATION_DATA.save()
 
         chats = Message.objects.filter(Q(sender_id = req.user.id) & Q(receiver_id = send_to_user.id) | Q(sender_id = send_to_user.id) & Q(receiver_id = req.user.id)).order_by('created_at')
 
@@ -143,6 +144,8 @@ def Add_Messages(req):
 
             if notification:
                 notification.num_of_notifications += 1
+                notification.is_notification = True
+                notification.save()
             else:
                 Notification_Model.objects.create(user_id = receiver,room_id = room_id,num_of_notifications = 1, is_notification = True)
 
@@ -170,10 +173,7 @@ def Add_Messages(req):
 @login_required(login_url = '/login')
 def Notifications(req):
     
-    if req.method == "POST":
-        pass
-    else:
-        # & Q(is_notification = True)
+    if req.method == "GET":
         notifications = Notification_Model.objects.filter(Q(user_id = req.user.id) & Q(is_notification = True))
         data = list(notifications.values())
     
@@ -181,6 +181,44 @@ def Notifications(req):
             notification.is_notification = False
             notification.save()
         
+        return JsonResponse({
+            "status": 200,
+            "data": data
+        })
+    
+@login_required(login_url = '/login')
+def Clear_Notifications(req):
+    
+    if req.method == "GET":
+        room_id = req.GET.get('room_id')
+
+        if room_id:
+            notifications = Notification_Model.objects.filter(Q(user_id = req.user.id) & Q(room_id = room_id))
+            data = list(notifications.values())
+            print(notifications)
+            for notification in notifications:
+                notification.is_notification = False
+                notification.num_of_notifications = 0
+                notification.save()
+            
+            return JsonResponse({
+                "status": 200,
+                "data": data
+            })
+       
+
+        
+@login_required(login_url = '/login')
+def Get_Room_Id(req):
+    
+    if req.method == "GET":
+        room_ids =  Chat_Room_Model.objects.filter(Q(user1_id = req.user.id) | Q(user2_id = req.user.id))
+        data = []
+
+        for id in room_ids:
+            if id:
+                data.append(id.room_id)
+
         return JsonResponse({
             "status": 200,
             "data": data
