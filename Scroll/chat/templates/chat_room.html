@@ -131,11 +131,7 @@
         const scroll_to_view = document.getElementById('scroll_to_view');
         
         socket.on('message',async(data)=>{
-            // console.log('Server data: ',data);
             const {message,id} = data;
-            console.log(window.location.origin + `/clear_notifications?room_id=${"{{room_id}}"}`);
-            await fetch("{% url 'notifications' %}");
-            await fetch(window.location.origin + `/clear_notifications?room_id=${"{{room_id}}"}`);
             if (message) {
                 if (socket.id === id) {
                     chat_container.innerHTML += `
@@ -152,6 +148,8 @@
                     </p>
                         `;
                     scroll_to_view.scrollIntoView(true);
+
+                    await fetch(window.location.origin + `/clear_notifications?room_id=${"{{room_id}}"}`);
                 }
             }
            

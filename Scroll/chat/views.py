@@ -4,10 +4,12 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from myauth.models import ProfilePic
 from .models import Chat_Room as Chat_Room_Model, Notification as Notification_Model,Message
+from django.views.decorators.cache import never_cache
 
 # Create your views here.
 
 @login_required(login_url = '/login')
+@never_cache
 def Lobby(req):
 
     search = req.GET.get('q')
@@ -63,6 +65,8 @@ def Lobby(req):
                     user.profile_pic = {"file": 'images/profile.jpg', "exist": False}
 
                 if NOTIFICATION_DATA:
+                    NOTIFICATION_DATA.is_notification = False
+                    NOTIFICATION_DATA.save()
                     if NOTIFICATION_DATA.num_of_notifications > 0:
                         if NOTIFICATION_DATA.num_of_notifications < 9:
                             user.num_of_notifications = {"num":NOTIFICATION_DATA.num_of_notifications ,"more_then_nine": False}
@@ -177,10 +181,6 @@ def Notifications(req):
         notifications = Notification_Model.objects.filter(Q(user_id = req.user.id) & Q(is_notification = True))
         data = list(notifications.values())
     
-        for notification in notifications:
-            notification.is_notification = False
-            notification.save()
-        
         return JsonResponse({
             "status": 200,
             "data": data

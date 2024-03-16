@@ -15,7 +15,6 @@ io.on("connection", (socket) => {
 
     console.log(`roomId: ${roomIds} | username: ${username}`);
 
-
     roomIds.forEach(roomId => {
         // console.log(roomId);
         if (roomId) {
@@ -27,6 +26,8 @@ io.on("connection", (socket) => {
         const { message, message_id } = data
         console.log('Received data: ', data);
         io.to(roomIds).emit('message', { id: socket.id, message: message, message_id: message_id });
+
+        io.emit('notifications', { username: username});
 
     });
 

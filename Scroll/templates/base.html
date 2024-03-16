@@ -46,18 +46,14 @@
 
     <!-- To get notifications data -->
     <script type="module">
-      let roomIds = await fetch("{% url 'get_room_ids' %}");
-      roomIds = await roomIds.json();
 
-      const socket = io('ws://192.168.100.5:3000', { query: { roomIds: JSON.stringify(roomIds.data), username: '{{user.username}}' } });
-      const chat_notification = document.getElementById('chat_notification');
-      const chat_widget_notification = document.getElementById('chat_widget_notification');
-      
-      let res = await fetch("{% url 'notifications' %}");
-      res = await res.json();
-
-      if (res.status === 200) {
-          if(res.data.length){
+      async function check_notifications() {
+        
+        let res = await fetch("{% url 'notifications' %}");
+        res = await res.json();
+        
+        if (res.status === 200) {
+          if (res.data.length) {
             if (res.data.length < 9) {
               chat_notification.style.display = 'block';
               chat_widget_notification.style.display = 'block';
@@ -71,39 +67,29 @@
               chat_widget_notification.innerHTML = '9<sup>+</sup>';
             }
           }
-          
+
+        }
+
       }
 
-      socket.on('message', async(data) => {
-          const { message, id } = data;
 
-          if (message) {
-            
-            if (socket.id !== id) {
+      let roomIds = await fetch("{% url 'get_room_ids' %}");
+      roomIds = await roomIds.json();
 
-              let res = await fetch("{% url 'notifications' %}");
-              res = await res.json();
+      const socket = io('ws://192.168.100.5:3000', { query: { roomIds: JSON.stringify(roomIds.data), username: '{{user.username}}' } });
+      const chat_notification = document.getElementById('chat_notification');
+      const chat_widget_notification = document.getElementById('chat_widget_notification');
+      
+      window.onload = await check_notifications();
 
-              if (res.status === 200) {
-                
-                if (res.data.length) {
-                  if (res.data.length < 9) {
-                    chat_notification.style.display = 'block';
-                    chat_widget_notification.style.display = 'block';
-                    chat_notification.innerText = res.data.length;
-                    chat_widget_notification.innerText = res.data.length;
-                  }
-                  else {
-                    chat_notification.style.display = 'block';
-                    chat_widget_notification.style.display = 'block';
-                    chat_notification.innerHTML = '9<sup>+</sup>';
-                    chat_widget_notification.innerHTML = '9<sup>+</sup>';
-                  }
-                }
-                
-              }
+      socket.on('notifications', async(data) => {
+          const { username } = data;
+
+            if (username !== "{{user.username}}") {
+                setTimeout(async function() {
+                  await check_notifications();
+                }, 100);
             }
-          }
 
       });
 
