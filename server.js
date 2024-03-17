@@ -13,10 +13,9 @@ io.on("connection", (socket) => {
     const roomIds = [].concat(JSON.parse(socket.handshake.query.roomIds));
     const username = socket.handshake.query.username;
 
-    console.log(`roomId: ${roomIds} | username: ${username}`);
+    // console.log(`Socket Id: ${socket.id} | username: ${username}`);
 
     roomIds.forEach(roomId => {
-        // console.log(roomId);
         if (roomId) {
             socket.join(roomId);
         }

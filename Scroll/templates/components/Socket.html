@@ -1,0 +1,83 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.4/socket.io.js"
+    integrity="sha512-tE1z+95+lMCGwy+9PnKgUSIeHhvioC9lMlI7rLWU0Ps3XTdjRygLcy4mLuL0JAoK4TLdQEyP0yOl/9dMOqpH/Q=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script type="module">
+    const path = window.location.pathname;
+    
+    let roomIds = await fetch("{% url 'get_room_ids' %}");
+    roomIds = await roomIds.json();
+
+    const socket = io('ws://192.168.100.5:3000', { query: { roomIds: JSON.stringify(roomIds.data), username: '{{user.username}}' } });
+
+    window.onload = await check_notifications();
+
+    socket.on('notifications', async(data) => {
+        const { username } = data;
+
+        if (username !== "{{user.username}}") {
+            await setTimeout(async function() {
+                let notifications_data =  await check_notifications();
+                notifications_data =  notifications_data.data || [];
+
+                notifications_data.forEach((data)=>{
+                    const notifications = document.getElementById(data.room_id + '_notifications');
+                    const last_message = document.getElementById(data.room_id + '_last_message');
+                
+                    if (notifications) {
+                        if (data.num_of_notifications > 0 && data.last_message) {
+                            notifications.style.display = 'block';
+                            if (data.num_of_notifications < 9) {
+                                notifications.innerText = data.num_of_notifications;
+                                last_message.innerText = data.last_message;
+                            }
+                            else {
+                                notifications.innerHTML = '9<sup>+</sup>';
+                                last_message.innerHTML = data.last_message;
+                            }
+                        }
+                    }
+                
+                });
+
+            }, 100);
+        }
+
+    });
+
+    async function check_notifications() {
+
+        let res = await fetch("{% url 'notifications' %}");
+        res = await res.json();
+
+        if (res.status === 200 && !path.includes('lobby')) {
+            const data = res.data.filter((e) => e.is_notification === true);
+            if (data.length) {
+                const chat_notification = document.getElementById('chat_notification');
+                const chat_widget_notification = document.getElementById('chat_widget_notification');
+
+                if (chat_notification && chat_widget_notification) {
+                    chat_notification.style.display = 'block';
+                    chat_widget_notification.style.display = 'block';
+
+                    if (data.length < 9) {
+                        chat_notification.innerText = data.length;
+                        chat_widget_notification.innerText = data.length;
+                    }
+                    else {
+                        chat_notification.innerHTML = '9<sup>+</sup>';
+                        chat_widget_notification.innerHTML = '9<sup>+</sup>';
+                    }
+                }
+            }
+        }
+
+        if (path.includes('lobby')) {
+            await fetch("{% url 'clear_notifications' %}");
+        }
+
+        return res;
+
+    }
+
+</script>

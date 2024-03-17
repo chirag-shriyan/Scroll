@@ -16,7 +16,7 @@
 <body class="w-full min-h-screen max-h-fit bg-[#333] flex justify-center items-center max-md:bg-black max-md:h-full max-md:items-start">
 
     <form action="{% url 'signup' %}" method="post" enctype="multipart/form-data"
-        class="w-[40%] min-h-[85vh] max-h-fit bg-black  text-white rounded-2xl p-12 mb-5 flex flex-col gap-12 shadow-xl mt-2 max-md:w-full max-md:h-full max-md:rounded-none max-sm:p-3 max-md:gap-8 max-md:justify-center"
+        class="w-[40%] min-h-[85vh] max-h-fit bg-black  text-white rounded-2xl p-12 mb-5 flex flex-col gap-12 shadow-xl mt-2 max-xl:w-full max-xl:h-full max-md:rounded-none max-sm:p-3 max-md:gap-8 max-md:justify-center"
         autocomplete="off">
         {% csrf_token %}
         <h1 class="text-left text-4xl font-bold max-md:text-3xl max-md:mt-10">Create your account</h1>
@@ -63,9 +63,11 @@
 
         const error_box = document.getElementById('error_box');
 
-        setTimeout(function() {
-          error_box && error_box.style.display = 'none';
-        }, 2500);
+        if (error_box) {
+            setTimeout(function() {
+                error_box.style.display = 'none';
+            }, 2500);
+        }
 
     </script>
 

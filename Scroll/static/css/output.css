@@ -2972,6 +2972,10 @@ video {
     display: none;
   }
 
+  .max-xl\:h-full {
+    height: 100%;
+  }
+
   .max-xl\:w-\[10\%\] {
     width: 10%;
   }
@@ -2980,8 +2984,22 @@ video {
     width: 90%;
   }
 
+  .max-xl\:w-full {
+    width: 100%;
+  }
+
   .max-xl\:items-center {
     align-items: center;
+  }
+}
+
+@media not all and (min-width: 1024px) {
+  .max-lg\:h-full {
+    height: 100%;
+  }
+
+  .max-lg\:w-full {
+    width: 100%;
   }
 }
 

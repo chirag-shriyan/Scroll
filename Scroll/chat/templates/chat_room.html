@@ -112,7 +112,6 @@
             const input = document.querySelector('input');
 
             if (input.value.trim().length > 0) {
-                // console.log(input.value);
                 const res = await sendChat(input.value)
                 if(res.status === 200){
                     socket.emit('message', {message: input.value,message_id:res.message_id});
