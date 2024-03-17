@@ -57,22 +57,22 @@ def Lobby(req):
         if len(data_list) > 0:
             for user in data_list:
                 user_profile_pic = ProfilePic.objects.filter(user_id = user.id).values().first()
-                NOTIFICATION_DATA = Notification_Model.objects.filter(Q(user_id = req.user.id) & Q(room_id = user.room_id)).first()
+                notification_data = Notification_Model.objects.filter(Q(user_id = req.user.id) & Q(room_id = user.room_id)).first()
 
                 if user_profile_pic:
                     user.profile_pic = {"file": user_profile_pic["file"] , "exist": True}
                 else:
                     user.profile_pic = {"file": 'images/profile.jpg', "exist": False}
 
-                if NOTIFICATION_DATA:
-                    NOTIFICATION_DATA.is_notification = False
-                    NOTIFICATION_DATA.save()
-                    if NOTIFICATION_DATA.num_of_notifications > 0:
-                        if NOTIFICATION_DATA.num_of_notifications < 9:
-                            user.num_of_notifications = {"num":NOTIFICATION_DATA.num_of_notifications ,"more_then_nine": False}
+                if notification_data:
+                    notification_data.is_notification = False
+                    notification_data.save()
+                    if notification_data.num_of_notifications > 0:
+                        if notification_data.num_of_notifications < 9:
+                            user.num_of_notifications = {"num":notification_data.num_of_notifications ,"more_then_nine": False}
                         else:
                             user.num_of_notifications = {"num":9 ,"more_then_nine": True}
-                
+
         context = {
             "chat_data": data_list,
             "profile_pic": profile_pic,
@@ -105,6 +105,7 @@ def Chat_Room(req,username):
         NOTIFICATION_DATA = Notification_Model.objects.filter(Q(user_id = req.user.id) & Q(room_id = room_id)).first()
         if NOTIFICATION_DATA:
             NOTIFICATION_DATA.num_of_notifications = 0
+            NOTIFICATION_DATA.is_notification = False
             NOTIFICATION_DATA.save()
 
         chats = Message.objects.filter(Q(sender_id = req.user.id) & Q(receiver_id = send_to_user.id) | Q(sender_id = send_to_user.id) & Q(receiver_id = req.user.id)).order_by('created_at')
@@ -178,9 +179,14 @@ def Add_Messages(req):
 def Notifications(req):
     
     if req.method == "GET":
-        notifications = Notification_Model.objects.filter(Q(user_id = req.user.id) & Q(is_notification = True))
+        notifications = Notification_Model.objects.filter(Q(user_id = req.user.id) & Q(Q(is_notification = True) | Q(num_of_notifications__gt = 0)))
         data = list(notifications.values())
+
+        for element in data:
+            last_message = Chat_Room_Model.objects.filter(Q(room_id = element['room_id'])).first().last_message
+            element['last_message'] = last_message
     
+
         return JsonResponse({
             "status": 200,
             "data": data
@@ -195,7 +201,7 @@ def Clear_Notifications(req):
         if room_id:
             notifications = Notification_Model.objects.filter(Q(user_id = req.user.id) & Q(room_id = room_id))
             data = list(notifications.values())
-            print(notifications)
+
             for notification in notifications:
                 notification.is_notification = False
                 notification.num_of_notifications = 0
@@ -205,6 +211,16 @@ def Clear_Notifications(req):
                 "status": 200,
                 "data": data
             })
+        else:
+            notifications = Notification_Model.objects.filter(Q(user_id = req.user.id))
+            for notification in notifications:
+                notification.is_notification = False
+                notification.save()
+
+            return JsonResponse({
+                "status": 200,
+            })
+
        
 
         

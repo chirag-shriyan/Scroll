@@ -51,24 +51,30 @@
         
         let res = await fetch("{% url 'notifications' %}");
         res = await res.json();
-        
-        if (res.status === 200) {
-          if (res.data.length) {
-            if (res.data.length < 9) {
-              chat_notification.style.display = 'block';
-              chat_widget_notification.style.display = 'block';
-              chat_notification.innerText = res.data.length;
-              chat_widget_notification.innerText = res.data.length;
+        const path = window.location.pathname;
+
+        if (res.status === 200 && !path.includes('lobby')) {
+          const data = res.data.filter((e)=> e.is_notification === true);
+          if (data.length) {
+            chat_notification.style.display = 'block';
+            chat_widget_notification.style.display = 'block';
+
+            if (data.length < 9) {
+              chat_notification.innerText = data.length;
+              chat_widget_notification.innerText = data.length;
             }
             else {
-              chat_notification.style.display = 'block';
-              chat_widget_notification.style.display = 'block';
               chat_notification.innerHTML = '9<sup>+</sup>';
               chat_widget_notification.innerHTML = '9<sup>+</sup>';
             }
           }
-
         }
+
+        if (path.includes('lobby')) {
+          await fetch("{% url 'clear_notifications' %}");
+        }
+
+        return res;
 
       }
 
@@ -86,8 +92,30 @@
           const { username } = data;
 
             if (username !== "{{user.username}}") {
-                setTimeout(async function() {
-                  await check_notifications();
+                await setTimeout(async function() {
+                  let notifications_data =  await check_notifications();
+                  notifications_data =  notifications_data.data || [];
+
+                  notifications_data.forEach((data)=>{
+                    const notifications = document.getElementById(data.room_id + '_notifications');
+                    const last_message = document.getElementById(data.room_id + '_last_message');
+                
+                    if (notifications) {
+                      if (data.num_of_notifications > 0 && data.last_message) {
+                        notifications.style.display = 'block';
+                        if (data.num_of_notifications < 9) {
+                          notifications.innerText = data.num_of_notifications;
+                          last_message.innerText = data.last_message;
+                        }
+                        else {
+                          notifications.innerHTML = '9<sup>+</sup>';
+                          last_message.innerHTML = data.last_message;
+                        }
+                      }
+                    }
+                   
+                  });
+
                 }, 100);
             }
 

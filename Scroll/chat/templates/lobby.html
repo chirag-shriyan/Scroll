@@ -35,20 +35,21 @@
                             
                                 <div class="text-sm">
                                     <b>{{user.username}}</b>
-                                    <p class="text-xs text-gray-400">{{user.last_message}}</p>
+                                    <p id="{{user.room_id}}_last_message" class="text-xs text-gray-400">{{user.last_message}}</p>
                                 </div>
                             </div>
                             
                             {% if user.num_of_notifications %}
                             
                                 {% if user.num_of_notifications.more_then_nine %}
-                                    <p class="w-6 h-6 p-[2px] text-sm text-center bg-red-600 rounded-full">{{user.num_of_notifications.num}}<sup>+</sup></p>
+                                    <p id="{{user.room_id}}_notifications" class="w-6 h-6 p-[2px] text-sm text-center bg-red-600 rounded-full">{{user.num_of_notifications.num}}<sup>+</sup></p>
                                     {% else %}
-                                    <p class="w-6 h-6 p-[2px] text-sm text-center bg-red-600 rounded-full">{{user.num_of_notifications.num}}</p>
+                                    <p id="{{user.room_id}}_notifications" class="w-6 h-6 p-[2px] text-sm text-center bg-red-600 rounded-full">{{user.num_of_notifications.num}}</p>
                                 {% endif %}
 
+                            {% else %}
+                                <p id="{{user.room_id}}_notifications" class="hidden w-6 h-6 p-[2px] text-sm text-center bg-red-600 rounded-full"></p>
                             {% endif %}
-
                         </a>
                         
                     {% endfor %}
