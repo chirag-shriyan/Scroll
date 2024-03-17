@@ -1,3 +1,5 @@
+{% load static %}
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.4/socket.io.js"
     integrity="sha512-tE1z+95+lMCGwy+9PnKgUSIeHhvioC9lMlI7rLWU0Ps3XTdjRygLcy4mLuL0JAoK4TLdQEyP0yOl/9dMOqpH/Q=="
     crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -18,6 +20,12 @@
         if (username !== "{{user.username}}") {
             await setTimeout(async function() {
                 let notifications_data =  await check_notifications();
+
+                if (notifications_data.is_notification) {
+                    const notification_audio = new Audio("{% static 'audio/Notification.mp3' %}");
+                    notification_audio.play();
+                }
+
                 notifications_data =  notifications_data.data || [];
 
                 notifications_data.forEach((data)=>{
@@ -49,12 +57,14 @@
 
         let res = await fetch("{% url 'notifications' %}");
         res = await res.json();
+        let is_notification = false;
 
         if (res.status === 200 && !path.includes('lobby')) {
             const data = res.data.filter((e) => e.is_notification === true);
             if (data.length) {
                 const chat_notification = document.getElementById('chat_notification');
                 const chat_widget_notification = document.getElementById('chat_widget_notification');
+                is_notification = true;
 
                 if (chat_notification && chat_widget_notification) {
                     chat_notification.style.display = 'block';
@@ -75,7 +85,7 @@
         if (path.includes('lobby')) {
             await fetch("{% url 'clear_notifications' %}");
         }
-
+        res.is_notification = is_notification
         return res;
 
     }
