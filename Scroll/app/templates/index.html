@@ -326,7 +326,7 @@
 
         entries.forEach(async(entry) => {
             if (entry.isIntersecting) {
-                observer.unobserve(current_element);
+                current_element && observer.unobserve(current_element);
                 document.getElementById('loader_container').style.display = 'flex';
 
                 let res = await fetch('{% url "get_posts" %}',{
@@ -417,12 +417,12 @@
 
                     const posts = document.querySelectorAll('.posts');
                     current_element = posts[posts.length - 2];
-                    observer.observe(current_element);
+                    current_element && observer.observe(current_element);
                 }
                 else{
                     document.getElementById('loader_container').style.display = 'none';
-                    observer.unobserve(current_element);
-                    observer.unobserve(document.getElementById('observer_element'));
+                    current_element && observer.unobserve(current_element);
+                    document.getElementById('observer_element') && observer.unobserve(document.getElementById('observer_element'));
                     get_post = res.more_post;
                 }
             } 

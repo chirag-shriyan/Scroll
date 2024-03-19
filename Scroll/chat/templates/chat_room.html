@@ -56,104 +56,116 @@
         </form>
     </div>
 
+{% endblock body %}
 
-    <script>
+{% block scripts %}
 
-        function getCookie(cname) {
-            let name = cname + "=";
-            let decodedCookie = decodeURIComponent(document.cookie);
-            let ca = decodedCookie.split(';');
-            for (let i = 0; i < ca.length; i++) {
-                let c = ca[i];
-                while (c.charAt(0) == ' ') {
-                    c = c.substring(1);
-                }
-                if (c.indexOf(name) == 0) {
-                    return c.substring(name.length, c.length);
-                }
+<script>
+
+    function getCookie(cname) {
+        let name = cname + "=";
+        let decodedCookie = decodeURIComponent(document.cookie);
+        let ca = decodedCookie.split(';');
+        for (let i = 0; i < ca.length; i++) {
+            let c = ca[i];
+            while (c.charAt(0) == ' ') {
+                c = c.substring(1);
             }
-            return "";
+            if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length);
+            }
         }
+        return "";
+    }
 
-        async function sendChat(message) {
+    async function sendChat(message) {
 
-            let res = await fetch('{% url "add_messages" %}', {
-                method: 'POST',
-                headers: {
-                    "X-CSRFToken": getCookie("csrftoken"),
-                    "Content-Type": 'application/json',
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify({
-                    "message": message,
-                    "receiver": '{{send_to_user.id}}',
-                    "room_id": '{{room_id}}'
-                })
-            });
-            res = await res.json();
-            return res
+        let res = await fetch('{% url "add_messages" %}', {
+            method: 'POST',
+            headers: {
+                "X-CSRFToken": getCookie("csrftoken"),
+                "Content-Type": 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                "message": message,
+                "receiver": '{{send_to_user.id}}',
+                "room_id": '{{room_id}}'
+            })
+        });
+        res = await res.json();
+        return res
 
-        }
+    }
 
-    </script>
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.4/socket.io.js" integrity="sha512-tE1z+95+lMCGwy+9PnKgUSIeHhvioC9lMlI7rLWU0Ps3XTdjRygLcy4mLuL0JAoK4TLdQEyP0yOl/9dMOqpH/Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script>
+    async function handelSubmit(e) {
+        e.preventDefault();
+        const input = document.querySelector('input');
 
-        document.getElementById('widget_top_nav').style.display = 'none';
-        document.getElementById('widget_bottom_nav').style.display = 'none';
-        const unread_chat_below = document.getElementById('unread_chat_below');
-        unread_chat_below.scrollIntoView(true);
-
-        const socket = io('ws://192.168.100.5:3000',{query: {roomIds:JSON.stringify(['{{room_id}}']),username:'{{user.username}}'}});
-
-        async function handelSubmit(e) {
-            e.preventDefault();
-            const input = document.querySelector('input');
-
-            if (input.value.trim().length > 0) {
-                const res = await sendChat(input.value)
-                if(res.status === 200){
-                    socket.emit('message', {message: input.value,message_id:res.message_id});
+        if (input.value.trim().length > 0) {
+            const res = await sendChat(input.value)
+            if (res.status === 200) {
+                if (socket.connected) {
+                    if('{{is_first_time}}' === 'True'){
+                        console.log('True');
+                        socket.emit('message', { message: input.value, message_id: res.message_id, roomId: '{{room_id}}', userId: '{{send_to_user.id}}' });
+                    }
+                    else{
+                        socket.emit('message', { message: input.value, message_id: res.message_id, roomId: '{{room_id}}' });
+                    }
                     input.value = '';
                     input.focus();
                 }
-                else{
-                    alert('Something went wrong');
+                else {
+                    alert('Something went wrong\nwhat you can do\n1.Check your internet connection\n2.Try reloading the site');
                 }
-                
+
+            }
+            else {
+                alert('Something went wrong');
             }
 
         }
 
-        const chat_container = document.getElementById('chat_container');
-        const scroll_to_view = document.getElementById('scroll_to_view');
-        
-        socket.on('message',async(data)=>{
-            const {message,id} = data;
-            if (message) {
-                if (socket.id === id) {
-                    chat_container.innerHTML += `
+    }
+
+    document.getElementById('widget_top_nav').style.display = 'none';
+    document.getElementById('widget_bottom_nav').style.display = 'none';
+    const unread_chat_below = document.getElementById('unread_chat_below');
+    unread_chat_below.scrollIntoView(true);
+
+    socket.on('connect',() =>{
+        socket.emit('join_chat', '{{room_id}}');
+    });
+
+    const chat_container = document.getElementById('chat_container');
+    const scroll_to_view = document.getElementById('scroll_to_view');
+
+    socket.on('message', async (data) => {
+        const { message, id, roomId } = data;
+        if (message && roomId === '{{room_id}}') {
+
+            if (socket.id === id) {
+                chat_container.innerHTML += `
                     <p class="w-fit max-w-[30%] py-1 px-2 self-end bg-white text-black break-words rounded-md rounded-tr-none max-md:max-w-[75%]">
                         ${message}
                     </p>
                     `;
-                    scroll_to_view.scrollIntoView(true);
-                }
-                else {
-                    chat_container.innerHTML += `
+                scroll_to_view.scrollIntoView(true);
+            }
+            else {
+                chat_container.innerHTML += `
                     <p class="w-fit max-w-[30%] py-1 px-2 bg-white text-black break-words rounded-md rounded-tl-none max-md:max-w-[75%]">
                         ${message}
                     </p>
                         `;
-                    scroll_to_view.scrollIntoView(true);
-
-                    await fetch(window.location.origin + `/clear_notifications?room_id=${"{{room_id}}"}`);
-                }
+                scroll_to_view.scrollIntoView(true);
+                await fetch(window.location.origin + `/clear_notifications?room_id=${"{{room_id}}"}`);
             }
-           
-        });
+        }
 
-    </script>
+    });
 
-{% endblock body %}
+</script>
+
+{% endblock scripts %}

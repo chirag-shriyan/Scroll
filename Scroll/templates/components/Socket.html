@@ -4,61 +4,21 @@
     integrity="sha512-tE1z+95+lMCGwy+9PnKgUSIeHhvioC9lMlI7rLWU0Ps3XTdjRygLcy4mLuL0JAoK4TLdQEyP0yOl/9dMOqpH/Q=="
     crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-<script type="module">
+<script>
     const path = window.location.pathname;
     
-    let roomIds = await fetch("{% url 'get_room_ids' %}");
-    roomIds = await roomIds.json();
-
-    const socket = io('ws://192.168.100.5:3000', { query: { roomIds: JSON.stringify(roomIds.data), username: '{{user.username}}' } });
-
-    window.onload = await check_notifications();
-
-    socket.on('notifications', async(data) => {
-        const { username } = data;
-
-        if (username !== "{{user.username}}") {
-            await setTimeout(async function() {
-                let notifications_data =  await check_notifications();
-
-                if (notifications_data.is_notification) {
-                    const notification_audio = new Audio("{% static 'audio/Notification.mp3' %}");
-                    notification_audio.play();
-                }
-
-                notifications_data =  notifications_data.data || [];
-
-                notifications_data.forEach((data)=>{
-                    const notifications = document.getElementById(data.room_id + '_notifications');
-                    const last_message = document.getElementById(data.room_id + '_last_message');
-                
-                    if (notifications) {
-                        if (data.num_of_notifications > 0 && data.last_message) {
-                            notifications.style.display = 'block';
-                            if (data.num_of_notifications < 9) {
-                                notifications.innerText = data.num_of_notifications;
-                                last_message.innerText = data.last_message;
-                            }
-                            else {
-                                notifications.innerHTML = '9<sup>+</sup>';
-                                last_message.innerHTML = data.last_message;
-                            }
-                        }
-                    }
-                
-                });
-
-            }, 100);
-        }
-
-    });
+    async function getRoomIds(params) {
+        let roomIds = await fetch("{% url 'get_room_ids' %}");
+        roomIds = await roomIds.json();
+        return roomIds.data;
+    }
 
     async function check_notifications() {
 
         let res = await fetch("{% url 'notifications' %}");
         res = await res.json();
         let is_notification = false;
-
+      
         if (res.status === 200 && !path.includes('lobby')) {
             const data = res.data.filter((e) => e.is_notification === true);
             if (data.length) {
@@ -89,5 +49,70 @@
         return res;
 
     }
+
+    
+    window.onload = async () => {
+        await check_notifications();
+    };
+
+    const socket = io(`ws://${window.location.hostname}:3000`, { query: { username: '{{user.username}}' }});
+
+    socket.on('connect', async ()=>{
+        socket.emit('join_rooms', await getRoomIds());
+    });
+
+    socket.on('notifications', async(data) => {
+        const { roomId , userId} = data;
+            
+        if (roomId) {
+            if (!'{{room_id}}' || '{{room_id}}' !== roomId) {
+
+                let notifications_data = await check_notifications();
+
+                if (notifications_data.is_notification) {
+                    try {
+                        const notification_audio = new Audio("{% static 'audio/Notification.mp3' %}");
+                        await notification_audio.play();
+                    } catch (error) {
+                        // Do nothing
+                    }
+                }
+
+                notifications_data = notifications_data.data || [];
+
+                notifications_data.forEach((data) => {
+                    const notifications = document.getElementById(data.room_id + '_notifications');
+                    const last_message = document.getElementById(data.room_id + '_last_message');
+
+                    if (notifications) {
+                        if (data.num_of_notifications > 0 && data.last_message) {
+                            notifications.style.display = 'block';
+                            if (data.num_of_notifications < 9) {
+                                notifications.innerText = data.num_of_notifications;
+                                last_message.innerText = data.last_message;
+                            }
+                            else {
+                                notifications.innerHTML = '9<sup>+</sup>';
+                                last_message.innerHTML = data.last_message;
+                            }
+                        }
+                    }
+
+                });
+
+            }
+        }
+
+        if (userId === '{{user.id}}' + socket.id) {
+            await check_notifications();
+            try {
+                const notification_audio = new Audio("{% static 'audio/Notification.mp3' %}");
+                await notification_audio.play();
+            } catch (error) {
+                // Do nothing
+            }
+        }
+            
+    });
 
 </script>

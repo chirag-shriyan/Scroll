@@ -54,26 +54,44 @@ enctype="multipart/form-data" autocomplete="off">
     const file_name = document.querySelector('#file_name');
 
     post_file.addEventListener('change', () => {
-        if (post_file.files[0].name) {
-            file_name.classList.replace('text-xl', 'text-2xl');
-            file_name.classList.add('text-white');
-            file_name.textContent = post_file.files[0].name;
+        console.log(post_file.files);
+        if (post_file.files[0]) {
+            if (post_file.files[0].type.includes('image/')) {
+                file_name.classList.replace('text-xl', 'text-2xl');
+                file_name.textContent = post_file.files[0].name;
+            }
+            else{
+                file_label.classList.add('border-red-500');
+                file_name.classList.add('text-red-500');
+
+                file_name.textContent = 'Invalid file type';
+                post_file.value = '';
+            }
         }
     });
 
     post_file.addEventListener('dragenter', () => {
+        file_label.classList.remove('border-red-500');
+        file_name.classList.remove('text-red-500');
+
         file_label.classList.add('border-green-400');
         file_name.innerHTML = '<i class="fa-solid fa-file-import text-4xl"></i>';
         file_name.classList.add('text-green-400');
     });
 
     post_file.addEventListener('dragleave', () => {
+        file_label.classList.remove('border-red-500');
+        file_name.classList.remove('text-red-500');
+
         file_label.classList.remove('border-green-400');
         file_name.innerHTML = 'Darg and dorp or click to upload';
         file_name.classList.remove('text-green-400')
     });
 
     post_file.addEventListener('drop', () => {
+        file_label.classList.remove('border-red-500');
+        file_name.classList.remove('text-red-500');
+
         file_label.classList.remove('border-green-400');
         file_name.innerHTML = 'Darg and dorp or click to upload'; // just in case if the file can't be upload
         file_name.classList.remove('text-green-400');
@@ -82,11 +100,10 @@ enctype="multipart/form-data" autocomplete="off">
     const message = document.querySelector('#message');
     setTimeout(function() {
         message.style.display = 'none';
-    }, 3000);
+    }, 2500);
 
 
 </script>
-
 
 
 {% endblock body %}

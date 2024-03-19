@@ -86,6 +86,7 @@ import uuid
 @login_required(login_url = '/login')
 def Chat_Room(req,username):
     send_to_user = User.objects.filter(username = username).first()
+    is_first_time = False
 
     if send_to_user:
         profile_pic = ProfilePic.objects.filter(user_id = send_to_user.id).first()
@@ -100,6 +101,7 @@ def Chat_Room(req,username):
         if room_id:
             room_id = room_id.room_id
         else:
+            is_first_time = True
             room_id = Chat_Room_Model.objects.create(user1_id =  req.user.id,user2_id = send_to_user.id,room_id = uuid.uuid4()).room_id
 
         NOTIFICATION_DATA = Notification_Model.objects.filter(Q(user_id = req.user.id) & Q(room_id = room_id)).first()
@@ -124,6 +126,7 @@ def Chat_Room(req,username):
             "room_id":room_id,
             "profile_pic": profile_pic,
             "chats": chats,
+            "is_first_time":is_first_time
         }
 
         return render(req,'chat_room.html',context)
@@ -183,8 +186,9 @@ def Notifications(req):
         data = list(notifications.values())
 
         for element in data:
-            last_message = Chat_Room_Model.objects.filter(Q(room_id = element['room_id'])).first().last_message
-            element['last_message'] = last_message
+            last_message = Chat_Room_Model.objects.filter(Q(room_id = element['room_id'])).first()
+            if last_message:
+                element['last_message'] = last_message.last_message
     
 
         return JsonResponse({

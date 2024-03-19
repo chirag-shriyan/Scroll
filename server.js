@@ -2,7 +2,7 @@ const { Server } = require("socket.io");
 const http = require('http');
 const httpServer = http.Server();
 
-const io = new Server(httpServer,{
+const io = new Server(httpServer, {
     cors: {
         origin: '*'
     }
@@ -10,28 +10,30 @@ const io = new Server(httpServer,{
 
 io.on("connection", (socket) => {
 
-    const roomIds = [].concat(JSON.parse(socket.handshake.query.roomIds));
-    const username = socket.handshake.query.username;
+    socket.on('join_rooms', (data) => {
+        socket.join(data);
+    });
 
-    // console.log(`Socket Id: ${socket.id} | username: ${username}`);
+    socket.on('join_chat', (data) => {
+        socket.join(data);
+    });
 
-    roomIds.forEach(roomId => {
-        if (roomId) {
-            socket.join(roomId);
+    socket.on('message', async (data) => {
+        const { message, message_id, roomId ,userId} = data;
+
+        io.to(roomId).emit('message', { id: socket.id, message: message, message_id: message_id, roomId: roomId });
+
+        io.to(roomId).emit('notifications', { roomId });
+
+        if (userId){
+            io.emit('notifications', { userId : userId + socket.id });
         }
-    });
-
-    socket.on('message', (data) => {
-        const { message, message_id } = data
-        console.log('Received data: ', data);
-        io.to(roomIds).emit('message', { id: socket.id, message: message, message_id: message_id });
-
-        io.emit('notifications', { username: username});
 
     });
+
+
 
 
 });
 
-httpServer.listen(3000)
-// io.listen(3000);
+httpServer.listen(3000,'192.168.100.5');
