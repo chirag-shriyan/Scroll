@@ -2940,6 +2940,18 @@ video {
   forced-color-adjust: none;
 }
 
+.scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.scrollbar::-webkit-scrollbar-track {
+  background: black;
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
+  background: #6b7280;
+}
+
 .hover\:cursor-pointer:hover {
   cursor: pointer;
 }
@@ -2990,16 +3002,6 @@ video {
 
   .max-xl\:items-center {
     align-items: center;
-  }
-}
-
-@media not all and (min-width: 1024px) {
-  .max-lg\:h-full {
-    height: 100%;
-  }
-
-  .max-lg\:w-full {
-    width: 100%;
   }
 }
 

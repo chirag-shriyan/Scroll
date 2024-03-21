@@ -14,26 +14,23 @@ io.on("connection", (socket) => {
         socket.join(data);
     });
 
-    socket.on('join_chat', (data) => {
-        socket.join(data);
-    });
-
     socket.on('message', async (data) => {
         const { message, message_id, roomId ,userId } = data;
 
         io.to(roomId).emit('message', { id: socket.id, message: message, message_id: message_id, roomId: roomId });
 
-        io.to(roomId).emit('notifications', { roomId });
-
-        if (userId){
-            io.emit('notifications', { userId : userId + socket.id });
+        if (userId !== undefined){
+            console.log(userId);
+            io.emit('notifications', { userId: userId + roomId, roomId });
+        }
+        else{
+            io.to(roomId).emit('notifications', { roomId });
         }
 
     });
 
     socket.on('typing', (data) => {
         const { roomId } = data;
-        console.log(roomId);
         if (roomId) {
             io.to(roomId).emit('typing', { roomId ,isTyping: true ,userId:socket.id});
         }
@@ -41,5 +38,5 @@ io.on("connection", (socket) => {
 
 });
 
-// httpServer.listen(3000,'192.168.100.5');
-httpServer.listen(3000);
+httpServer.listen(3000,'192.168.100.5');
+// httpServer.listen(3000);

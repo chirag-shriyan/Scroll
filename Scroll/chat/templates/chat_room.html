@@ -20,7 +20,7 @@
           </a>
         </div>
 
-        <div class="mt-auto overflow-y-auto">
+        <div class="mt-auto overflow-y-auto scrollbar">
             <div id="chat_container" class="w-full p-5 space-y-1 flex flex-col">
 
                 {% for chat in chats %}
@@ -52,7 +52,7 @@
 
 
         <form onsubmit="handelSubmit(event)" class="w-full min-h-[60px] flex space-x-5 px-3 mb-3 max-md:space-x-2 max-md:px-2 " autocomplete="off">
-            <input onkeypress="isTyping()" autofocus type="text" class="w-full h-full p-4 bg-transparent border rounded-lg focus:outline-0 " placeholder="Enter something">
+            <input onkeydown="isTyping()" autofocus type="text" class="w-full h-full p-4 bg-transparent border rounded-lg focus:outline-0 " placeholder="Enter something">
             <button class="w-[10%] p-3  bg-white text-black text-xl font-semibold rounded-lg cursor-pointer hover:opacity-90 max-md:w-[30%]">Send</button>
         </form>
     </div>
@@ -118,7 +118,7 @@
                     input.focus();
                 }
                 else {
-                    alert('Something went wrong\nwhat you can do\n1.Check your internet connection\n2.Try reloading the site');
+                    alert('Something went wrong\nwhat you can do:\n1.Check your internet connection\n2.Try reloading the page');
                 }
 
             }
@@ -140,7 +140,7 @@
     unread_chat_below.scrollIntoView(true);
 
     socket.on('connect',() =>{
-        socket.emit('join_chat', '{{room_id}}');
+        socket.emit('join_rooms', '{{room_id}}');
     });
 
     const chat_container = document.getElementById('chat_container');

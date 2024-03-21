@@ -65,7 +65,7 @@
         const { roomId , userId} = data;
             
         if (roomId) {
-            if (!'{{room_id}}' || '{{room_id}}' !== roomId) {
+            if ('{{room_id}}' !== roomId) {
 
                 let notifications_data = await check_notifications();
 
@@ -103,14 +103,9 @@
             }
         }
 
-        if (userId === '{{user.id}}' + socket.id) {
+        if (userId === '{{user.id}}' + roomId && !path.includes('lobby')) {
+            socket.emit('join_rooms', roomId);
             await check_notifications();
-            try {
-                const notification_audio = new Audio("{% static 'audio/Notification.mp3' %}");
-                await notification_audio.play();
-            } catch (error) {
-                // Do nothing
-            }
         }
             
     });
