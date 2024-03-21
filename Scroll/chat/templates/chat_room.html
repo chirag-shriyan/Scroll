@@ -15,6 +15,7 @@
             
             <div class="text-sm">
                 <b>{{username}}</b>
+                <p id="typing_element" class="hidden text-gray-500">typing...</p>
             </div>
           </a>
         </div>
@@ -51,7 +52,7 @@
 
 
         <form onsubmit="handelSubmit(event)" class="w-full min-h-[60px] flex space-x-5 px-3 mb-3 max-md:space-x-2 max-md:px-2 " autocomplete="off">
-            <input autofocus type="text" class="w-full h-full p-4 bg-transparent border rounded-lg focus:outline-0 " placeholder="Enter something">
+            <input onkeypress="isTyping()" autofocus type="text" class="w-full h-full p-4 bg-transparent border rounded-lg focus:outline-0 " placeholder="Enter something">
             <button class="w-[10%] p-3  bg-white text-black text-xl font-semibold rounded-lg cursor-pointer hover:opacity-90 max-md:w-[30%]">Send</button>
         </form>
     </div>
@@ -129,6 +130,10 @@
 
     }
 
+    function isTyping() {
+        socket.emit('typing', { roomId: '{{room_id}}'});
+    }
+
     document.getElementById('widget_top_nav').style.display = 'none';
     document.getElementById('widget_bottom_nav').style.display = 'none';
     const unread_chat_below = document.getElementById('unread_chat_below');
@@ -154,6 +159,8 @@
                 scroll_to_view.scrollIntoView(true);
             }
             else {
+                document.getElementById('typing_element').style.display = 'none';
+
                 chat_container.innerHTML += `
                     <p class="w-fit max-w-[30%] py-1 px-2 bg-white text-black break-words rounded-md rounded-tl-none max-md:max-w-[75%]">
                         ${message}
@@ -162,6 +169,25 @@
                 scroll_to_view.scrollIntoView(true);
                 await fetch(window.location.origin + `/clear_notifications?room_id=${"{{room_id}}"}`);
             }
+        }
+
+    });
+
+    let st;
+  
+    socket.on('typing', async (data) => {
+        const { isTyping, roomId ,userId } = data;
+
+        if (isTyping && roomId === '{{room_id}}' && userId !== socket.id) {
+            st && clearTimeout(st);
+
+            const typing_element = document.getElementById('typing_element');
+            typing_element.style.display = 'block';
+
+            st = setTimeout(function () {
+                typing_element.style.display = 'none';
+            }, 1500);
+
         }
 
     });
