@@ -52,7 +52,7 @@
 
 
         <form onsubmit="handelSubmit(event)" class="w-full min-h-[60px] flex space-x-5 px-3 mb-3 max-md:space-x-2 max-md:px-2 " autocomplete="off">
-            <input onkeydown="isTyping()" autofocus type="text" class="w-full h-full p-4 bg-transparent border rounded-lg focus:outline-0 " placeholder="Enter something">
+            <input onkeydown="isTyping(event)" autofocus type="text" class="w-full h-full p-4 bg-transparent border rounded-lg focus:outline-0 " placeholder="Enter something">
             <button class="w-[10%] p-3  bg-white text-black text-xl font-semibold rounded-lg cursor-pointer hover:opacity-90 max-md:w-[30%]">Send</button>
         </form>
     </div>
@@ -99,6 +99,7 @@
 
     }
 
+    let is_first_time = '{{is_first_time}}'
     async function handelSubmit(e) {
         e.preventDefault();
         const input = document.querySelector('input');
@@ -107,8 +108,9 @@
             const res = await sendChat(input.value)
             if (res.status === 200) {
                 if (socket.connected) {
-                    if('{{is_first_time}}' === 'True'){
+                    if(is_first_time === 'True'){
                         console.log('True');
+                        is_first_time = false;
                         socket.emit('message', { message: input.value, message_id: res.message_id, roomId: '{{room_id}}', userId: '{{send_to_user.id}}' });
                     }
                     else{
@@ -130,8 +132,10 @@
 
     }
 
-    function isTyping() {
-        socket.emit('typing', { roomId: '{{room_id}}'});
+    function isTyping(e) {
+        if (e.key !== 'Enter') {
+            socket.emit('typing', { roomId: '{{room_id}}'});
+        }
     }
 
     document.getElementById('widget_top_nav').style.display = 'none';

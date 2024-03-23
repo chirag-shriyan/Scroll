@@ -20,7 +20,6 @@ io.on("connection", (socket) => {
         io.to(roomId).emit('message', { id: socket.id, message: message, message_id: message_id, roomId: roomId });
 
         if (userId !== undefined){
-            console.log(userId);
             io.emit('notifications', { userId: userId + roomId, roomId });
         }
         else{
@@ -38,5 +37,5 @@ io.on("connection", (socket) => {
 
 });
 
-httpServer.listen(3000,'192.168.100.5');
-// httpServer.listen(3000);
+// httpServer.listen(3000,'192.168.100.5');
+httpServer.listen(3000);

@@ -104,11 +104,11 @@ def Chat_Room(req,username):
             is_first_time = True
             room_id = Chat_Room_Model.objects.create(user1_id =  req.user.id,user2_id = send_to_user.id,room_id = uuid.uuid4()).room_id
 
-        NOTIFICATION_DATA = Notification_Model.objects.filter(Q(user_id = req.user.id) & Q(room_id = room_id)).first()
-        if NOTIFICATION_DATA:
-            NOTIFICATION_DATA.num_of_notifications = 0
-            NOTIFICATION_DATA.is_notification = False
-            NOTIFICATION_DATA.save()
+        notification_data = Notification_Model.objects.filter(Q(user_id = req.user.id) & Q(room_id = room_id)).first()
+        if notification_data:
+            notification_data.num_of_notifications = 0
+            notification_data.is_notification = False
+            notification_data.save()
 
         chats = Message.objects.filter(Q(sender_id = req.user.id) & Q(receiver_id = send_to_user.id) | Q(sender_id = send_to_user.id) & Q(receiver_id = req.user.id)).order_by('created_at')
 
@@ -203,7 +203,18 @@ def Clear_Notifications(req):
         room_id = req.GET.get('room_id')
 
         if room_id:
+            sender_id = Chat_Room_Model.objects.filter(room_id = room_id).first()
+            sender_id = sender_id.user1_id if sender_id.user1_id != req.user.id else sender_id.user2_id
+
             notifications = Notification_Model.objects.filter(Q(user_id = req.user.id) & Q(room_id = room_id))
+            
+            if sender_id:
+                chats = Message.objects.filter(Q(sender_id = sender_id) & Q(receiver_id = req.user.id))
+                for chat in chats:
+                    if chat.is_unread:
+                        chat.is_unread = False
+                        chat.save()
+
             data = list(notifications.values())
 
             for notification in notifications:
@@ -218,6 +229,7 @@ def Clear_Notifications(req):
         else:
             notifications = Notification_Model.objects.filter(Q(user_id = req.user.id))
             for notification in notifications:
+
                 notification.is_notification = False
                 notification.save()
 
