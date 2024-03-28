@@ -57,6 +57,9 @@ enctype="multipart/form-data" autocomplete="off">
         console.log(post_file.files);
         if (post_file.files[0]) {
             if (post_file.files[0].type.includes('image/')) {
+                file_label.classList.remove('border-red-500');
+                file_name.classList.remove('text-red-500');
+
                 file_name.classList.replace('text-xl', 'text-2xl');
                 file_name.textContent = post_file.files[0].name;
             }
